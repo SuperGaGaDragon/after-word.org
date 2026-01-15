@@ -9,8 +9,8 @@
 - change_username(email, new_username) -> ok
 
 ## Boundaries
-- Only depends on storage/user and storage/user_retrieve.
-- Returns booleans; does not raise business errors.
+- Depends on storage/user and storage/user_retrieve.
+- Uses shared BusinessError from backend/errors.py.
 ## Signup rules
 - Uniqueness is enforced by the check component.
 - Passwords are stored as hashes.

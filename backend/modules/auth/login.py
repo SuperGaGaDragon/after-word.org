@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict, Optional
 
-from api.errors import BusinessError
+from errors import BusinessError
 from modules.auth.passwords import verify_password
 from storage.user import repo as user_repo
 
