@@ -23,3 +23,13 @@
 - Email cannot be changed.
 - New password must match confirmation and differ from the old password.
 - New username must differ and not already exist.
+
+# JWT Contract and Rules
+
+## Functions
+- create_token(email, username) -> token
+- decode_token(token) -> {email, username}
+
+## Rules
+- Expiration time is fixed at 60 minutes (JWT_EXPIRE_MINUTES).
+- `decode_token` must raise `BusinessError(code="unauthorized", message="...")` on failure.
