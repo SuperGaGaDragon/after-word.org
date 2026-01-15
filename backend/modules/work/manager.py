@@ -41,3 +41,14 @@ def get_work(work_id: str, user_email: str) -> Any:
         raise BusinessError("NOT_FOUND", "work not found")
     return result
 
+
+def update_work(
+    work_id: str, user_email: str, content: str, device_id: str
+) -> bool:
+    if not session_lock.acquire_lock(work_id, device_id):
+        raise BusinessError("LOCKED", "work locked")
+    _ = get_work(work_id, user_email)
+    query = work_repo.update_work_content(work_id, user_email, content)
+    _run(query)
+    session_lock.refresh_lock(work_id, device_id)
+    return True
