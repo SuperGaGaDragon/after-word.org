@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<title>BW Layout Clean Rewrite</title>
+
+<style>
+* { box-sizing: border-box; }
+
+/* ===== 全局几何变量 ===== */
+:root{
+  --gap: 20px;
+  --topbar-h: 80px;     /* 1 与 6/7 的对齐高度 */
+  --bottombar-h: 72px;  /* 4 / 5 高度 */
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#f4f4f4;
+}
+
+.canvas{
+  width:1400px;
+  aspect-ratio:16/9;
+  background:#fff;
+  padding:20px;
+}
+
+/* ===== 主布局 ===== */
+.layout{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:28% 72%;
+  gap:var(--gap);
+}
+
+/* ===== 左列 ===== */
+.left{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+
+/* 1 */
+.block-1{
+  height:var(--topbar-h);
+}
+
+/* 2：顶随 1 + gap，下与 3 对齐 */
+.block-2{
+  position:absolute;
+  top:calc(var(--topbar-h) + var(--gap));
+  bottom:0;
+  left:0;
+  right:0;
+}
+
+/* ===== 右区 ===== */
+.right{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+
+/* 6 / 7 */
+.top-right{
+  position:absolute;
+  top:0;
+  right:0;
+  display:flex;
+  gap:var(--gap);
+}
+
+.small{
+  width:160px;
+  height:var(--topbar-h);
+}
+
+/* 3：与 2 完全同 top / bottom */
+.main{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(var(--topbar-h) + var(--gap));
+  bottom:0;
+}
+
+/* 4 / 5：包含在 3 内 */
+.inner-bottom{
+  position:absolute;
+  right:var(--gap);
+  bottom:var(--gap);
+  display:flex;
+  gap:var(--gap);
+}
+
+.input{
+  width:520px;
+  height:var(--bottombar-h);
+}
+
+.comment{
+  width:200px;
+  height:var(--bottombar-h);
+}
+
+/* ===== 通用黑白格子 ===== */
+.block{
+  border:2px solid #000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="canvas">
+  <div class="layout">
+
+    <!-- 左 -->
+    <div class="left">
+      <div class="block block-1">1</div>
+      <div class="block block-2">2</div>
+    </div>
+
+    <!-- 右 -->
+    <div class="right">
+
+      <div class="top-right">
+        <div class="block small">7</div>
+        <div class="block small">6</div>
+      </div>
+
+      <div class="block main">
+        <div>3</div>
+
+        <div class="inner-bottom">
+          <div class="block input">5</div>
+          <div class="block comment">4</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
