@@ -34,3 +34,18 @@ def get_user_by_username(username: str) -> Dict[str, Any]:
         "FROM users WHERE username = %(username)s"
     )
     return _build_query(sql, {"username": username})
+
+
+def update_password(email: str, password_hash: str) -> Dict[str, Any]:
+    sql = (
+        "UPDATE users SET password_hash = %(password_hash)s "
+        "WHERE email = %(email)s"
+    )
+    params = {"email": email, "password_hash": password_hash}
+    return _build_query(sql, params)
+
+
+def update_username(email: str, new_username: str) -> Dict[str, Any]:
+    sql = "UPDATE users SET username = %(username)s WHERE email = %(email)s"
+    params = {"email": email, "username": new_username}
+    return _build_query(sql, params)
