@@ -9,9 +9,9 @@
 - 必须严格遵守本文件指令。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/style.css` 定义颜色、字体、阴影、间距变量。
-- [ ] 定义全局字体栈：Inter, sans-serif。
-- [ ] 定义基础排版（body, h1, h2, p）。
+- [x] 在 `frontend/Modules/workspace/style.css` 定义颜色、字体、阴影、间距变量。
+- [x] 定义全局字体栈：Inter, sans-serif。
+- [x] 定义基础排版（body, h1, h2, p）。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/style.css`
@@ -21,5 +21,5 @@
 - [ ] 提交命名必须为：`Phase5B Stage2A - CSS Tokens`（当前 stage 编号）。
 - [ ] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 文件 < 200 行
-- [ ] 变量完整
+- [x] 文件 < 200 行
+- [x] 变量完整

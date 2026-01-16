@@ -1,0 +1,91 @@
+/*
+ * This file defines CSS variables (tokens) for consistent styling across the application
+ * and establishes basic typography rules.
+ *
+ * It ensures a unified look and feel as per Phase5B Stage2A - CSS Tokens.
+ */
+
+/* ==============================================================================
+ * CSS Variables (Tokens)
+ * ============================================================================== */
+
+:root {
+    /* Colors */
+    --color-primary: #3498db; /* Blue */
+    --color-secondary: #2ecc71; /* Green */
+    --color-accent: #e74c3c; /* Red */
+    --color-text-dark: #2c3e50; /* Dark Blue Gray */
+    --color-text-light: #ecf0f1; /* Light Gray */
+    --color-background-light: #ffffff; /* White */
+    --color-background-dark: #34495e; /* Dark Blue Gray */
+    --color-border: #bdc3c7; /* Silver */
+    --color-shadow: rgba(0, 0, 0, 0.1); /* Light shadow */
+
+    /* Fonts */
+    --font-family-sans-serif: 'Inter', sans-serif;
+    --font-size-base: 16px;
+    --font-size-sm: 0.875rem; /* ~14px */
+    --font-size-md: 1rem;    /* ~16px */
+    --font-size-lg: 1.125rem; /* ~18px */
+    --font-size-xl: 1.25rem;  /* ~20px */
+    --font-size-h1: 2.5rem;   /* ~40px */
+    --font-size-h2: 2rem;     /* ~32px */
+    --font-size-h3: 1.75rem;  /* ~28px */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+    --line-height-base: 1.5;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 3px var(--color-shadow);
+    --shadow-md: 0 4px 6px var(--color-shadow);
+    --shadow-lg: 0 10px 15px var(--color-shadow);
+}
+
+/* ==============================================================================
+ * Global Typography
+ * ============================================================================== */
+
+/* Universal box-sizing for easier layout calculations */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-sans-serif);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--color-text-dark);
+    background-color: var(--color-background-light);
+    margin: 0; /* Remove default body margin */
+    padding: 0; /* Remove default body padding */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-sans-serif);
+    color: var(--color-text-dark);
+    line-height: 1.2;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: var(--font-weight-bold);
+}
+
+h1 {
+    font-size: var(--font-size-h1);
+}
+
+h2 {
+    font-size: var(--font-size-h2);
+}
+
+p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
