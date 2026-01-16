@@ -15,6 +15,7 @@ ERROR_STATUS_MAP: Dict[str, int] = {
     "forbidden": 403,
     "not_found": 404,
     "conflict": 409,
+    "locked": 409,
     "validation_failed": 422,
 }
 

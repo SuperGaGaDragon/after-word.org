@@ -19,7 +19,8 @@
 - [x] 在仓库根目录确认存在 `backend/` 与 `frontend/` 目录；若不存在则创建。
 - [x] 在 `backend/` 内创建最小 FastAPI 入口文件与配置模块：
   - `backend/main.py`：仅包含 app 实例与路由注册占位，不写业务逻辑。
-  - `backend/config.py`：直接硬编码 `docs/general/env_contract.md` 的变量值，不依赖 `.env` 或运行时环境变量。字段必须包含 `APP_ENV APP_HOST APP_PORT JWT_SECRET_KEY JWT_EXPIRE_MINUTES DATABASE_URL REDIS_URL WORK_LOCK_EXPIRE_SECONDS LLM_BASE_URL LLM_TIMEOUT_SECONDS FRONTEND_BASE_URL`。
+  - `backend/config.py`：从仓库根目录 `.env` 读取变量（必要时写入 `os.environ`），字段必须包含 `APP_ENV APP_HOST APP_PORT JWT_SECRET_KEY JWT_EXPIRE_MINUTES DATABASE_URL REDIS_URL WORK_LOCK_EXPIRE_SECONDS LLM_BASE_URL LLM_TIMEOUT_SECONDS FRONTEND_BASE_URL`。
+- [x] 在仓库根目录创建 `.env`，内容必须完全来自 `docs/general/env_contract.md`。
 - [x] 在 `backend/api/` 创建路由分包的空目录结构：`auth/ work/ conversation/ llm/`（只放 `__init__.py` 或占位文件）。
 - [x] 在 `backend/modules/` 创建组件分包空目录结构：`auth/ work/ conversation/ session_lock/ llm_gateway/`。
 - [x] 在 `backend/storage/` 创建空目录结构：`user/ user_retrieve/ work/ work_retrieve/ conversation/`。
