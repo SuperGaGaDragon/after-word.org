@@ -15,16 +15,16 @@
 - POST `/api/work/{work_id}/update`
 
 ## 任务清单
-- [ ] 在 `backend/api/work/router.py` 实现上述路由。
-- [ ] 认证通过后调用 `modules/work/manager`。
+- [x] 在 `backend/api/work/router.py` 实现上述路由。
+- [x] 认证通过后调用 `modules/work/manager`。
 
 ## 交付物（必须有）
 - `backend/api/work/router.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase4C Stage2B - Work API Routes`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase4C Stage2B - Work API Routes`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] API 未写业务逻辑
-- [ ] 文件 < 200 行
+- [x] API 未写业务逻辑
+- [x] 文件 < 200 行
