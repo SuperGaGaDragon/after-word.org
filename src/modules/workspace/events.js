@@ -78,8 +78,10 @@ function updateUserEntry() {
     username.textContent = getUsername() || 'User';
     loginButton.style.display = 'none';
     signupButton.style.display = 'none';
+    username.style.cursor = 'pointer';
   } else {
     username.textContent = '';
+    username.style.cursor = 'default';
     loginButton.style.display = 'inline-block';
     signupButton.style.display = 'inline-block';
   }
@@ -257,7 +259,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const signupButton = document.querySelector(SELECTORS.signupButton);
   if (signupButton) {
     signupButton.addEventListener('click', () => {
-      window.location.href = '/signup';
+      window.location.href = '/signup/';
+    });
+  }
+
+  const username = document.querySelector(SELECTORS.username);
+  if (username) {
+    username.addEventListener('click', () => {
+      if (isAuthenticated()) {
+        window.location.href = '/account/';
+      }
     });
   }
 
