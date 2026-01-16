@@ -14,9 +14,9 @@
 - email 禁止修改。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/login/events.js` 实现登录提交：调用 `/api/auth/login`，保存 JWT，成功跳转到 workspace。
-- [ ] 在 `frontend/Modules/signup/events.js` 实现注册提交：调用 `/api/auth/signup`，保存 JWT，成功跳转到 workspace。
-- [ ] 在 `frontend/Modules/accountSetting/events.js` 实现：
+- [x] 在 `frontend/Modules/login/events.js` 实现登录提交：调用 `/api/auth/login`，保存 JWT，成功跳转到 workspace。
+- [x] 在 `frontend/Modules/signup/events.js` 实现注册提交：调用 `/api/auth/signup`，保存 JWT，成功跳转到 workspace。
+- [x] 在 `frontend/Modules/accountSetting/events.js` 实现：
   - 改密码（调用 `/api/auth/change_password`）
   - 改用户名（调用 `/api/auth/change_username`）
   - 所有提示信息在前端显示
@@ -31,5 +31,5 @@
 - [ ] 提交命名必须为：`Phase5D - Auth Pages Events`（当前 stage 编号）。
 - [ ] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] email 无修改入口
-- [ ] 所有文件 < 200 行
+- [x] email 无修改入口
+- [x] 所有文件 < 200 行
