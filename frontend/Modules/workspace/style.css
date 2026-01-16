@@ -89,3 +89,96 @@ p {
     margin-top: 1em;
     margin-bottom: 1em;
 }
+
+
+/* ==============================================================================
+ * CSS Components (Phase5B Stage2B)
+ * ============================================================================== */
+
+/* Card styling (e.g., for work list items or LLM panel) */
+.card {
+    background-color: var(--color-background-light);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Button styling */
+button {
+    cursor: pointer;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 5px;
+    font-size: var(--font-size-base);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+}
+
+.button-primary:hover {
+    background-color: darken(var(--color-primary), 10%); /* Example, requires SASS/LESS or JS for darken */
+    box-shadow: var(--shadow-sm);
+}
+
+.button-primary:active {
+    background-color: darken(var(--color-primary), 20%);
+}
+
+.button-secondary {
+    background-color: var(--color-border);
+    color: var(--color-text-dark);
+}
+
+.button-secondary:hover {
+    background-color: darken(var(--color-border), 10%);
+    box-shadow: var(--shadow-sm);
+}
+
+.button-secondary:active {
+    background-color: darken(var(--color-border), 20%);
+}
+
+/* Work history list item styling */
+.work-list-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.work-list-item:hover {
+    background-color: #f0f0f0; /* Light gray hover */
+}
+
+.work-list-item:active {
+    background-color: #e0e0e0; /* Slightly darker active */
+}
+
+/* LLM Floating Panel styling */
+div[data-role="llm-panel"] {
+    background-color: var(--color-background-light);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-lg);
+    width: 300px; /* Example fixed width */
+    min-height: 200px;
+    resize: both; /* Allows user to resize the panel */
+    overflow: auto; /* Adds scrollbars if content overflows */
+    cursor: grab; /* Indicates draggable nature */
+}
+
+/* Textarea styling for editor */
+textarea[data-role="editor"] {
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    padding: var(--spacing-md);
+    font-family: var(--font-family-sans-serif);
+    font-size: var(--font-size-base);
+    resize: vertical; /* Allow vertical resizing */
+}

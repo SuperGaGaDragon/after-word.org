@@ -9,10 +9,10 @@
 - 必须严格遵守本文件指令。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/style.css` 实现卡片阴影与圆角。
-- [ ] 实现主按钮与次按钮样式（含 hover/active）。
-- [ ] 实现历史列表项 hover/active 样式。
-- [ ] 实现 LLM 浮窗样式与可拖动提示区。
+- [x] 在 `frontend/Modules/workspace/style.css` 实现卡片阴影与圆角。
+- [x] 实现主按钮与次按钮样式（含 hover/active）。
+- [x] 实现历史列表项 hover/active 样式。
+- [x] 实现 LLM 浮窗样式与可拖动提示区。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/style.css`
