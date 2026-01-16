@@ -22,8 +22,8 @@
 - 登录提示弹窗：`data-role="login-modal"`
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/layout.html` 按上述规范补齐 DOM 标识。
-- [ ] 确保所有交互节点可被 events.js 选择到。
+- [x] 在 `frontend/Modules/workspace/layout.html` 按上述规范补齐 DOM 标识。
+- [x] 确保所有交互节点可被 events.js 选择到。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/layout.html`

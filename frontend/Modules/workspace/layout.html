@@ -1,0 +1,66 @@
+<!--
+  This file defines the structural layout for the workspace page.
+  It adheres to the 1/6 + 5/6 split layout as described in Phase5A.md,
+  and includes DOM placeholders with specified data-attributes and IDs
+  as per Phase5A Stage1A - Workspace DOM Map.
+
+  This HTML is purely for structure and DOM placement; it does not
+  contain events, styles, or business logic.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfterWord Workspace</title>
+</head>
+<body>
+    <div id="workspace-container" style="display: flex; height: 100vh;">
+        <!-- Left Panel: 1/6 width -->
+        <div id="left-panel" style="flex: 1; min-width: 16.66%;">
+            <!-- Block 1: New Work Button -->
+            <button data-action="new-work" id="new-work-button">New Work</button>
+
+            <!-- Block 2: Work History List Container -->
+            <div data-role="work-list" id="work-history-list">
+                <!-- Work list items will be dynamically inserted here -->
+                <!-- Example item (for structure, will be repeated): -->
+                <div data-work-id="example-work-id-1" class="work-list-item">Work Title 1</div>
+                <div data-work-id="example-work-id-2" class="work-list-item">Work Title 2</div>
+            </div>
+        </div>
+
+        <!-- Right Panel: 5/6 width -->
+        <div id="right-panel" style="flex: 5; min-width: 83.33%; position: relative;">
+            <!-- Block 3: Editor Board -->
+            <textarea data-role="editor" id="editor-textarea" placeholder="Start writing..."></textarea>
+
+            <!-- Block 4: LLM Comment Entry & Floating Panel (initially hidden) -->
+            <button data-action="llm-comment" id="llm-comment-button">LLM Comment</button>
+            <div data-role="llm-panel" id="llm-floating-panel" style="display: none; position: absolute; top: 0; right: 0;">
+                <!-- LLM comments will appear here -->
+                LLM Panel Content
+            </div>
+
+            <!-- Block 6: Top-right User Area -->
+            <div data-role="user-entry" id="user-area" style="position: absolute; top: 10px; right: 10px;">
+                <!-- User name if logged in, or Login/Signup buttons -->
+                <span id="username-display">Username</span>
+                <button id="login-button">Login</button>
+                <button id="signup-button">Signup</button>
+            </div>
+
+            <!-- Block 7: About Us (could be a footer or another discrete area) -->
+            <div id="about-us-area">
+                About Us
+            </div>
+        </div>
+    </div>
+
+    <!-- Block 7: Login Prompt Modal (initially hidden, mentioned in DOM Spec) -->
+    <div data-role="login-modal" id="login-prompt-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        Login Modal Content
+    </div>
+
+</body>
+</html>
