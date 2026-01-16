@@ -12,17 +12,17 @@
 - POST `/api/llm/comment`
 
 ## 任务清单
-- [ ] 在 `backend/api/llm/router.py` 实现 comment 路由。
-- [ ] 仅传 `text_snapshot` 给 LLM Gateway，绝不传 JWT。
-- [ ] comment 成功后写入 Conversation 组件。
+- [x] 在 `backend/api/llm/router.py` 实现 comment 路由。
+- [x] 仅传 `text_snapshot` 给 LLM Gateway，绝不传 JWT。
+- [x] comment 成功后写入 Conversation 组件。
 
 ## 交付物（必须有）
 - `backend/api/llm/router.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase4E Stage4B - LLM API Routes`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase4E Stage4B - LLM API Routes`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] LLM Gateway 只接收文本
-- [ ] 文件 < 200 行
+- [x] LLM Gateway 只接收文本
+- [x] 文件 < 200 行
