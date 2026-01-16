@@ -14,18 +14,36 @@ def _build_prompt(text_snapshot: str) -> str:
     return f"{instruction}\n\n{text_snapshot}"
 
 
+def _llm_endpoint() -> str:
+    base = LLM_BASE_URL.rstrip("/")
+    if base.endswith("/v1/chat/completions"):
+        return base
+    if base.endswith("/v1"):
+        return f"{base}/chat/completions"
+    return f"{base}/v1/chat/completions"
+
+
 def generate_comment(text_snapshot: str) -> str:
     prompt = _build_prompt(text_snapshot)
-    payload: Dict[str, Any] = {"prompt": prompt}
+    payload: Dict[str, Any] = {
+        "model": "local-model",
+        "messages": [{"role": "user", "content": prompt}],
+    }
     try:
         response = httpx.post(
-            LLM_BASE_URL, json=payload, timeout=LLM_TIMEOUT_SECONDS
+            _llm_endpoint(), json=payload, timeout=LLM_TIMEOUT_SECONDS
         )
         response.raise_for_status()
         data = response.json()
     except Exception as exc:  # noqa: BLE001
         raise BusinessError("llm_failed", "llm request failed") from exc
+    choices = data.get("choices") or []
+    if choices:
+        message = choices[0].get("message") or {}
+        content = message.get("content") or choices[0].get("text")
+        if isinstance(content, str) and content:
+            return content
     comment = data.get("comment") or data.get("text")
-    if not isinstance(comment, str) or not comment:
-        raise BusinessError("llm_failed", "invalid llm response")
-    return comment
+    if isinstance(comment, str) and comment:
+        return comment
+    raise BusinessError("llm_failed", "invalid llm response")
