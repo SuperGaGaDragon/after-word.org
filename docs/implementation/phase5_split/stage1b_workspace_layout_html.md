@@ -12,10 +12,10 @@
 - `layout.html` 的意义：这是 workspace 的纯结构文件（对应 project_intro.md 中的 modules/workspace/layout/layout.html 描述），只负责页面布局与 DOM 占位，不包含事件或样式。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/layout.html` 搭建左右布局。
-- [ ] 左侧包含：New Work 按钮 + Work 历史列表。
-- [ ] 右侧包含：编辑板 + LLM comment 入口 + LLM 浮窗容器。
-- [ ] 顶部包含用户入口与 About us。
+- [x] 在 `frontend/Modules/workspace/layout.html` 搭建左右布局。
+- [x] 左侧包含：New Work 按钮 + Work 历史列表。
+- [x] 右侧包含：编辑板 + LLM comment 入口 + LLM 浮窗容器。
+- [x] 顶部包含用户入口与 About us。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/layout.html`
