@@ -1,184 +1,172 @@
-/*
- * This file defines CSS variables (tokens) for consistent styling across the application
- * and establishes basic typography rules.
- *
- * It ensures a unified look and feel as per Phase5B Stage2A - CSS Tokens.
- */
-
-/* ==============================================================================
- * CSS Variables (Tokens)
- * ============================================================================== */
-
 :root {
-    /* Colors */
-    --color-primary: #3498db; /* Blue */
-    --color-secondary: #2ecc71; /* Green */
-    --color-accent: #e74c3c; /* Red */
-    --color-text-dark: #2c3e50; /* Dark Blue Gray */
-    --color-text-light: #ecf0f1; /* Light Gray */
-    --color-background-light: #ffffff; /* White */
-    --color-background-dark: #34495e; /* Dark Blue Gray */
-    --color-border: #bdc3c7; /* Silver */
-    --color-shadow: rgba(0, 0, 0, 0.1); /* Light shadow */
-
-    /* Fonts */
-    --font-family-sans-serif: 'Inter', sans-serif;
-    --font-size-base: 16px;
-    --font-size-sm: 0.875rem; /* ~14px */
-    --font-size-md: 1rem;    /* ~16px */
-    --font-size-lg: 1.125rem; /* ~18px */
-    --font-size-xl: 1.25rem;  /* ~20px */
-    --font-size-h1: 2.5rem;   /* ~40px */
-    --font-size-h2: 2rem;     /* ~32px */
-    --font-size-h3: 1.75rem;  /* ~28px */
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-bold: 700;
-    --line-height-base: 1.5;
-
-    /* Spacing */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-
-    /* Shadow */
-    --shadow-sm: 0 1px 3px var(--color-shadow);
-    --shadow-md: 0 4px 6px var(--color-shadow);
-    --shadow-lg: 0 10px 15px var(--color-shadow);
+  --color-bg: #ffffff;
+  --color-surface: #f4f5f7;
+  --color-border: #ebecf0;
+  --color-text: #172b4d;
+  --color-text-muted: #6b778c;
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 2px 6px rgba(9, 30, 66, 0.08);
+  --shadow-md: 0 8px 20px rgba(9, 30, 66, 0.12);
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --font-family: "Inter", sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
 }
 
-/* ==============================================================================
- * Global Typography
- * ============================================================================== */
-
-/* Universal box-sizing for easier layout calculations */
-*, *::before, *::after {
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-family-sans-serif);
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-base);
-    color: var(--color-text-dark);
-    background-color: var(--color-background-light);
-    margin: 0; /* Remove default body margin */
-    padding: 0; /* Remove default body padding */
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-family-sans-serif);
-    color: var(--color-text-dark);
-    line-height: 1.2;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-    font-weight: var(--font-weight-bold);
+#workspace-container {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f8fa 100%);
 }
 
-h1 {
-    font-size: var(--font-size-h1);
+#left-panel,
+#right-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-sm);
 }
 
-h2 {
-    font-size: var(--font-size-h2);
+#left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-p {
-    margin-top: 1em;
-    margin-bottom: 1em;
+#right-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-
-/* ==============================================================================
- * CSS Components (Phase5B Stage2B)
- * ============================================================================== */
-
-/* Card styling (e.g., for work list items or LLM panel) */
-.card {
-    background-color: var(--color-background-light);
-    border-radius: 8px;
-    box-shadow: var(--shadow-md);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-}
-
-/* Button styling */
 button {
-    cursor: pointer;
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: 5px;
-    font-size: var(--font-size-base);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  background: var(--color-accent);
+  color: #ffffff;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.button-primary {
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
+button:hover {
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-sm);
 }
 
-.button-primary:hover {
-    background-color: darken(var(--color-primary), 10%); /* Example, requires SASS/LESS or JS for darken */
-    box-shadow: var(--shadow-sm);
+button:disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
 }
 
-.button-primary:active {
-    background-color: darken(var(--color-primary), 20%);
+#work-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
-.button-secondary {
-    background-color: var(--color-border);
-    color: var(--color-text-dark);
-}
-
-.button-secondary:hover {
-    background-color: darken(var(--color-border), 10%);
-    box-shadow: var(--shadow-sm);
-}
-
-.button-secondary:active {
-    background-color: darken(var(--color-border), 20%);
-}
-
-/* Work history list item styling */
 .work-list-item {
-    padding: var(--spacing-sm) var(--spacing-md);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .work-list-item:hover {
-    background-color: #f0f0f0; /* Light gray hover */
+  border-color: var(--color-accent);
 }
 
-.work-list-item:active {
-    background-color: #e0e0e0; /* Slightly darker active */
-}
-
-/* LLM Floating Panel styling */
-div[data-role="llm-panel"] {
-    background-color: var(--color-background-light);
-    border-radius: 8px;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--color-border);
-    padding: var(--spacing-lg);
-    width: 300px; /* Example fixed width */
-    min-height: 200px;
-    resize: both; /* Allows user to resize the panel */
-    overflow: auto; /* Adds scrollbars if content overflows */
-    cursor: grab; /* Indicates draggable nature */
-}
-
-/* Textarea styling for editor */
 textarea[data-role="editor"] {
-    width: 100%;
-    height: 100%;
-    border: 1px solid var(--color-border);
-    border-radius: 5px;
-    padding: var(--spacing-md);
-    font-family: var(--font-family-sans-serif);
-    font-size: var(--font-size-base);
-    resize: vertical; /* Allow vertical resizing */
+  flex: 1;
+  width: 100%;
+  min-height: 360px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  background: #ffffff;
+  resize: vertical;
+}
+
+#llm-floating-panel {
+  display: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+#user-area {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+  color: var(--color-text-muted);
+}
+
+#about-us-area {
+  margin-top: auto;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+#login-prompt-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 30, 66, 0.4);
+  color: var(--color-text);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+}
+
+#login-prompt-modal .modal-body {
+  background: #ffffff;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  max-width: 360px;
+  text-align: center;
+}
+
+@media (max-width: 960px) {
+  #workspace-container {
+    grid-template-columns: 1fr;
+  }
+
+  #user-area {
+    position: static;
+    justify-content: flex-end;
+  }
 }
