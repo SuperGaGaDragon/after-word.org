@@ -9,16 +9,16 @@
 - 必须严格遵守本文件指令。
 
 ## 任务清单
-- [ ] 在 `backend/api/auth/deps.py` 实现 require_user。
-- [ ] 仅调用 `modules/auth/jwt.decode_token`。
+- [x] 在 `backend/api/auth/deps.py` 实现 require_user。
+- [x] 仅调用 `modules/auth/jwt.decode_token`。
 
 ## 交付物（必须有）
 - `backend/api/auth/deps.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase4A Stage0B - API Auth Deps Implementation`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase4A Stage0B - API Auth Deps Implementation`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 未写业务逻辑
-- [ ] 文件 < 200 行
+- [x] 未写业务逻辑
+- [x] 文件 < 200 行
