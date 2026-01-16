@@ -17,9 +17,9 @@
 - `frontend/Modules/workspace/events.js`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase5C Stage3B - Workspace Work Flow`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase5C Stage3B - Workspace Work Flow`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
 - [x] 自动保存不影响未登录用户
 - [x] 文件 < 200 行
