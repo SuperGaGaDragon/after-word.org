@@ -15,9 +15,9 @@
 - LLM：comment API 成功与失败场景（mock LLM）。
 
 ## 任务清单
-- [ ] 在 `backend/tests/` 新建测试文件，按模块拆分（auth/work/conversation/llm）。
-- [ ] 使用 mock 隔离外部服务（Redis/LLM/Postgres）或使用测试容器。
-- [ ] 每个测试文件 < 200 行，如超过必须拆分。
+- [x] 在 `backend/tests/` 新建测试文件，按模块拆分（auth/work/conversation/llm）。
+- [x] 使用 mock 隔离外部服务（Redis/LLM/Postgres）或使用测试容器。
+- [x] 每个测试文件 < 200 行，如超过必须拆分。
 
 ## 交付物（必须有）
 - `backend/tests/test_auth.py`
@@ -26,9 +26,9 @@
 - `backend/tests/test_llm.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase6 Stage1 - Backend Tests`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase6 Stage1 - Backend Tests`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 覆盖所有关键规则
-- [ ] 所有文件 < 200 行
+- [x] 覆盖所有关键规则
+- [x] 所有文件 < 200 行
