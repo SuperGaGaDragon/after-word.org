@@ -26,7 +26,7 @@ def _llm_endpoint() -> str:
 def generate_comment(text_snapshot: str) -> str:
     prompt = _build_prompt(text_snapshot)
     payload: Dict[str, Any] = {
-        "model": "local-model",
+        "model": "gpt-oss-20b",
         "messages": [{"role": "user", "content": prompt}],
     }
     try:
