@@ -9,14 +9,14 @@
 - 必须严格遵守本文件指令。
 
 ## 任务清单
-- [ ] 在 `backend/api/conversation/schemas.py` 定义 list comments 的 schema。
+- [x] 在 `backend/api/conversation/schemas.py` 定义 list comments 的 schema。
 
 ## 交付物（必须有）
 - `backend/api/conversation/schemas.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase4D Stage3A - Conversation API Schemas`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase4D Stage3A - Conversation API Schemas`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 文件 < 200 行
+- [x] 文件 < 200 行
