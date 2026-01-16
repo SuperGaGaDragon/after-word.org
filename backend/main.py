@@ -1,10 +1,12 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.auth.router import router as auth_router
 from backend.api.conversation.router import router as conversation_router
 from backend.api.errors import BusinessError, business_error_handler
 from backend.api.llm.router import router as llm_router
 from backend.api.work.router import router as work_router
+from backend.config import FRONTEND_BASE_URL
 from backend.modules.auth import change, check, login, signup
 from backend.modules.conversation import manager as conversation_manager
 from backend.modules.work import manager as work_manager
@@ -35,6 +37,13 @@ def register_storage_executors() -> None:
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_BASE_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 register_routers(app)
 register_error_handlers(app)
 register_storage_executors()

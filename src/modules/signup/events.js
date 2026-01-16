@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-const API_BASE = '/api';
+const API_BASE = 'https://api.after-word.org/api';
 const JWT_TOKEN_KEY = 'jwt_token';
 const USERNAME_KEY = 'username';
 const SIGNUP_FORM_SELECTOR = 'form[data-form="signup"]';
