@@ -1,0 +1,30 @@
+<!--
+  This file defines the structural layout for the login page.
+  It includes input fields for email/username and password, and a submit button.
+  As per Phase5D Stage4A - Auth Layouts HTML, it contains only structure.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div id="login-container">
+        <h1>Login</h1>
+        <form data-form="login">
+            <div class="form-group">
+                <label for="login-email-username">Email or Username:</label>
+                <input type="text" id="login-email-username" name="email_username" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required>
+            </div>
+            <button type="submit" data-action="submit-login">Login</button>
+        </form>
+        <p>Don't have an account? <a href="#" data-action="show-signup">Sign Up</a></p>
+    </div>
+</body>
+</html>
