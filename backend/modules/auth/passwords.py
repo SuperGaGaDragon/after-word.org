@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import hmac
 import os
 from typing import Tuple
 
@@ -23,4 +24,4 @@ def verify_password(password: str, stored_hash: str) -> bool:
     """Verify a password against a stored hash."""
     salt, digest = _split_hash(stored_hash)
     candidate = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, _ITERATIONS)
-    return hashlib.compare_digest(candidate, digest)
+    return hmac.compare_digest(candidate, digest)
