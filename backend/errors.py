@@ -16,6 +16,13 @@ ERROR_STATUS_MAP: Dict[str, int] = {
     "not_found": 404,
     "conflict": 409,
     "locked": 409,
+    "llm_failed": 502,
+    "invalid_credentials": 401,
+    "email_taken": 409,
+    "username_taken": 409,
+    "password_mismatch": 422,
+    "password_same": 422,
+    "username_same": 409,
     "validation_failed": 422,
 }
 

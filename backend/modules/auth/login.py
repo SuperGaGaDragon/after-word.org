@@ -1,8 +1,8 @@
 from typing import Any, Callable, Dict, Optional
 
-from errors import BusinessError
-from modules.auth.passwords import verify_password
-from storage.user import repo as user_repo
+from backend.errors import BusinessError
+from backend.modules.auth.passwords import verify_password
+from backend.storage.user import repo as user_repo
 
 Query = Dict[str, Any]
 QueryExecutor = Callable[[Query], Optional[Dict[str, Any]]]
@@ -32,10 +32,10 @@ def _find_user(email_or_username: str) -> Optional[Dict[str, Any]]:
 def login(email_or_username: str, password: str) -> Dict[str, Any]:
     user = _find_user(email_or_username)
     if user is None:
-        raise BusinessError("INVALID_CREDENTIALS", "invalid credentials")
+        raise BusinessError("invalid_credentials", "invalid credentials")
     stored_hash = user.get("password_hash", "")
     if not verify_password(password, stored_hash):
-        raise BusinessError("INVALID_CREDENTIALS", "invalid credentials")
+        raise BusinessError("invalid_credentials", "invalid credentials")
     return {
         "id": user.get("id"),
         "email": user.get("email"),

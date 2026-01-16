@@ -2,8 +2,8 @@ from typing import Any, Dict
 
 import httpx
 
-from config import LLM_BASE_URL, LLM_TIMEOUT_SECONDS
-from errors import BusinessError
+from backend.config import LLM_BASE_URL, LLM_TIMEOUT_SECONDS
+from backend.errors import BusinessError
 
 
 def _build_prompt(text_snapshot: str) -> str:
@@ -24,8 +24,8 @@ def generate_comment(text_snapshot: str) -> str:
         response.raise_for_status()
         data = response.json()
     except Exception as exc:  # noqa: BLE001
-        raise BusinessError("LLM_FAILED", "llm request failed") from exc
+        raise BusinessError("llm_failed", "llm request failed") from exc
     comment = data.get("comment") or data.get("text")
     if not isinstance(comment, str) or not comment:
-        raise BusinessError("LLM_FAILED", "invalid llm response")
+        raise BusinessError("llm_failed", "invalid llm response")
     return comment

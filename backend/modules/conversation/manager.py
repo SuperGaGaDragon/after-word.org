@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, Optional
 
-from modules.work import manager as work_manager
-from storage.conversation import repo as conversation_repo
+from backend.modules.work import manager as work_manager
+from backend.storage.conversation import repo as conversation_repo
 
 Query = Dict[str, Any]
 QueryExecutor = Callable[[Query], Any]

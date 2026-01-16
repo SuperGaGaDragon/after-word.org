@@ -2,7 +2,7 @@ from typing import Optional
 
 import redis
 
-from config import REDIS_URL, WORK_LOCK_EXPIRE_SECONDS
+from backend.config import REDIS_URL, WORK_LOCK_EXPIRE_SECONDS
 
 _CLIENT: Optional[redis.Redis] = None
 

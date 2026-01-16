@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict, Optional
 
-from storage.user import repo as user_repo
+from backend.storage.user import repo as user_repo
 
 Query = Dict[str, Any]
 QueryExecutor = Callable[[Query], Optional[Dict[str, Any]]]

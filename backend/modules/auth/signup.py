@@ -1,9 +1,9 @@
 from typing import Any, Callable, Dict, Optional
 
-from errors import BusinessError
-from modules.auth import check
-from modules.auth.passwords import hash_password
-from storage.user import repo as user_repo
+from backend.errors import BusinessError
+from backend.modules.auth import check
+from backend.modules.auth.passwords import hash_password
+from backend.storage.user import repo as user_repo
 
 Query = Dict[str, Any]
 QueryExecutor = Callable[[Query], Optional[Dict[str, Any]]]
@@ -25,9 +25,9 @@ def _run(query: Query) -> Optional[Dict[str, Any]]:
 
 def signup(email: str, username: str, password: str) -> Dict[str, Any]:
     if check.is_email_taken(email):
-        raise BusinessError("EMAIL_TAKEN", "email already exists")
+        raise BusinessError("email_taken", "email already exists")
     if check.is_username_taken(username):
-        raise BusinessError("USERNAME_TAKEN", "username already exists")
+        raise BusinessError("username_taken", "username already exists")
     password_hash = hash_password(password)
     query = user_repo.create_user(email, username, password_hash)
     result = _run(query) or {}

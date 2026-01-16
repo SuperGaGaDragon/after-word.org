@@ -1,9 +1,9 @@
 from typing import Any, Callable, Dict, Optional
 
-from errors import BusinessError
-from modules.session_lock import lock as session_lock
-from storage.work import repo as work_repo
-from storage.work_retrieve import repo as work_retrieve_repo
+from backend.errors import BusinessError
+from backend.modules.session_lock import lock as session_lock
+from backend.storage.work import repo as work_repo
+from backend.storage.work_retrieve import repo as work_retrieve_repo
 
 Query = Dict[str, Any]
 QueryExecutor = Callable[[Query], Any]
