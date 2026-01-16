@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from errors import BusinessError, business_error_to_status
+from backend.errors import BusinessError, business_error_to_status
 
 
 async def business_error_handler(

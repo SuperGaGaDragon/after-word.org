@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 
-from api.auth.router import router as auth_router
-from api.conversation.router import router as conversation_router
-from api.errors import BusinessError, business_error_handler
-from api.llm.router import router as llm_router
-from api.work.router import router as work_router
+from backend.api.auth.router import router as auth_router
+from backend.api.conversation.router import router as conversation_router
+from backend.api.errors import BusinessError, business_error_handler
+from backend.api.llm.router import router as llm_router
+from backend.api.work.router import router as work_router
 
 
 def register_routers(app: FastAPI) -> None:

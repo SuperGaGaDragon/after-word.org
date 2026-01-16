@@ -15,17 +15,17 @@
 - POST `/api/auth/change_username`
 
 ## 任务清单
-- [ ] 在 `backend/api/auth/router.py` 实现上述路由。
-- [ ] 调用 `modules/auth/*` 完成业务。
-- [ ] 成功 signup/login 返回 JWT。
+- [x] 在 `backend/api/auth/router.py` 实现上述路由。
+- [x] 调用 `modules/auth/*` 完成业务。
+- [x] 成功 signup/login 返回 JWT。
 
 ## 交付物（必须有）
 - `backend/api/auth/router.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase4B Stage1B - Auth API Routes`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase4B Stage1B - Auth API Routes`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] API 未写业务逻辑
-- [ ] 文件 < 200 行
+- [x] API 未写业务逻辑
+- [x] 文件 < 200 行
