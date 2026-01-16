@@ -15,6 +15,10 @@ const EDITOR_TEXTAREA_SELECTOR = 'textarea[data-role="editor"]'; // Selector for
 const NEW_WORK_BUTTON_SELECTOR = 'button[data-action="new-work"]'; // Selector for new work button
 const LLM_COMMENT_BUTTON_SELECTOR = 'button[data-action="llm-comment"]'; // Selector for LLM button
 const USER_ENTRY_SELECTOR = 'div[data-role="user-entry"]'; // Selector for user entry area
+const WORK_LIST_CONTAINER_SELECTOR = 'div[data-role="work-list"]'; // Selector for work list container
+
+// Global state for the current work
+let currentWorkId = null; // Stores the ID of the currently active work
 
 /**
  * Checks if a user is currently authenticated by looking for a JWT in localStorage.
@@ -83,7 +87,100 @@ function disableEditorForUnauthenticated() {
 }
 
 /**
- * Sets up event listeners for authentication-gated actions.
+ * Updates the work history list display.
+ * In a real app, this would fetch data from a backend.
+ */
+function updateWorkList() {
+    const workListContainer = document.querySelector(WORK_LIST_CONTAINER_SELECTOR);
+    if (!workListContainer) return;
+
+    // Simulate fetching work items
+    const workItems = isAuthenticated() ? [
+        { id: 'work-1', title: 'My First Work', content: 'Content of first work.' },
+        { id: 'work-2', title: 'A Creative Piece', content: 'Content of creative piece.' },
+        { id: 'work-3', title: 'Project Proposal', content: 'Content of project proposal.' },
+    ] : []; // Empty if not authenticated
+
+    workListContainer.innerHTML = ''; // Clear existing list
+
+    if (workItems.length === 0) {
+        workListContainer.innerHTML = '<p>No works yet. Create one!</p>';
+        return;
+    }
+
+    workItems.forEach(work => {
+        const workItemDiv = document.createElement('div');
+        workItemDiv.classList.add('work-list-item');
+        workItemDiv.setAttribute('data-work-id', work.id);
+        workItemDiv.textContent = work.title;
+        workItemDiv.addEventListener('click', () => loadWork(work.id, work.content));
+        workListContainer.appendChild(workItemDiv);
+    });
+}
+
+/**
+ * Creates a new work.
+ * @returns {string} The ID of the newly created work.
+ */
+function createNewWork() {
+    if (!isAuthenticated()) {
+        showLoginModal();
+        return;
+    }
+    // In a real app, this would make an API call to create work and get an ID.
+    const newId = `work-${Date.now()}`;
+    const editor = document.querySelector(EDITOR_TEXTAREA_SELECTOR);
+    if (editor) editor.value = ''; // Clear editor
+    currentWorkId = newId;
+    hideLLMPanel(); // Hide LLM panel as per instructions
+    console.log(`New work created: ${newId}`);
+    updateWorkList(); // Refresh the list
+    return newId;
+}
+
+/**
+ * Loads a specific work into the editor.
+ * @param {string} workId The ID of the work to load.
+ * @param {string} content The content of the work to load. (Simulated)
+ */
+function loadWork(workId, content) {
+    if (!isAuthenticated()) {
+        showLoginModal();
+        return;
+    }
+    const editor = document.querySelector(EDITOR_TEXTAREA_SELECTOR);
+    if (editor) {
+        editor.value = content;
+    }
+    currentWorkId = workId;
+    hideLLMPanel(); // Hide LLM panel as per instructions
+    console.log(`Work ${workId} loaded.`);
+}
+
+/**
+ * Hides the LLM comment panel.
+ */
+function hideLLMPanel() {
+    const llmPanel = document.querySelector('div[data-role="llm-panel"]');
+    if (llmPanel) {
+        llmPanel.style.display = 'none';
+    }
+}
+
+/**
+ * Saves the current work.
+ */
+function saveCurrentWork() {
+    if (isAuthenticated() && currentWorkId) {
+        const editor = document.querySelector(EDITOR_TEXTAREA_SELECTOR);
+        const content = editor ? editor.value : '';
+        // In a real app, this would make an API call to save work content.
+        console.log(`Auto-saving work ${currentWorkId}: "${content.substring(0, 50)}..."`);
+    }
+}
+
+/**
+ * Sets up event listeners for authentication-gated actions and workflow.
  */
 document.addEventListener('DOMContentLoaded', () => {
     // Hide login modal on page load
@@ -92,11 +189,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Apply editor state based on authentication
     disableEditorForUnauthenticated();
 
+    // Initial load of work list
+    updateWorkList();
+
     // Guard 'New Work' button
     const newWorkButton = document.querySelector(NEW_WORK_BUTTON_SELECTOR);
     if (newWorkButton) {
         newWorkButton.addEventListener('click', (event) => {
-            guardAuth(event, 'create new work');
+            if (guardAuth(event, 'create new work')) {
+                createNewWork();
+            }
         });
     }
 
@@ -105,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (llmCommentButton) {
         llmCommentButton.addEventListener('click', (event) => {
             guardAuth(event, 'use LLM comment feature');
+            // Logic to show LLM panel would go here after auth check
         });
     }
 
@@ -130,6 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // You'd typically have an explicit close button inside the modal
         // For example: document.getElementById('login-modal-close-button').addEventListener('click', hideLoginModal);
     }
+
+    // Auto-save every 30 seconds if authenticated and work is active
+    setInterval(saveCurrentWork, 30 * 1000);
 });
 
 // Expose some functions for testing or console interaction if needed
@@ -139,4 +245,12 @@ window.AuthEvents = {
     hideLoginModal,
     guardAuth,
     disableEditorForUnauthenticated
+};
+
+window.WorkFlowEvents = {
+    createNewWork,
+    loadWork,
+    saveCurrentWork,
+    updateWorkList,
+    getCurrentWorkId: () => currentWorkId
 };
