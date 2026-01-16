@@ -15,20 +15,20 @@
 - work 创建与切换均在当前页面完成，不整页跳转。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/events.js` 实现登录态检测（基于 localStorage JWT）。
-- [ ] New Work 点击：未登录弹窗；已登录则调用 `/api/work/create`，清空编辑板并隐藏 LLM 区。
-- [ ] 历史列表点击：未登录弹窗；已登录则调用 `/api/work/{id}` 加载内容并隐藏 LLM 区。
-- [ ] 编辑板输入：若未登录，阻止输入；若登录，每 30 秒自动调用 `/api/work/{id}/update`。
-- [ ] LLM Comment：点击按钮后显示可拖动浮窗，调用 `/api/llm/comment`，并展示历史评论（GET `/api/conversation/{id}`）。
+- [x] 在 `frontend/Modules/workspace/events.js` 实现登录态检测（基于 localStorage JWT）。
+- [x] New Work 点击：未登录弹窗；已登录则调用 `/api/work/create`，清空编辑板并隐藏 LLM 区。
+- [x] 历史列表点击：未登录弹窗；已登录则调用 `/api/work/{id}` 加载内容并隐藏 LLM 区。
+- [x] 编辑板输入：若未登录，阻止输入；若登录，每 30 秒自动调用 `/api/work/{id}/update`。
+- [x] LLM Comment：点击按钮后显示可拖动浮窗，调用 `/api/llm/comment`，并展示历史评论（GET `/api/conversation/{id}`）。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/events.js`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase5C - Workspace Events`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase5C - Workspace Events`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 未登录永远无法触发写操作
-- [ ] LLM 仅在点击时触发
-- [ ] 所有文件 < 200 行
+- [x] 未登录永远无法触发写操作
+- [x] LLM 仅在点击时触发
+- [x] 所有文件 < 200 行
