@@ -2,12 +2,19 @@ from typing import Any, Dict, List, Optional
 
 import pytest
 
-from errors import BusinessError
-from modules.auth import check
-from modules.auth.change import change_password, change_username, set_query_executor
-from modules.auth.login import login, set_query_executor as set_login_executor
-from modules.auth.passwords import hash_password
-from modules.auth.signup import set_query_executor as set_signup_executor, signup
+from backend.errors import BusinessError
+from backend.modules.auth import check
+from backend.modules.auth.change import (
+    change_password,
+    change_username,
+    set_query_executor,
+)
+from backend.modules.auth.login import login, set_query_executor as set_login_executor
+from backend.modules.auth.passwords import hash_password
+from backend.modules.auth.signup import (
+    set_query_executor as set_signup_executor,
+    signup,
+)
 
 
 def _make_executor(
@@ -67,7 +74,7 @@ def test_signup_conflicts() -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         signup("used@example.com", "new_user", "pw123")
-    assert excinfo.value.code == "EMAIL_TAKEN"
+    assert excinfo.value.code == "email_taken"
 
     executor, _ = _make_executor(taken_usernames={"taken"})
     check.set_query_executor(executor)
@@ -75,7 +82,7 @@ def test_signup_conflicts() -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         signup("free@example.com", "taken", "pw123")
-    assert excinfo.value.code == "USERNAME_TAKEN"
+    assert excinfo.value.code == "username_taken"
 
 
 def test_login_by_email_and_username() -> None:
@@ -99,7 +106,7 @@ def test_login_by_email_and_username() -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         login("user@example.com", "wrong")
-    assert excinfo.value.code == "INVALID_CREDENTIALS"
+    assert excinfo.value.code == "invalid_credentials"
 
 
 def test_change_password_success_and_failures() -> None:
@@ -116,11 +123,11 @@ def test_change_password_success_and_failures() -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         change_password("user@example.com", "oldpass", "newpass", "mismatch")
-    assert excinfo.value.code == "PASSWORD_MISMATCH"
+    assert excinfo.value.code == "password_mismatch"
 
     with pytest.raises(BusinessError) as excinfo:
         change_password("user@example.com", "oldpass", "oldpass", "oldpass")
-    assert excinfo.value.code == "PASSWORD_SAME"
+    assert excinfo.value.code == "password_same"
 
     assert change_password("user@example.com", "oldpass", "newpass", "newpass") is True
     update_queries = [
@@ -147,11 +154,11 @@ def test_change_username_success_and_failures() -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         change_username("user@example.com", "current")
-    assert excinfo.value.code == "USERNAME_SAME"
+    assert excinfo.value.code == "username_same"
 
     with pytest.raises(BusinessError) as excinfo:
         change_username("user@example.com", "taken")
-    assert excinfo.value.code == "USERNAME_TAKEN"
+    assert excinfo.value.code == "username_taken"
 
     assert change_username("user@example.com", "fresh") is True
     update_queries = [

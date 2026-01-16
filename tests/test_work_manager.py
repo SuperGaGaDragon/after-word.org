@@ -2,8 +2,8 @@ from typing import Any, Dict, Optional
 
 import pytest
 
-from errors import BusinessError
-from modules.work import manager as work_manager
+from backend.errors import BusinessError
+from backend.modules.work import manager as work_manager
 
 
 def _make_executor(work_row: Optional[Dict[str, Any]] = None):
@@ -41,7 +41,7 @@ def test_get_work_not_found() -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         work_manager.get_work("missing", "a@example.com")
-    assert excinfo.value.code == "NOT_FOUND"
+    assert excinfo.value.code == "not_found"
 
 
 def test_update_work_locking_and_refresh(monkeypatch) -> None:
@@ -64,7 +64,7 @@ def test_update_work_locking_and_refresh(monkeypatch) -> None:
 
     with pytest.raises(BusinessError) as excinfo:
         work_manager.update_work("work-2", "b@example.com", "body", "device-1")
-    assert excinfo.value.code == "LOCKED"
+    assert excinfo.value.code == "locked"
 
     def acquire_success(work_id, device_id):
         lock_calls["acquire"].append((work_id, device_id))

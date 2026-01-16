@@ -5,6 +5,10 @@ from backend.api.conversation.router import router as conversation_router
 from backend.api.errors import BusinessError, business_error_handler
 from backend.api.llm.router import router as llm_router
 from backend.api.work.router import router as work_router
+from backend.modules.auth import change, check, login, signup
+from backend.modules.conversation import manager as conversation_manager
+from backend.modules.work import manager as work_manager
+from backend.storage.db import execute_query
 
 
 def register_routers(app: FastAPI) -> None:
@@ -20,6 +24,17 @@ def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(BusinessError, business_error_handler)
 
 
+def register_storage_executors() -> None:
+    """Wire storage executors into business modules."""
+    check.set_query_executor(execute_query)
+    signup.set_query_executor(execute_query)
+    login.set_query_executor(execute_query)
+    change.set_query_executor(execute_query)
+    work_manager.set_query_executor(execute_query)
+    conversation_manager.set_query_executor(execute_query)
+
+
 app = FastAPI()
 register_routers(app)
 register_error_handlers(app)
+register_storage_executors()

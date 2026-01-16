@@ -20,10 +20,10 @@ class FakeResponse:
 
 
 def _reload_client_module():
-    for name in ("config", "modules.llm_gateway.client"):
+    for name in ("backend.config", "backend.modules.llm_gateway.client"):
         if name in sys.modules:
             del sys.modules[name]
-    return importlib.import_module("modules.llm_gateway.client")
+    return importlib.import_module("backend.modules.llm_gateway.client")
 
 
 def test_generate_comment_success(monkeypatch) -> None:
@@ -54,7 +54,7 @@ def test_generate_comment_invalid_response(monkeypatch) -> None:
 
     with pytest.raises(client.BusinessError) as excinfo:
         client.generate_comment("sample text")
-    assert excinfo.value.code == "LLM_FAILED"
+    assert excinfo.value.code == "llm_failed"
 
 
 def test_generate_comment_http_error(monkeypatch) -> None:
@@ -67,4 +67,4 @@ def test_generate_comment_http_error(monkeypatch) -> None:
 
     with pytest.raises(client.BusinessError) as excinfo:
         client.generate_comment("sample text")
-    assert excinfo.value.code == "LLM_FAILED"
+    assert excinfo.value.code == "llm_failed"

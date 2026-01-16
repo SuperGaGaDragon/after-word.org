@@ -32,10 +32,10 @@ class FakeRedis:
 
 
 def _reload_lock_module():
-    for name in ("config", "modules.session_lock.lock"):
+    for name in ("backend.config", "backend.modules.session_lock.lock"):
         if name in sys.modules:
             del sys.modules[name]
-    return importlib.import_module("modules.session_lock.lock")
+    return importlib.import_module("backend.modules.session_lock.lock")
 
 
 def test_lock_acquire_and_refresh() -> None:

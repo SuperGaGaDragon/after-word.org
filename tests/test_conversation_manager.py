@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from modules.conversation import manager as conversation_manager
+from backend.modules.conversation import manager as conversation_manager
 
 
 def _make_executor():

@@ -1,8 +1,8 @@
-from storage.conversation import repo as conversation_repo
-from storage.user import repo as user_repo
-from storage.user_retrieve import repo as user_retrieve_repo
-from storage.work import repo as work_repo
-from storage.work_retrieve import repo as work_retrieve_repo
+from backend.storage.conversation import repo as conversation_repo
+from backend.storage.user import repo as user_repo
+from backend.storage.user_retrieve import repo as user_retrieve_repo
+from backend.storage.work import repo as work_repo
+from backend.storage.work_retrieve import repo as work_retrieve_repo
 
 
 def test_user_repo_queries() -> None:

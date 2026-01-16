@@ -204,9 +204,20 @@ async function handleLLMComment() {
   });
   const history = await loadConversation(currentWorkId);
   if (panel) {
-    const list = history.map((item) => `<li>${item.content}</li>`).join('');
-    panel.innerHTML = `<strong>Latest Comment:</strong><p>${response.comment}</p>` +
-      `<strong>History:</strong><ul>${list}</ul>`;
+    panel.innerHTML = '';
+    const latestTitle = document.createElement('strong');
+    latestTitle.textContent = 'Latest Comment:';
+    const latestBody = document.createElement('p');
+    latestBody.textContent = response && response.comment ? response.comment : '';
+    const historyTitle = document.createElement('strong');
+    historyTitle.textContent = 'History:';
+    const list = document.createElement('ul');
+    history.forEach((item) => {
+      const entry = document.createElement('li');
+      entry.textContent = item && item.content ? item.content : '';
+      list.appendChild(entry);
+    });
+    panel.append(latestTitle, latestBody, historyTitle, list);
   }
 }
 

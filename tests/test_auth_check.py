@@ -1,4 +1,4 @@
-from modules.auth import check
+from backend.modules.auth import check
 
 
 def test_check_email_and_username() -> None:
