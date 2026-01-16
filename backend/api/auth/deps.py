@@ -1,13 +1,12 @@
-from fastapi import Header
+from fastapi import Security
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from backend.errors import BusinessError
 from backend.modules.auth.jwt import decode_token
 
+_bearer = HTTPBearer()
 
-def require_user(authorization: str = Header(...)) -> dict:
-    if not authorization.startswith("Bearer "):
-        raise BusinessError("unauthorized", "missing bearer token")
-    token = authorization.split(" ", 1)[1].strip()
-    if not token:
-        raise BusinessError("unauthorized", "missing bearer token")
-    return decode_token(token)
+
+def require_user(
+    credentials: HTTPAuthorizationCredentials = Security(_bearer),
+) -> dict:
+    return decode_token(credentials.credentials)

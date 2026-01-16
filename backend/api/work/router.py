@@ -11,6 +11,7 @@ from backend.api.work.schemas import (
     WorkListResponse,
     WorkUpdateRequest,
 )
+from backend.errors import BusinessError
 from backend.modules.work.manager import (
     create_work,
     get_work,
@@ -24,7 +25,11 @@ router = APIRouter(prefix="/api/work", tags=["work"])
 def _format_updated_at(value: object) -> str:
     if isinstance(value, datetime):
         return value.isoformat()
-    return str(value)
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    raise BusinessError("validation_failed", "invalid updated_at")
 
 
 @router.post("/create", response_model=WorkCreateResponse)
