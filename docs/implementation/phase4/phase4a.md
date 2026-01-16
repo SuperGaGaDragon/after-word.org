@@ -27,19 +27,19 @@
   - body: {new_username}
 
 ## 任务清单
-- [ ] 在 `backend/api/auth/router.py` 添加上述路由。
-- [ ] 请求/响应使用 Pydantic schema，放在 `backend/api/auth/schemas.py`。
-- [ ] 调用 `modules/auth/*` 完成业务，API 只做参数校验与异常映射。
-- [ ] 成功登录/注册时返回 JWT（调用 `modules/auth/jwt.py`）。
+- [x] 在 `backend/api/auth/router.py` 添加上述路由。
+- [x] 请求/响应使用 Pydantic schema，放在 `backend/api/auth/schemas.py`。
+- [x] 调用 `modules/auth/*` 完成业务，API 只做参数校验与异常映射。
+- [x] 成功登录/注册时返回 JWT（调用 `modules/auth/jwt.py`）。
 
 ## 交付物（必须有）
 - `backend/api/auth/router.py`
 - `backend/api/auth/schemas.py`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase4A - API Auth Routes`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase4A - API Auth Routes`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] API 未写业务逻辑
-- [ ] 所有文件 < 200 行
+- [x] API 未写业务逻辑
+- [x] 所有文件 < 200 行
