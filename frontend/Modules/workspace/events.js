@@ -16,6 +16,7 @@ const NEW_WORK_BUTTON_SELECTOR = 'button[data-action="new-work"]'; // Selector f
 const LLM_COMMENT_BUTTON_SELECTOR = 'button[data-action="llm-comment"]'; // Selector for LLM button
 const USER_ENTRY_SELECTOR = 'div[data-role="user-entry"]'; // Selector for user entry area
 const WORK_LIST_CONTAINER_SELECTOR = 'div[data-role="work-list"]'; // Selector for work list container
+const LLM_PANEL_SELECTOR = 'div[data-role="llm-panel"]'; // Selector for LLM floating panel
 
 // Global state for the current work
 let currentWorkId = null; // Stores the ID of the currently active work
@@ -158,26 +159,60 @@ function loadWork(workId, content) {
 }
 
 /**
+ * Shows the LLM comment panel.
+ */
+function showLLMPanel() {
+    const llmPanel = document.querySelector(LLM_PANEL_SELECTOR);
+    if (llmPanel) {
+        llmPanel.style.display = 'block'; // Make LLM panel visible
+    }
+}
+
+/**
  * Hides the LLM comment panel.
  */
 function hideLLMPanel() {
-    const llmPanel = document.querySelector('div[data-role="llm-panel"]');
+    const llmPanel = document.querySelector(LLM_PANEL_SELECTOR);
     if (llmPanel) {
         llmPanel.style.display = 'none';
     }
 }
 
 /**
- * Saves the current work.
+ * Calls the simulated LLM comment API.
+ * @param {string} text The text to send to the LLM.
+ * @returns {Promise<string>} A promise that resolves with the LLM's comment.
  */
-function saveCurrentWork() {
-    if (isAuthenticated() && currentWorkId) {
-        const editor = document.querySelector(EDITOR_TEXTAREA_SELECTOR);
-        const content = editor ? editor.value : '';
-        // In a real app, this would make an API call to save work content.
-        console.log(`Auto-saving work ${currentWorkId}: "${content.substring(0, 50)}..."`);
-    }
+async function fetchLLMComment(text) {
+    // In a real app, this would be an actual API call.
+    console.log(`Calling /api/llm/comment with text: "${text.substring(0, 50)}..."`);
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(`LLM comment on "${text.substring(0, 20)}...": This is a very insightful piece. Consider expanding point X.`);
+        }, 1000); // Simulate network delay
+    });
 }
+
+/**
+ * Calls the simulated conversation history API.
+ * @param {string} workId The ID of the work to fetch history for.
+ * @returns {Promise<Array<string>>} A promise that resolves with an array of conversation messages.
+ */
+async function fetchConversationHistory(workId) {
+    // In a real app, this would be an actual API call.
+    console.log(`Calling /api/conversation/${workId} to get history.`);
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve([
+                `User: What do you think about this?`,
+                `LLM: It has potential.`,
+                `User: Should I change the tone?`,
+                `LLM: A more assertive tone might be beneficial.`
+            ]);
+        }, 800); // Simulate network delay
+    });
+}
+
 
 /**
  * Sets up event listeners for authentication-gated actions and workflow.
@@ -185,6 +220,7 @@ function saveCurrentWork() {
 document.addEventListener('DOMContentLoaded', () => {
     // Hide login modal on page load
     hideLoginModal();
+    hideLLMPanel(); // Hide LLM panel on page load too
 
     // Apply editor state based on authentication
     disableEditorForUnauthenticated();
@@ -204,12 +240,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Guard 'LLM Comment' button
     const llmCommentButton = document.querySelector(LLM_COMMENT_BUTTON_SELECTOR);
-    if (llmCommentButton) {
-        llmCommentButton.addEventListener('click', (event) => {
-            guardAuth(event, 'use LLM comment feature');
-            // Logic to show LLM panel would go here after auth check
+    const llmPanel = document.querySelector(LLM_PANEL_SELECTOR);
+    if (llmCommentButton && llmPanel) {
+        llmCommentButton.addEventListener('click', async (event) => {
+            if (guardAuth(event, 'use LLM comment feature') && currentWorkId) {
+                showLLMPanel(); // Show panel first
+                llmPanel.innerHTML = 'Loading LLM comment and history...';
+                const editor = document.querySelector(EDITOR_TEXTAREA_SELECTOR);
+                const currentText = editor ? editor.value : '';
+
+                try {
+                    const llmComment = await fetchLLMComment(currentText);
+                    const conversationHistory = await fetchConversationHistory(currentWorkId);
+
+                    llmPanel.innerHTML = `<h3>LLM Comment:</h3><p>${llmComment}</p>` +
+                                         `<h3>Conversation History:</h3><ul>` +
+                                         conversationHistory.map(msg => `<li>${msg}</li>`).join('') +
+                                         `</ul>`;
+                } catch (error) {
+                    llmPanel.innerHTML = `<p style="color: red;">Error fetching LLM data: ${error.message}</p>`;
+                    console.error("Error fetching LLM data:", error);
+                }
+            } else if (!currentWorkId) {
+                // If authenticated but no current work, prompt user to create/load one.
+                showLLMPanel(); // Maybe show a message in the panel
+                llmPanel.innerHTML = '<p>Please create or load a work to use the LLM feature.</p>';
+            }
         });
     }
+
 
     // Guard editor input - if user tries to type
     const editor = document.querySelector(EDITOR_TEXTAREA_SELECTOR);
@@ -253,4 +312,11 @@ window.WorkFlowEvents = {
     saveCurrentWork,
     updateWorkList,
     getCurrentWorkId: () => currentWorkId
+};
+
+window.LLMEvents = {
+    showLLMPanel,
+    hideLLMPanel,
+    fetchLLMComment,
+    fetchConversationHistory
 };

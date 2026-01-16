@@ -13,11 +13,11 @@
 - LLM 只读当前文本，不修改编辑板。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/events.js` 实现 LLM Comment 点击：
+- [x] 在 `frontend/Modules/workspace/events.js` 实现 LLM Comment 点击：
   - 显示浮窗
   - 调用 `/api/llm/comment`
   - 调用 `/api/conversation/{work_id}` 展示历史
-- [ ] 评论区只读展示
+- [x] 评论区只读展示
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/events.js`
@@ -27,5 +27,5 @@
 - [ ] 提交命名必须为：`Phase5C Stage3C - Workspace LLM Events`（当前 stage 编号）。
 - [ ] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] LLM 仅在点击触发
-- [ ] 文件 < 200 行
+- [x] LLM 仅在点击触发
+- [x] 文件 < 200 行
