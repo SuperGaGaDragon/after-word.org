@@ -22,11 +22,11 @@
 - 前端三端分离：HTML 仅放结构，事件在 events.js，样式在 style.css。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/` 创建 `layout.html`，按左右 1/6 + 5/6 切分布局，包含方块1/2/3/4/6/7的 DOM 占位。
-- [ ] 在 `frontend/Modules/login/` 创建 `layout.html`，包含邮箱/用户名、密码输入与提交按钮。
-- [ ] 在 `frontend/Modules/signup/` 创建 `layout.html`，包含邮箱、用户名、密码输入与提交按钮。
-- [ ] 在 `frontend/Modules/accountSetting/` 创建 `layout.html`，包含改用户名、改密码表单区域。
-- [ ] 所有 layout 仅包含结构与 data- 属性，不绑定事件。
+- [x] 在 `frontend/Modules/workspace/` 创建 `layout.html`，按左右 1/6 + 5/6 切分布局，包含方块1/2/3/4/6/7的 DOM 占位。
+- [x] 在 `frontend/Modules/login/` 创建 `layout.html`，包含邮箱/用户名、密码输入与提交按钮。
+- [x] 在 `frontend/Modules/signup/` 创建 `layout.html`，包含邮箱、用户名、密码输入与提交按钮。
+- [x] 在 `frontend/Modules/accountSetting/` 创建 `layout.html`，包含改用户名、改密码表单区域。
+- [x] 所有 layout 仅包含结构与 data- 属性，不绑定事件。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/layout.html`
@@ -35,9 +35,9 @@
 - `frontend/Modules/accountSetting/layout.html`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase5A - Frontend Layout (HTML)`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase5A - Frontend Layout (HTML)`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 所有文件 < 200 行
-- [ ] HTML 只包含结构，不包含业务逻辑
+- [x] 所有文件 < 200 行
+- [x] HTML 只包含结构，不包含业务逻辑
