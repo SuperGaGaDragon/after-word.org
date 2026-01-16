@@ -15,18 +15,18 @@
 - 卡片阴影与圆角必须按设计文档。
 
 ## 任务清单
-- [ ] 在 `frontend/Modules/workspace/style.css` 定义全局 CSS 变量（颜色、字体、间距、阴影）。
-- [ ] 实现卡片样式（历史列表/编辑区/评论浮窗），按钮主次样式，hover/active 过渡。
-- [ ] 设定 workspace 布局为 25% / 75% 的 grid，gap 24px。
-- [ ] 统一输入框/按钮的圆角与字体。
+- [x] 在 `frontend/Modules/workspace/style.css` 定义全局 CSS 变量（颜色、字体、间距、阴影）。
+- [x] 实现卡片样式（历史列表/编辑区/评论浮窗），按钮主次样式，hover/active 过渡。
+- [x] 设定 workspace 布局为 25% / 75% 的 grid，gap 24px。
+- [x] 统一输入框/按钮的圆角与字体。
 
 ## 交付物（必须有）
 - `frontend/Modules/workspace/style.css`
 
 ## 提交要求
-- [ ] 完成本 stage 后执行 `git add` 涉及文件。
-- [ ] 提交命名必须为：`Phase5B - Frontend Styles (CSS)`（当前 stage 编号）。
-- [ ] 确认无任何环境变量文件被提交。
+- [x] 完成本 stage 后执行 `git add` 涉及文件。
+- [x] 提交命名必须为：`Phase5B - Frontend Styles (CSS)`（当前 stage 编号）。
+- [x] 确认无任何环境变量文件被提交。
 ## 自检
-- [ ] 所有文件 < 200 行
-- [ ] 样式与设计规范一致
+- [x] 所有文件 < 200 行
+- [x] 样式与设计规范一致
