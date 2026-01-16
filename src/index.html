@@ -1,11 +1,6 @@
 <!--
-  This file defines the structural layout for the workspace page.
-  It adheres to the 1/6 + 5/6 split layout as described in Phase5A.md,
-  and includes DOM placeholders with specified data-attributes and IDs
-  as per Phase5A Stage1A - Workspace DOM Map.
-
-  This HTML is purely for structure and DOM placement; it does not
-  contain events, styles, or business logic.
+  Workspace entry point for Vite build.
+  Pure structure; styles and events are loaded from modules/workspace.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AfterWord Workspace</title>
+    <link rel="stylesheet" href="/modules/workspace/style.css">
 </head>
 <body>
     <div id="workspace-container">
@@ -46,18 +42,18 @@
                 <button id="signup-button">Signup</button>
             </div>
 
-            <!-- Block 7: About Us (could be a footer or another discrete area) -->
-            <div id="about-us-area">
-            </div>
+            <!-- Block 7: About Us -->
+            <div id="about-us-area"></div>
         </div>
     </div>
 
-    <!-- Block 7: Login Prompt Modal (initially hidden, mentioned in DOM Spec) -->
+    <!-- Login Prompt Modal -->
     <div data-role="login-modal" id="login-prompt-modal">
         <div class="modal-body">
             <p data-role="login-message"></p>
         </div>
     </div>
 
+    <script type="module" src="/modules/workspace/events.js"></script>
 </body>
 </html>
