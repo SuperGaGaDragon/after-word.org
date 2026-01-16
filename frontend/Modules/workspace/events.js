@@ -111,7 +111,7 @@ async function updateWorkList() {
   if (!container) return;
   container.innerHTML = '';
   if (!isAuthenticated()) {
-    showLoginModal();
+    container.textContent = 'Please log in to view your works.';
     return;
   }
   try {
@@ -234,6 +234,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const newWorkButton = document.querySelector(SELECTORS.newWork);
   if (newWorkButton) {
     newWorkButton.addEventListener('click', () => createNewWork());
+  }
+
+  const loginButton = document.querySelector(SELECTORS.loginButton);
+  if (loginButton) {
+    loginButton.addEventListener('click', () => {
+      window.location.href = '/login';
+    });
+  }
+
+  const signupButton = document.querySelector(SELECTORS.signupButton);
+  if (signupButton) {
+    signupButton.addEventListener('click', () => {
+      window.location.href = '/signup';
+    });
   }
 
   const llmButton = document.querySelector(SELECTORS.llmComment);
