@@ -13,13 +13,14 @@
 <body>
     <div id="account-settings-container">
         <h1>Account Settings</h1>
+        <div data-role="status-message" id="account-status-message"></div>
 
         <section id="change-username-section">
             <h2>Change Username</h2>
             <form data-form="change-username">
                 <div class="form-group">
                     <label for="current-username">Current Username:</label>
-                    <input type="text" id="current-username" name="current_username" value="[Current Username]" readonly>
+                    <input type="text" id="current-username" name="current_username" readonly>
                 </div>
                 <div class="form-group">
                     <label for="new-username">New Username:</label>
