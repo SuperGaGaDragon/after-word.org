@@ -9,7 +9,7 @@
 - FastAPI
 - PostgreSQL
 - OpenAI API (gpt-3.5-turbo)
-- Railway 部署
+- Railway 部署。github推送后，railway会自动部署。
 
 ## 3. 开发顺序
 
@@ -197,70 +197,9 @@
 
 ---
 
-## 4. 时间估算
-
-- Phase 1: 0.5天
-- Phase 2-4: 2天
-- Phase 5-7: 2天
-- Phase 8-9: 1天
-- Phase 10: 1天
-- Phase 11: 0.5天
-
-**总计：7天**
-
----
-
-## 5. 依赖关系
-
-```
-Phase 1 (数据库)
-  ↓
-Phase 2 (Storage层)
-  ↓
-Phase 3 (Business层)
-  ↓
-Phase 4 (API层)
-
-Phase 5 (Prompts)
-  ↓
-Phase 6 (Analyzer)
-  ↓
-Phase 7 (集成)
-  ↓
-Phase 8 (建议追踪)
-  ↓
-Phase 9 (Schema)
-  ↓
-Phase 10 (测试)
-  ↓
-Phase 11 (部署)
-```
-
----
-
-## 6. 风险点
-
-1. **OpenAI API成本**
-   - 控制：每用户每小时最多10次分析
-
-2. **Prompt质量**
-   - 控制：充分测试，迭代优化
-
-3. **版本清理逻辑**
-   - 控制：仔细测试draft删除，防止误删
-
-4. **并发编辑**
-   - 控制：利用现有session_lock机制
-
----
-
-## 7. 完成标准
+## 4. 完成标准
 
 - [ ] 用户能提交work多次
 - [ ] AI给出迭代式反馈
-- [ ] 第二次+提交包含改进评价
-- [ ] Reflection comment在适当时机出现
 - [ ] 版本历史完整可查
 - [ ] 能回滚到任意版本
-- [ ] 数据不会丢失
-- [ ] API响应时间正常（AI评价<30秒）
