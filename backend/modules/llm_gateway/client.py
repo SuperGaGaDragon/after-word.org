@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 import httpx
 
-from backend.config import LLM_BASE_URL, LLM_TIMEOUT_SECONDS
+from backend.config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, LLM_TIMEOUT_SECONDS
 from backend.errors import BusinessError
 
 
@@ -26,12 +26,19 @@ def _llm_endpoint() -> str:
 def generate_comment(text_snapshot: str) -> str:
     prompt = _build_prompt(text_snapshot)
     payload: Dict[str, Any] = {
-        "model": "gpt-oss-20b",
+        "model": LLM_MODEL,
         "messages": [{"role": "user", "content": prompt}],
+    }
+    headers = {
+        "Authorization": f"Bearer {LLM_API_KEY}",
+        "Content-Type": "application/json",
     }
     try:
         response = httpx.post(
-            _llm_endpoint(), json=payload, timeout=LLM_TIMEOUT_SECONDS
+            _llm_endpoint(),
+            json=payload,
+            headers=headers,
+            timeout=LLM_TIMEOUT_SECONDS
         )
         response.raise_for_status()
         data = response.json()
