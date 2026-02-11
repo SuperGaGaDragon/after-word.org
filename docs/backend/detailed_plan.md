@@ -1,224 +1,266 @@
-# After Word - Detailed Implementation Plan
+# Backend Implementation Plan
 
-## Phase 1: Database Setup
+## 1. 目标
+- 实现版本系统（提交版本 + 草稿版本）
+- 实现AI迭代评价（FAO + Sentence + Reflection）
+- 实现建议追踪（用户标记 + LLM检测）
 
-### 1.1 Modify Existing Tables
-- Add `current_version INT DEFAULT 0` to `works` table
+## 2. 技术栈
+- FastAPI
+- PostgreSQL
+- OpenAI API (gpt-3.5-turbo)
+- Railway 部署
 
-### 1.2 Create work_versions Table
-- Store all versions (submitted + draft)
-- Include `is_submitted`, `parent_submission_version`, `user_reflection` fields
+## 3. 开发顺序
 
-### 1.3 Create text_analyses Table
-- Store AI evaluation results
-- Include `fao_comment`, `sentence_comments JSONB`, `reflection_comment`
+### Phase 1: 数据库
 
-### 1.4 Create suggestion_resolutions Table
-- Track user actions on suggestions
-- Store resolution status and LLM feedback
+**任务：**
+1. 修改 `works` 表，加 `current_version` 字段
+2. 创建 `work_versions` 表（版本历史）
+3. 创建 `text_analyses` 表（AI评价结果）
+4. 创建 `suggestion_resolutions` 表（建议处理记录）
 
-### Acceptance:
-1. All tables created successfully
-2. Can insert/query test data
-3. Indexes created on key fields
-
----
-
-## Phase 2: Version System Backend
-
-### 2.1 Create Storage Layer
-- `backend/storage/work_version/repo.py` - CRUD operations
-- `backend/storage/text_analysis/repo.py` - CRUD operations
-- `backend/storage/suggestion_resolution/repo.py` - CRUD operations
-
-### 2.2 Create Version Manager
-- `backend/modules/work/version_manager.py` - version business logic
-
-### 2.3 Modify update_work Logic
-- Support `auto_save` parameter
-- Create draft versions when `auto_save=false`
-
-### 2.4 Implement submit_work Function
-- Create submitted version
-- Delete previous draft versions
-- Trigger AI evaluation
-
-### 2.5 Add Version Query APIs
-- `GET /api/work/{id}/versions` - list versions
-- `GET /api/work/{id}/versions/{num}` - get version detail
-
-### 2.6 Add Revert API
-- `POST /api/work/{id}/revert` - revert to target version
-
-### 2.7 Add Delete API
-- `DELETE /api/work/{id}` - delete work
-
-### Acceptance:
-1. Can create draft versions via update
-2. Can submit and auto-delete drafts
-3. Can query version history
-4. Can revert to any version
-5. Can delete work
+**验收：**
+- [ ] 所有表创建成功
+- [ ] 能插入测试数据
+- [ ] 索引已创建
 
 ---
 
-## Phase 3: AI Evaluation System
+### Phase 2: 版本系统 - Storage层
 
-### 3.1 Create Prompts Module
-- `backend/modules/llm_gateway/prompts.py` - store prompt templates
-- First-time submission prompt
-- Iterative submission prompt
+**任务：**
+1. 创建 `backend/storage/work_version/repo.py`
+2. 创建 `backend/storage/text_analysis/repo.py`
+3. 创建 `backend/storage/suggestion_resolution/repo.py`
+4. 实现基础CRUD操作
 
-### 3.2 Create Analyzer Module
-- `backend/modules/llm_gateway/analyzer.py` - generate evaluations
-- Parse OpenAI responses
-- Handle first vs iterative cases
-
-### 3.3 Integrate with Submit
-- Call analyzer in `submit_work`
-- Save analysis to `text_analyses` table
-- Return analysis in submit response
-
-### 3.4 Update Schemas
-- Add submit request/response schemas
-- Add analysis response schemas
-
-### Acceptance:
-1. First submission generates FAO + sentence comments
-2. Second+ submission includes improvement feedback
-3. Reflection comment generated when applicable
-4. Analysis saved to database
+**验收：**
+- [ ] 能创建版本记录
+- [ ] 能查询版本列表
+- [ ] 能查询单个版本
+- [ ] 能删除draft版本
 
 ---
 
-## Phase 4: Suggestion Tracking
+### Phase 3: 版本系统 - Business层
 
-### 4.1 Parse Suggestion Actions
-- Extract user actions from submit request
-- Validate all suggestions processed (2nd+ submission)
+**任务：**
+1. 创建 `backend/modules/work/version_manager.py`
+2. 修改 `backend/modules/work/manager.py` 的 `update_work`
+3. 实现 `submit_work` 函数
+4. 实现版本回滚逻辑
 
-### 4.2 Save Resolutions
-- Store user actions and notes
-- Link to analysis and versions
-
-### 4.3 Pass History to LLM
-- Include previous analysis in prompt
-- Include user actions and notes
-- Generate improvement feedback
-
-### Acceptance:
-1. User actions saved correctly
-2. LLM receives full history
-3. Improvement feedback accurate
-4. Rejected suggestions not re-flagged
+**验收：**
+- [ ] update支持auto_save参数
+- [ ] auto_save=true时不创建版本
+- [ ] auto_save=false时创建draft版本
+- [ ] submit时创建submitted版本
+- [ ] submit时清理旧draft版本
+- [ ] 能回滚到任意版本
 
 ---
 
-## Phase 5: API Layer
+### Phase 4: 版本系统 - API层
 
-### 5.1 Update Work Router
-- Add `auto_save` to update endpoint
-- Add submit endpoint
-- Add delete endpoint
+**任务：**
+1. 修改 `backend/api/work/router.py`
+   - update端点加auto_save参数
+   - 新增submit端点
+   - 新增delete端点
+2. 新增版本相关端点：
+   - `GET /api/work/{id}/versions`
+   - `GET /api/work/{id}/versions/{num}`
+   - `POST /api/work/{id}/revert`
+3. 更新 `backend/api/work/schemas.py`
 
-### 5.2 Create Version Router
-- Add versions list endpoint
-- Add version detail endpoint
-- Add revert endpoint
-
-### 5.3 Update Schemas
-- Create SubmitRequest schema
-- Create VersionListResponse schema
-- Create AnalysisResponse schema
-
-### Acceptance:
-1. All endpoints documented in API docs
-2. Request/response validation working
-3. Error handling proper
-4. Authentication checked
+**验收：**
+- [ ] 能通过API创建draft版本
+- [ ] 能通过API提交
+- [ ] 能通过API查询版本列表
+- [ ] 能通过API查看版本详情
+- [ ] 能通过API回滚
+- [ ] 能通过API删除work
 
 ---
 
-## Phase 6: Testing
+### Phase 5: AI评价 - Prompts
 
-### 6.1 Unit Tests
-- Test version creation logic
-- Test draft deletion logic
-- Test AI prompt building
+**任务：**
+1. 创建 `backend/modules/llm_gateway/prompts.py`
+2. 实现第一次提交的prompt模板
+3. 实现迭代提交的prompt模板
+4. 加入严厉招生官persona
 
-### 6.2 Integration Tests
-- Test full submit flow
-- Test version history flow
-- Test revert flow
-
-### 6.3 End-to-End Test
-- Create work
-- Submit 3 times with different actions
-- Verify all data correct
-
-### Acceptance:
-1. All unit tests pass
-2. Integration tests pass
-3. Can complete full workflow without errors
+**验收：**
+- [ ] 第一次prompt包含：分析要求
+- [ ] 迭代prompt包含：历史对比要求
+- [ ] Prompt是英文
+- [ ] Persona正确
 
 ---
 
-## Phase 7: Deployment
+### Phase 6: AI评价 - Analyzer
 
-### 7.1 Run Migrations
-- Execute DDL on production DB
-- Verify tables created
+**任务：**
+1. 创建 `backend/modules/llm_gateway/analyzer.py`
+2. 实现 `generate_analysis` 函数
+3. 处理第一次 vs 迭代两种情况
+4. 解析OpenAI响应
 
-### 7.2 Deploy Backend
-- Push to Railway
-- Verify deployment success
-
-### 7.3 Smoke Test
-- Test signup/login
-- Test create/submit work
-- Test AI evaluation
-
-### Acceptance:
-1. Production DB updated
-2. Backend deployed
-3. All critical paths working
+**验收：**
+- [ ] 第一次生成FAO + sentence comments
+- [ ] 迭代生成带improvement_feedback
+- [ ] 有reflection时生成reflection_comment
+- [ ] 解析JSON正确
+- [ ] 错误处理完善
 
 ---
 
-## Implementation Order
+### Phase 7: AI评价 - 集成
 
-**Week 1**: Phase 1, 2 (Database + Version System)
-**Week 2**: Phase 3, 4 (AI Evaluation + Tracking)
-**Week 3**: Phase 5, 6, 7 (API + Testing + Deploy)
+**任务：**
+1. 在 `submit_work` 中调用analyzer
+2. 保存分析结果到数据库
+3. 返回analysis_id
 
-**Total: 3 weeks**
+**验收：**
+- [ ] Submit自动触发AI评价
+- [ ] 分析结果正确保存
+- [ ] 关联到正确的版本号
+- [ ] API返回analysis数据
 
 ---
 
-## Critical Path
+### Phase 8: 建议追踪
+
+**任务：**
+1. 解析submit请求中的suggestion_actions
+2. 验证第二次+提交时所有建议已处理
+3. 保存用户处理记录
+4. 在迭代prompt中包含历史
+
+**验收：**
+- [ ] 能解析用户标记
+- [ ] 未处理完会拒绝提交（第二次+）
+- [ ] 用户标记正确保存
+- [ ] LLM收到完整历史
+- [ ] improvement_feedback准确
+
+---
+
+### Phase 9: Schema更新
+
+**任务：**
+1. 创建SubmitRequest schema
+2. 创建AnalysisResponse schema
+3. 创建VersionListResponse schema
+4. 更新所有相关schema
+
+**验收：**
+- [ ] 请求验证正确
+- [ ] 响应格式正确
+- [ ] 文档字符串清晰
+
+---
+
+### Phase 10: 测试
+
+**任务：**
+1. 写单元测试（版本逻辑）
+2. 写集成测试（完整流程）
+3. 手动测试完整用户流程
+
+**验收：**
+- [ ] 单元测试全过
+- [ ] 集成测试全过
+- [ ] 能完成：创建→提交→改进→再提交→查看版本
+
+---
+
+### Phase 11: 部署
+
+**任务：**
+1. 在Railway执行DDL
+2. 推送代码
+3. 验证部署
+4. Smoke test
+
+**验收：**
+- [ ] 数据库表已创建
+- [ ] 代码部署成功
+- [ ] 能注册/登录
+- [ ] 能创建work
+- [ ] 能提交并收到AI评价
+- [ ] 能查看版本历史
+
+---
+
+## 4. 时间估算
+
+- Phase 1: 0.5天
+- Phase 2-4: 2天
+- Phase 5-7: 2天
+- Phase 8-9: 1天
+- Phase 10: 1天
+- Phase 11: 0.5天
+
+**总计：7天**
+
+---
+
+## 5. 依赖关系
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7
+Phase 1 (数据库)
+  ↓
+Phase 2 (Storage层)
+  ↓
+Phase 3 (Business层)
+  ↓
+Phase 4 (API层)
+
+Phase 5 (Prompts)
+  ↓
+Phase 6 (Analyzer)
+  ↓
+Phase 7 (集成)
+  ↓
+Phase 8 (建议追踪)
+  ↓
+Phase 9 (Schema)
+  ↓
+Phase 10 (测试)
+  ↓
+Phase 11 (部署)
 ```
 
-Cannot start Phase N+1 without completing Phase N.
+---
+
+## 6. 风险点
+
+1. **OpenAI API成本**
+   - 控制：每用户每小时最多10次分析
+
+2. **Prompt质量**
+   - 控制：充分测试，迭代优化
+
+3. **版本清理逻辑**
+   - 控制：仔细测试draft删除，防止误删
+
+4. **并发编辑**
+   - 控制：利用现有session_lock机制
 
 ---
 
-## Rollback Plan
+## 7. 完成标准
 
-If deployment fails:
-1. Revert Railway deployment
-2. Keep DB changes (backwards compatible)
-3. Fix issues locally
-4. Redeploy
-
----
-
-## Success Metrics
-
-- [ ] User can submit work multiple times
-- [ ] AI provides iterative feedback
-- [ ] Version history fully functional
-- [ ] No data loss on failures
-- [ ] API response time < 3s (AI evaluation < 30s)
+- [ ] 用户能提交work多次
+- [ ] AI给出迭代式反馈
+- [ ] 第二次+提交包含改进评价
+- [ ] Reflection comment在适当时机出现
+- [ ] 版本历史完整可查
+- [ ] 能回滚到任意版本
+- [ ] 数据不会丢失
+- [ ] API响应时间正常（AI评价<30秒）
