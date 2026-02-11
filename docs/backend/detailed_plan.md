@@ -53,12 +53,12 @@
 4. 实现版本回滚逻辑
 
 **验收：**
-- [ ] update支持auto_save参数
-- [ ] auto_save=true时不创建版本
-- [ ] auto_save=false时创建draft版本
-- [ ] submit时创建submitted版本
-- [ ] submit时清理旧draft版本
-- [ ] 能回滚到任意版本
+- [x] update支持auto_save参数
+- [x] auto_save=true时不创建版本
+- [x] auto_save=false时创建draft版本
+- [x] submit时创建submitted版本
+- [x] submit时清理旧draft版本
+- [x] 能回滚到任意版本
 
 ---
 

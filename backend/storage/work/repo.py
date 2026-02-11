@@ -26,3 +26,9 @@ def update_work_content(work_id: str, user_email: str, content: str) -> Dict[str
         "user_email": user_email,
     }
     return _build_query(sql, params)
+
+
+def delete_work(work_id: str, user_email: str) -> Dict[str, Any]:
+    """Delete a work (cascade deletes related records)."""
+    sql = "DELETE FROM works WHERE id = %(work_id)s AND user_email = %(user_email)s"
+    return _build_query(sql, {"work_id": work_id, "user_email": user_email})
