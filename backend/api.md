@@ -1,7 +1,8 @@
 # After Word API 文档
+这是主要文档
 
 **API Base URL:** `https://api.after-word.org`
-**LLM Base URL:** `https://llm.after-word.org/v1`
+**LLM Base URL:** `https://api.openai.com/v1` (OpenAI API)
 
 ## API 端点概览
 
@@ -311,9 +312,9 @@ Authorization: Bearer <token>
 
 ## LLM 服务
 
-系统使用独立的 LLM 服务来生成 AI 评论。该服务采用 OpenAI 兼容的 API 格式。
+系统使用 OpenAI API 来生成 AI 评论。
 
-**LLM Base URL:** `https://llm.after-word.org/v1`
+**LLM Base URL:** `https://api.openai.com/v1`
 
 ### Chat Completions
 
