@@ -76,12 +76,12 @@
 3. 更新 `backend/api/work/schemas.py`
 
 **验收：**
-- [ ] 能通过API创建draft版本
-- [ ] 能通过API提交
-- [ ] 能通过API查询版本列表
-- [ ] 能通过API查看版本详情
-- [ ] 能通过API回滚
-- [ ] 能通过API删除work
+- [x] 能通过API创建draft版本
+- [x] 能通过API提交
+- [x] 能通过API查询版本列表
+- [x] 能通过API查看版本详情
+- [x] 能通过API回滚
+- [x] 能通过API删除work
 
 ---
 
