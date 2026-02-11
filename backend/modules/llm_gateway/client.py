@@ -33,17 +33,30 @@ def generate_comment(text_snapshot: str) -> str:
         "Authorization": f"Bearer {LLM_API_KEY}",
         "Content-Type": "application/json",
     }
+
+    endpoint = _llm_endpoint()
+    print(f"[LLM] Calling endpoint: {endpoint}")
+    print(f"[LLM] Model: {LLM_MODEL}")
+    print(f"[LLM] API Key prefix: {LLM_API_KEY[:20]}...")
+
     try:
         response = httpx.post(
-            _llm_endpoint(),
+            endpoint,
             json=payload,
             headers=headers,
             timeout=LLM_TIMEOUT_SECONDS
         )
+        print(f"[LLM] Response status: {response.status_code}")
+        print(f"[LLM] Response text: {response.text[:500]}")
+
         response.raise_for_status()
         data = response.json()
-    except Exception as exc:  # noqa: BLE001
-        raise BusinessError("llm_failed", "llm request failed") from exc
+    except httpx.HTTPStatusError as exc:
+        print(f"[LLM ERROR] HTTP {exc.response.status_code}: {exc.response.text}")
+        raise BusinessError("llm_failed", f"LLM API error: {exc.response.status_code}") from exc
+    except Exception as exc:
+        print(f"[LLM ERROR] Exception: {type(exc).__name__}: {str(exc)}")
+        raise BusinessError("llm_failed", f"llm request failed: {str(exc)}") from exc
     choices = data.get("choices") or []
     if choices:
         message = choices[0].get("message") or {}
