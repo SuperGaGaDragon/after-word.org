@@ -1,5 +1,3 @@
-import os
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -46,22 +44,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/api/debug/config")
-def debug_config():
-    """Temporary debug endpoint - DELETE AFTER TESTING!"""
-    from backend.config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, LLM_TIMEOUT_SECONDS
-
-    return {
-        "LLM_BASE_URL": LLM_BASE_URL,
-        "LLM_MODEL": LLM_MODEL,
-        "LLM_TIMEOUT_SECONDS": LLM_TIMEOUT_SECONDS,
-        "LLM_API_KEY_PREFIX": LLM_API_KEY[:15] + "..." if LLM_API_KEY else "NOT SET",
-        "LLM_API_KEY_LENGTH": len(LLM_API_KEY) if LLM_API_KEY else 0,
-    }
-
-
 register_routers(app)
 register_error_handlers(app)
 register_storage_executors()
