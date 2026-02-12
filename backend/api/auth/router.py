@@ -27,7 +27,7 @@ def signup(payload: SignupRequest) -> AuthResponse:
 
 @router.post("/login", response_model=AuthResponse)
 def login(payload: LoginRequest) -> AuthResponse:
-    user = login_user(payload.email_or_username, payload.password)
+    user = login_user(payload.email, payload.password)
     token = create_token(user["email"], user["username"])
     return AuthResponse(token=token, user=UserOut(**user))
 

@@ -49,13 +49,13 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function loginApi(
-  emailOrUsername: string,
+  email: string,
   password: string
 ): Promise<AuthResponse> {
   return requestJson<AuthResponse>('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify({
-      email_or_username: emailOrUsername,
+      email,
       password
     })
   });

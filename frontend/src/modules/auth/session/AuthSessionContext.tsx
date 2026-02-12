@@ -14,7 +14,7 @@ type AuthSessionValue = {
   user: AuthUser | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (emailOrUsername: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   signup: (email: string, username: string, password: string) => Promise<void>;
   logout: () => void;
 };
@@ -25,8 +25,8 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => getStoredToken());
   const [user, setUser] = useState<AuthUser | null>(() => getStoredUser());
 
-  async function login(emailOrUsername: string, password: string) {
-    const result = await loginApi(emailOrUsername, password);
+  async function login(email: string, password: string) {
+    const result = await loginApi(email, password);
     setStoredToken(result.token);
     setStoredUser(result.user);
     setToken(result.token);

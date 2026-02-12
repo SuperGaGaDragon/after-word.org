@@ -22,15 +22,8 @@ def _run(query: Query) -> Optional[Dict[str, Any]]:
     return _EXECUTOR(query)
 
 
-def _find_user(email_or_username: str) -> Optional[Dict[str, Any]]:
-    user = _run(user_repo.get_user_by_email(email_or_username))
-    if user is not None:
-        return user
-    return _run(user_repo.get_user_by_username(email_or_username))
-
-
-def login(email_or_username: str, password: str) -> Dict[str, Any]:
-    user = _find_user(email_or_username)
+def login(email: str, password: str) -> Dict[str, Any]:
+    user = _run(user_repo.get_user_by_email(email))
     if user is None:
         raise BusinessError("invalid_credentials", "invalid credentials")
     stored_hash = user.get("password_hash", "")

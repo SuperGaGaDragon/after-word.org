@@ -4,7 +4,7 @@ import { useAuthSession } from './session/AuthSessionContext';
 import { AuthShell } from './AuthShell';
 
 export function LoginPage() {
-  const [emailOrUsername, setEmailOrUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      await login(emailOrUsername, password);
+      await login(email, password);
       const next = searchParams.get('return');
       navigate(next || '/works', { replace: true });
     } catch (e) {
@@ -30,14 +30,14 @@ export function LoginPage() {
   return (
     <AuthShell title="Welcome Back" subtitle="Sign in to continue to your works.">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <label htmlFor="login-email-username">Email or Username</label>
+        <label htmlFor="login-email">Email</label>
         <input
-          id="login-email-username"
-          name="email_or_username"
-          type="text"
-          autoComplete="username"
-          value={emailOrUsername}
-          onChange={(event) => setEmailOrUsername(event.target.value)}
+          id="login-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
           required
         />
 

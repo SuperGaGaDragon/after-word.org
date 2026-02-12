@@ -10,7 +10,7 @@ class SignupRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email_or_username: str
+    email: str
     password: str
 
 
