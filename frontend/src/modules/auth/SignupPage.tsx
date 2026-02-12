@@ -18,7 +18,7 @@ export function SignupPage() {
     setError(null);
     try {
       await signup(email, username, password);
-      navigate('/works', { replace: true });
+      navigate('/home', { replace: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Signup failed');
     } finally {

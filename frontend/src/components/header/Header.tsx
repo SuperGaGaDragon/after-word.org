@@ -8,7 +8,7 @@ export function Header() {
   return (
     <header className="app-header">
       <div className="header-container">
-        <Link to="/" className="header-brand">
+        <Link to="/home" className="header-brand">
           <span className="brand-kicker">AfterWord</span>
           <span className="brand-title">Iteration Lab</span>
         </Link>

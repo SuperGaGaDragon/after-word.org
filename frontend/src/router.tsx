@@ -4,6 +4,7 @@ import { AboutPage } from './modules/about/AboutPage';
 import { ProtectedRoute, PublicOnlyRoute } from './modules/auth/components/AuthGuards';
 import { LoginPage } from './modules/auth/LoginPage';
 import { SignupPage } from './modules/auth/SignupPage';
+import { HomePage } from './modules/home/HomePage';
 import { WhyPage } from './modules/why/WhyPage';
 import { WorkDetailPage } from './modules/works/WorkDetailPage';
 import { WorksPage } from './modules/works/WorksPage';
@@ -19,6 +20,7 @@ export function AppRouter() {
           <Route path="/auth/signup" element={<SignupPage />} />
         </Route>
         <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<HomePage />} />
           <Route path="/works" element={<WorksPage />} />
           <Route path="/works/:workId" element={<WorkDetailPage />} />
         </Route>

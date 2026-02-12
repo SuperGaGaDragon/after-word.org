@@ -17,7 +17,7 @@ export function PublicOnlyRoute() {
   const { isAuthenticated } = useAuthSession();
 
   if (isAuthenticated) {
-    return <Navigate to="/works" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return <Outlet />;

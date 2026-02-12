@@ -19,7 +19,7 @@ export function LoginPage() {
     try {
       await login(email, password);
       const next = searchParams.get('return');
-      navigate(next || '/works', { replace: true });
+      navigate(next || '/home', { replace: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Login failed');
     } finally {
