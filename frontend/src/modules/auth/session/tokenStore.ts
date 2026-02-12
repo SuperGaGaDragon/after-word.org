@@ -2,6 +2,7 @@ import { AuthUser } from '../types/authTypes';
 
 const TOKEN_KEY = 'token';
 const USER_KEY = 'auth_user';
+export const AUTH_SESSION_EXPIRED_EVENT = 'auth:session-expired';
 
 export function getStoredToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
@@ -39,4 +40,11 @@ export function clearStoredUser(): void {
 export function clearStoredSession(): void {
   clearStoredToken();
   clearStoredUser();
+}
+
+export function handleSessionExpired(): void {
+  clearStoredSession();
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(AUTH_SESSION_EXPIRED_EVENT));
+  }
 }

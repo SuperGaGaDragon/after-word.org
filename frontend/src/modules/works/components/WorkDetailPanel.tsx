@@ -1,11 +1,13 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { WorkVersionDetail, WorkVersionSummary } from '../types/workContract';
 
 type WorkDetailPanelProps = {
   content: string;
   faoReflectionDraft: string;
+  currentVersionNumber?: number;
   workId?: string;
   versions: WorkVersionSummary[];
+  hiddenVersionCount: number;
   selectedVersion: WorkVersionDetail | null;
   baselineSubmittedVersion: WorkVersionDetail | null;
   suggestionMarkings: Record<string, { action: 'resolved' | 'rejected'; userNote?: string }>;
@@ -21,10 +23,10 @@ type WorkDetailPanelProps = {
   onContentChange: (value: string) => void;
   onFaoReflectionChange: (value: string) => void;
   onSaveAuto: () => void;
-  onSaveDraft: () => void;
+  onSaveDraft: () => Promise<void>;
   onSubmit: () => void;
   onOpenVersion: (versionNumber: number) => void;
-  onRevert: (versionNumber: number) => void;
+  onRevert: (versionNumber: number) => Promise<void>;
   onMarkSuggestionAction: (commentId: string, action: 'resolved' | 'rejected') => void;
   onSuggestionNoteChange: (commentId: string, note: string) => void;
 };
@@ -32,8 +34,10 @@ type WorkDetailPanelProps = {
 export function WorkDetailPanel({
   content,
   faoReflectionDraft,
+  currentVersionNumber,
   workId,
   versions,
+  hiddenVersionCount,
   selectedVersion,
   baselineSubmittedVersion,
   suggestionMarkings,
@@ -56,9 +60,39 @@ export function WorkDetailPanel({
   onMarkSuggestionAction,
   onSuggestionNoteChange
 }: WorkDetailPanelProps) {
+  const [pendingRevertVersion, setPendingRevertVersion] = useState<number | null>(null);
+  const [confirmBusy, setConfirmBusy] = useState(false);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit();
+  }
+
+  async function handleSaveCurrentFirst() {
+    if (pendingRevertVersion === null) {
+      return;
+    }
+    setConfirmBusy(true);
+    try {
+      await onSaveDraft();
+      await onRevert(pendingRevertVersion);
+      setPendingRevertVersion(null);
+    } finally {
+      setConfirmBusy(false);
+    }
+  }
+
+  async function handleRevertAnyway() {
+    if (pendingRevertVersion === null) {
+      return;
+    }
+    setConfirmBusy(true);
+    try {
+      await onRevert(pendingRevertVersion);
+      setPendingRevertVersion(null);
+    } finally {
+      setConfirmBusy(false);
+    }
   }
 
   return (
@@ -159,6 +193,9 @@ export function WorkDetailPanel({
 
       <section>
         <h3>Versions</h3>
+        {hiddenVersionCount > 0 && (
+          <p>Showing latest {versions.length} versions. {hiddenVersionCount} older versions hidden.</p>
+        )}
         {versions.length === 0 && <p>No versions yet.</p>}
         {versions.length > 0 && (
           <ul className="version-list">
@@ -174,7 +211,7 @@ export function WorkDetailPanel({
                   </button>
                   <button
                     type="button"
-                    onClick={() => onRevert(version.versionNumber)}
+                    onClick={() => setPendingRevertVersion(version.versionNumber)}
                     disabled={reverting || locked}
                   >
                     Revert
@@ -216,6 +253,30 @@ export function WorkDetailPanel({
               </ul>
             </div>
           )}
+        </section>
+      )}
+
+      {pendingRevertVersion !== null && (
+        <section className="revert-confirm">
+          <h3>Revert to Version {pendingRevertVersion}?</h3>
+          <p>
+            This will create a new draft using content from version {pendingRevertVersion}.
+          </p>
+          <p>Your current unsaved changes may be lost.</p>
+          <p>
+            You can undo this by reverting back to version {currentVersionNumber ?? 'current'}.
+          </p>
+          <div className="contract-actions">
+            <button type="button" disabled={confirmBusy} onClick={() => setPendingRevertVersion(null)}>
+              Cancel
+            </button>
+            <button type="button" disabled={confirmBusy} onClick={() => void handleSaveCurrentFirst()}>
+              Save Current First
+            </button>
+            <button type="button" disabled={confirmBusy} onClick={() => void handleRevertAnyway()}>
+              Revert Anyway
+            </button>
+          </div>
         </section>
       )}
     </section>

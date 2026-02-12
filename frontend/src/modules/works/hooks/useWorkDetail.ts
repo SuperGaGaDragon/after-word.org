@@ -9,6 +9,11 @@ import {
   updateWork
 } from '../api/workApi';
 import { WorkDetail, WorkVersionDetail, WorkVersionSummary } from '../types/workContract';
+import {
+  clearCachedDraft,
+  getCachedDraft,
+  setCachedDraft
+} from '../storage/draftCache';
 
 type SuggestionMarking = {
   action: 'resolved' | 'rejected';
@@ -20,6 +25,9 @@ type UseWorkDetailState = {
   content: string;
   faoReflectionDraft: string;
   versions: WorkVersionSummary[];
+  hiddenVersionCount: number;
+  displayedVersionNumber: number | null;
+  analysesByVersion: Record<number, NonNullable<WorkVersionDetail['analysis']>>;
   selectedVersion: WorkVersionDetail | null;
   baselineSubmittedVersion: WorkVersionDetail | null;
   suggestionMarkings: Record<string, SuggestionMarking>;
@@ -37,6 +45,7 @@ type UseWorkDetailState = {
 const DEFAULT_DEVICE_ID = 'web-phase5-device';
 const AUTO_SAVE_DELAY_MS = 3000;
 const LOCK_RETRY_INTERVAL_MS = 5000;
+const MAX_VISIBLE_VERSIONS = 50;
 
 function mapApiError(error: unknown): { code: string | null; message: string } {
   if (error instanceof ApiRequestError) {
@@ -116,6 +125,9 @@ export function useWorkDetail(workId: string | undefined) {
     content: '',
     faoReflectionDraft: '',
     versions: [],
+    hiddenVersionCount: 0,
+    displayedVersionNumber: null,
+    analysesByVersion: {},
     selectedVersion: null,
     baselineSubmittedVersion: null,
     suggestionMarkings: {},
@@ -175,8 +187,10 @@ export function useWorkDetail(workId: string | undefined) {
     }
 
     const work = workResult.value;
-    const versions =
+    const allVersions =
       allVersionsResult.status === 'fulfilled' ? allVersionsResult.value.versions : [];
+    const versions = allVersions.slice(0, MAX_VISIBLE_VERSIONS);
+    const hiddenVersionCount = Math.max(0, allVersions.length - versions.length);
     const latestSubmittedFromSubmittedList =
       submittedVersionsResult.status === 'fulfilled'
         ? findLatestSubmittedVersion(submittedVersionsResult.value.versions)
@@ -198,13 +212,32 @@ export function useWorkDetail(workId: string | undefined) {
         latestSubmittedDetail?.versionNumber !== prev.baselineSubmittedVersion?.versionNumber;
       const hasUnsyncedLocalContent = prev.content !== lastSyncedContentRef.current;
       const keepLocalContent = preserveLocalDraft && hasUnsyncedLocalContent;
+      const cachedDraft = getCachedDraft(workId);
+      const shouldRestoreCachedDraft =
+        !preserveLocalDraft &&
+        Boolean(cachedDraft && cachedDraft.content && cachedDraft.content !== work.content);
+      const nextContent = keepLocalContent
+        ? prev.content
+        : shouldRestoreCachedDraft
+          ? (cachedDraft?.content ?? work.content)
+          : work.content;
+      const selectedVersion = prev.selectedVersion ?? latestSubmittedDetail;
+      const displayedVersionNumber =
+        selectedVersion?.versionNumber ?? latestSubmittedDetail?.versionNumber ?? null;
+      const analysesByVersion = { ...prev.analysesByVersion };
+      if (latestSubmittedDetail?.analysis) {
+        analysesByVersion[latestSubmittedDetail.versionNumber] = latestSubmittedDetail.analysis;
+      }
 
       return {
         ...prev,
         work,
-        content: keepLocalContent ? prev.content : work.content,
+        content: nextContent,
         versions,
-        selectedVersion: prev.selectedVersion ?? latestSubmittedDetail,
+        hiddenVersionCount,
+        displayedVersionNumber,
+        analysesByVersion,
+        selectedVersion,
         baselineSubmittedVersion: latestSubmittedDetail,
         suggestionMarkings: baselineVersionChanged ? {} : prev.suggestionMarkings,
         loading: false,
@@ -215,6 +248,8 @@ export function useWorkDetail(workId: string | undefined) {
         info:
           !latestSubmittedDetail && submittedVersionsResult.status === 'fulfilled'
             ? 'No analysis yet. Submit to get feedback.'
+            : shouldRestoreCachedDraft
+              ? 'Recovered an unsynced local draft.'
             : keepLocalContent
               ? 'Server state refreshed, local unsaved text preserved.'
             : prev.info
@@ -234,6 +269,18 @@ export function useWorkDetail(workId: string | undefined) {
   const setContent = useCallback((next: string) => {
     setState((prev) => ({ ...prev, content: next }));
   }, []);
+
+  useEffect(() => {
+    if (!workId) {
+      return;
+    }
+
+    if (state.content !== lastSyncedContentRef.current) {
+      setCachedDraft(workId, state.content);
+    } else {
+      clearCachedDraft(workId);
+    }
+  }, [state.content, workId]);
 
   const setFaoReflectionDraft = useCallback((next: string) => {
     setState((prev) => ({ ...prev, faoReflectionDraft: next }));
@@ -273,6 +320,7 @@ export function useWorkDetail(workId: string | undefined) {
         });
 
         lastSyncedContentRef.current = content;
+        clearCachedDraft(workId);
         setState((prev) => ({
           ...prev,
           saving: false,
@@ -325,8 +373,10 @@ export function useWorkDetail(workId: string | undefined) {
         if (!autoSave) {
           await loadAll({ preserveLocalDraft: false });
           lastSyncedContentRef.current = state.content;
+          clearCachedDraft(workId);
         } else {
           lastSyncedContentRef.current = state.content;
+          clearCachedDraft(workId);
         }
 
         setState((prev) => ({
@@ -475,6 +525,13 @@ export function useWorkDetail(workId: string | undefined) {
         setState((prev) => ({
           ...prev,
           submitting: false,
+          displayedVersionNumber: result.versionDetail.versionNumber,
+          analysesByVersion: result.versionDetail.analysis
+            ? {
+                ...prev.analysesByVersion,
+                [result.versionDetail.versionNumber]: result.versionDetail.analysis
+              }
+            : prev.analysesByVersion,
           selectedVersion: result.versionDetail,
           baselineSubmittedVersion: result.versionDetail,
           suggestionMarkings: {},
@@ -483,6 +540,7 @@ export function useWorkDetail(workId: string | undefined) {
           lockRetryInSec: 0,
           info: `Submitted version ${result.submit.version} and loaded analysis`
         }));
+        clearCachedDraft(workId);
       } catch (error) {
         const mapped = mapApiError(error);
         setState((prev) => ({
@@ -516,6 +574,13 @@ export function useWorkDetail(workId: string | undefined) {
         const detail = await getVersionDetail(workId, versionNumber);
         setState((prev) => ({
           ...prev,
+          displayedVersionNumber: versionNumber,
+          analysesByVersion: detail.analysis
+            ? {
+                ...prev.analysesByVersion,
+                [versionNumber]: detail.analysis
+              }
+            : prev.analysesByVersion,
           selectedVersion: detail,
           info: `Loaded version ${versionNumber}`
         }));
@@ -551,12 +616,20 @@ export function useWorkDetail(workId: string | undefined) {
         await loadAll({ preserveLocalDraft: false });
         setState((prev) => ({
           ...prev,
+          displayedVersionNumber: revertedDetail.versionNumber,
+          analysesByVersion: revertedDetail.analysis
+            ? {
+                ...prev.analysesByVersion,
+                [revertedDetail.versionNumber]: revertedDetail.analysis
+              }
+            : prev.analysesByVersion,
           selectedVersion: revertedDetail,
           reverting: false,
           locked: false,
           lockRetryInSec: 0,
           info: `Reverted successfully. New draft version ${result.newVersion}`
         }));
+        clearCachedDraft(workId);
       } catch (error) {
         const mapped = mapApiError(error);
         setState((prev) => ({

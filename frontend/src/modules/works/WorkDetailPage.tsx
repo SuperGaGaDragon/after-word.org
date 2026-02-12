@@ -29,7 +29,9 @@ export function WorkDetailPage() {
         workId={workId}
         content={state.content}
         faoReflectionDraft={state.faoReflectionDraft}
+        currentVersionNumber={state.work?.currentVersion}
         versions={state.versions}
+        hiddenVersionCount={state.hiddenVersionCount}
         selectedVersion={state.selectedVersion}
         baselineSubmittedVersion={state.baselineSubmittedVersion}
         suggestionMarkings={state.suggestionMarkings}
@@ -45,10 +47,10 @@ export function WorkDetailPage() {
         onContentChange={setContent}
         onFaoReflectionChange={setFaoReflectionDraft}
         onSaveAuto={() => void save(true)}
-        onSaveDraft={() => void save(false)}
+        onSaveDraft={() => save(false)}
         onSubmit={() => void submit()}
         onOpenVersion={(versionNumber) => void openVersion(versionNumber)}
-        onRevert={(versionNumber) => void revert(versionNumber)}
+        onRevert={(versionNumber) => revert(versionNumber)}
         onMarkSuggestionAction={markSuggestionAction}
         onSuggestionNoteChange={setSuggestionNote}
       />

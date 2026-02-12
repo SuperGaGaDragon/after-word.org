@@ -19,7 +19,7 @@ import {
   WorkVersionDetail,
   WorkVersionList
 } from '../types/workContract';
-import { getStoredToken } from '../../auth/session/tokenStore';
+import { getStoredToken, handleSessionExpired } from '../../auth/session/tokenStore';
 
 type ApiErrorPayload = {
   code?: string;
@@ -77,6 +77,9 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     }
 
     const code = payload?.code;
+    if (response.status === 401) {
+      handleSessionExpired();
+    }
     if (response.status === 405) {
       throw new ApiRequestError(
         'Method not allowed. Check VITE_API_BASE_URL and ensure requests go to the backend API domain.',

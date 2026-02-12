@@ -198,6 +198,22 @@ body {
   margin: 6px 0 0;
 }
 
+.revert-confirm {
+  margin-top: 16px;
+  border: 1px solid #f9ab00;
+  border-radius: 8px;
+  background: #fff7e0;
+  padding: 12px;
+}
+
+.revert-confirm h3 {
+  margin: 0 0 8px;
+}
+
+.revert-confirm p {
+  margin: 6px 0 0;
+}
+
 .route-switches {
   display: flex;
   gap: 10px;

@@ -1,7 +1,8 @@
-import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { loginApi, signupApi } from '../api/authApi';
 import { AuthUser } from '../types/authTypes';
 import {
+  AUTH_SESSION_EXPIRED_EVENT,
   clearStoredSession,
   getStoredToken,
   getStoredUser,
@@ -45,6 +46,16 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setUser(null);
   }
+
+  useEffect(() => {
+    function onSessionExpired() {
+      setToken(null);
+      setUser(null);
+    }
+
+    window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, onSessionExpired);
+    return () => window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, onSessionExpired);
+  }, []);
 
   const value = useMemo<AuthSessionValue>(
     () => ({
