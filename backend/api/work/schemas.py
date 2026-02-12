@@ -190,3 +190,9 @@ class TotalWordCountResponse(BaseModel):
     """Response for total word count across all works."""
 
     total_word_count: int = Field(..., description="Total word count across all user's works")
+
+
+class TotalProjectCountResponse(BaseModel):
+    """Response for total project count."""
+
+    total_project_count: int = Field(..., description="Total number of projects (works)")

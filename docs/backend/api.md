@@ -143,6 +143,30 @@ Get all works for current user.
 
 ---
 
+#### GET /api/work/total_word_count
+Get total word count across all user's works.
+
+**Response:**
+```json
+{
+  "total_word_count": 3542
+}
+```
+
+---
+
+#### GET /api/work/total_project_count
+Get total number of projects (works) for the user.
+
+**Response:**
+```json
+{
+  "total_project_count": 5
+}
+```
+
+---
+
 #### GET /api/work/{work_id}
 Get work details.
 

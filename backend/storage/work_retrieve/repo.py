@@ -31,3 +31,12 @@ def get_total_word_count(user_email: str) -> Dict[str, Any]:
         "FROM works WHERE user_email = %(user_email)s"
     )
     return _build_query(sql, {"user_email": user_email})
+
+
+def get_total_project_count(user_email: str) -> Dict[str, Any]:
+    """Get total number of projects (works) for a user."""
+    sql = (
+        "SELECT COUNT(*) as total_project_count "
+        "FROM works WHERE user_email = %(user_email)s"
+    )
+    return _build_query(sql, {"user_email": user_email})

@@ -7,6 +7,7 @@ from backend.api.work.schemas import (
     OkResponse,
     RevertRequest,
     RevertResponse,
+    TotalProjectCountResponse,
     TotalWordCountResponse,
     VersionDetailResponse,
     VersionListItem,
@@ -77,6 +78,18 @@ def get_total_word_count_route(user: dict = Depends(require_user)) -> TotalWordC
     total = result.get("total_word_count", 0) if result else 0
 
     return TotalWordCountResponse(total_word_count=total)
+
+
+@router.get("/total_project_count", response_model=TotalProjectCountResponse)
+def get_total_project_count_route(user: dict = Depends(require_user)) -> TotalProjectCountResponse:
+    """Get total number of projects (works) for the user."""
+    from backend.storage.db import execute_query
+
+    query = work_retrieve_repo.get_total_project_count(user["email"])
+    result = execute_query(query)
+    total = result.get("total_project_count", 0) if result else 0
+
+    return TotalProjectCountResponse(total_project_count=total)
 
 
 @router.get("/{work_id}", response_model=WorkGetResponse)
