@@ -15,7 +15,9 @@ export function WorkDetailPage() {
     revert,
     markSuggestionAction,
     setSuggestionNote,
-    unprocessedCommentCount
+    unprocessedCommentCount,
+    canLoadMoreVersions,
+    loadMoreVersions
   } = useWorkDetail(workId);
 
   return (
@@ -32,6 +34,7 @@ export function WorkDetailPage() {
         currentVersionNumber={state.work?.currentVersion}
         versions={state.versions}
         hiddenVersionCount={state.hiddenVersionCount}
+        canLoadMoreVersions={canLoadMoreVersions}
         selectedVersion={state.selectedVersion}
         baselineSubmittedVersion={state.baselineSubmittedVersion}
         suggestionMarkings={state.suggestionMarkings}
@@ -50,6 +53,7 @@ export function WorkDetailPage() {
         onSaveDraft={() => save(false)}
         onSubmit={() => void submit()}
         onOpenVersion={(versionNumber) => void openVersion(versionNumber)}
+        onLoadMoreVersions={loadMoreVersions}
         onRevert={(versionNumber) => revert(versionNumber)}
         onMarkSuggestionAction={markSuggestionAction}
         onSuggestionNoteChange={setSuggestionNote}

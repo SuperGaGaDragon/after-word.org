@@ -147,3 +147,37 @@
 1. Force Unlock（待后端锁详情与解锁 API 支持）。
 2. httpOnly cookie 会话改造。
 3. Sentry 与生产监控接入。
+
+## Phase 10: 产品化收尾
+10.1 接入 Draft 分页后端 API（`versions?type=draft&parent=&limit=&cursor=`），替换本地截断策略。
+10.2 实现文本高亮 diff 算法，降低历史评论定位误差。
+10.3 接入基于版本号的 optimistic locking，提交与保存增加冲突检测与用户提示。
+10.4 加入 ETag/304 缓存协商，降低重复拉取版本与 analysis 的流量。
+10.5 接入后端批量 analysis 读取端点，优化历史版本批量浏览体验。
+10.6 接入进度统计 dashboard 端点与页面，展示改进轮次与问题处理进度。
+10.7 接入 Force Unlock（在后端提供锁详情与解锁 API 后开放）。
+10.8 会话改造为 httpOnly cookie（替代 localStorage token），统一 CSRF 防护策略。
+10.9 接入 Sentry 与生产监控告警（错误率、接口耗时、关键交互失败率）。
+10.10 建立前端测试与发布门禁：单测、集成测试、E2E、构建体积与性能预算检查。
+10.11 补齐产品级体验基线：A11y（键盘/读屏）、移动端细节、弱网与离线降级。
+
+验收:
+1. drafts 数量 1000+ 时，历史浏览无明显卡顿且支持继续翻页加载。
+2. 历史评论在文本多次改写后仍能稳定定位，误定位率显著下降。
+3. 并发编辑冲突可被稳定拦截并给出明确恢复路径，不会静默覆盖内容。
+4. 线上会话过期、接口异常、前端崩溃都可被监控系统捕获并告警。
+5. CI 未通过测试或性能预算时禁止发布，主流程具备自动化回归保障。
+6. 关键页面满足基础无障碍与移动端可用性要求。
+
+待完成:
+1. Draft 分页 API 接入（前端已实现本地分页 + Load Older，待后端 cursor API）。🟡
+2. 文本高亮 diff 算法。⏳
+3. optimistic locking。⏳
+4. ETag/304 缓存协商（前端 GET 已支持 If-None-Match/304，待后端完整返回 ETag）。🟡
+5. 批量 analysis 读取端点接入。⏳
+6. 进度统计 dashboard。⏳
+7. Force Unlock。⏳
+8. httpOnly cookie 会话改造。⏳
+9. Sentry 与生产监控接入。⏳
+10. 测试与发布门禁（typecheck + vitest + build + bundle budget + GitHub Actions gate）。✅
+11. A11y 与移动端产品化收尾（已补 aria-live 与基础可读性，剩余系统化审计）。🟡

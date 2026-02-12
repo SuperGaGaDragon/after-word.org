@@ -38,6 +38,14 @@ export class ApiRequestError extends Error {
   }
 }
 
+type CachedGetEntry<T> = {
+  etag?: string;
+  data: T;
+  updatedAt: number;
+};
+
+const getCache = new Map<string, CachedGetEntry<unknown>>();
+
 function getApiBaseUrl(): string {
   const raw = import.meta.env.VITE_API_BASE_URL;
   if (raw) {
@@ -55,6 +63,11 @@ function getApiBaseUrl(): string {
 }
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const method = (init?.method ?? 'GET').toUpperCase();
+  const isGet = method === 'GET';
+  const cacheKey = isGet ? `${getApiBaseUrl()}${path}` : '';
+  const cached = isGet ? (getCache.get(cacheKey) as CachedGetEntry<T> | undefined) : undefined;
+
   const token = getStoredToken();
   const headers = new Headers(init?.headers);
   headers.set('Content-Type', 'application/json');
@@ -63,12 +76,19 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
+  if (isGet && cached?.etag) {
+    headers.set('If-None-Match', cached.etag);
+  }
+
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     ...init,
     headers
   });
 
   if (!response.ok) {
+    if (isGet && response.status === 304 && cached) {
+      return cached.data;
+    }
     let payload: ApiErrorPayload | undefined;
     try {
       payload = (await response.json()) as ApiErrorPayload;
@@ -91,13 +111,44 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiRequestError(message, response.status, code);
   }
 
-  return (await response.json()) as T;
+  const payload = (await response.json()) as T;
+
+  if (isGet) {
+    const etag = response.headers.get('etag') ?? response.headers.get('ETag') ?? undefined;
+    getCache.set(cacheKey, {
+      etag,
+      data: payload,
+      updatedAt: Date.now()
+    });
+  }
+
+  return payload;
+}
+
+function invalidateWorkCache(workId?: string): void {
+  if (!workId) {
+    getCache.clear();
+    return;
+  }
+
+  const prefixes = [
+    `/api/work/list`,
+    `/api/work/${workId}`,
+    `/api/work/${workId}/versions`
+  ];
+
+  for (const key of getCache.keys()) {
+    if (prefixes.some((prefix) => key.includes(prefix))) {
+      getCache.delete(key);
+    }
+  }
 }
 
 export async function createWork(): Promise<string> {
   const payload = await requestJson<{ work_id: string }>('/api/work/create', {
     method: 'POST'
   });
+  invalidateWorkCache();
   return payload.work_id;
 }
 
@@ -112,6 +163,7 @@ export async function deleteWork(workId: string): Promise<void> {
   await requestJson<{ ok: boolean }>(`/api/work/${workId}`, {
     method: 'DELETE'
   });
+  invalidateWorkCache(workId);
 }
 
 export async function getWork(workId: string): Promise<WorkDetail> {
@@ -125,7 +177,7 @@ export async function updateWork(
   workId: string,
   input: WorkUpdateInput
 ): Promise<WorkUpdateResponse> {
-  return requestJson<WorkUpdateResponse>(`/api/work/${workId}/update`, {
+  const result = await requestJson<WorkUpdateResponse>(`/api/work/${workId}/update`, {
     method: 'POST',
     body: JSON.stringify({
       content: input.content,
@@ -133,6 +185,8 @@ export async function updateWork(
       auto_save: input.autoSave
     })
   });
+  invalidateWorkCache(workId);
+  return result;
 }
 
 export async function submitWork(
@@ -153,6 +207,7 @@ export async function submitWork(
     })
   });
 
+  invalidateWorkCache(workId);
   return fromApiSubmitResponse(payload);
 }
 
@@ -228,6 +283,7 @@ export async function revertToVersion(
     }
   );
 
+  invalidateWorkCache(workId);
   return fromApiRevertResponse(payload);
 }
 

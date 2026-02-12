@@ -24,8 +24,10 @@ type UseWorkDetailState = {
   work: WorkDetail | null;
   content: string;
   faoReflectionDraft: string;
+  allVersions: WorkVersionSummary[];
   versions: WorkVersionSummary[];
   hiddenVersionCount: number;
+  visibleVersionLimit: number;
   displayedVersionNumber: number | null;
   analysesByVersion: Record<number, NonNullable<WorkVersionDetail['analysis']>>;
   selectedVersion: WorkVersionDetail | null;
@@ -124,8 +126,10 @@ export function useWorkDetail(workId: string | undefined) {
     work: null,
     content: '',
     faoReflectionDraft: '',
+    allVersions: [],
     versions: [],
     hiddenVersionCount: 0,
+    visibleVersionLimit: MAX_VISIBLE_VERSIONS,
     displayedVersionNumber: null,
     analysesByVersion: {},
     selectedVersion: null,
@@ -189,14 +193,12 @@ export function useWorkDetail(workId: string | undefined) {
     const work = workResult.value;
     const allVersions =
       allVersionsResult.status === 'fulfilled' ? allVersionsResult.value.versions : [];
-    const versions = allVersions.slice(0, MAX_VISIBLE_VERSIONS);
-    const hiddenVersionCount = Math.max(0, allVersions.length - versions.length);
     const latestSubmittedFromSubmittedList =
       submittedVersionsResult.status === 'fulfilled'
         ? findLatestSubmittedVersion(submittedVersionsResult.value.versions)
         : null;
     const latestSubmitted =
-      latestSubmittedFromSubmittedList ?? findLatestSubmittedVersion(versions);
+      latestSubmittedFromSubmittedList ?? findLatestSubmittedVersion(allVersions);
 
     let latestSubmittedDetail: WorkVersionDetail | null = null;
     if (latestSubmitted) {
@@ -224,6 +226,9 @@ export function useWorkDetail(workId: string | undefined) {
       const selectedVersion = prev.selectedVersion ?? latestSubmittedDetail;
       const displayedVersionNumber =
         selectedVersion?.versionNumber ?? latestSubmittedDetail?.versionNumber ?? null;
+      const visibleVersionLimit = Math.max(prev.visibleVersionLimit, MAX_VISIBLE_VERSIONS);
+      const versions = allVersions.slice(0, visibleVersionLimit);
+      const hiddenVersionCount = Math.max(0, allVersions.length - versions.length);
       const analysesByVersion = { ...prev.analysesByVersion };
       if (latestSubmittedDetail?.analysis) {
         analysesByVersion[latestSubmittedDetail.versionNumber] = latestSubmittedDetail.analysis;
@@ -233,8 +238,10 @@ export function useWorkDetail(workId: string | undefined) {
         ...prev,
         work,
         content: nextContent,
+        allVersions,
         versions,
         hiddenVersionCount,
+        visibleVersionLimit,
         displayedVersionNumber,
         analysesByVersion,
         selectedVersion,
@@ -654,6 +661,22 @@ export function useWorkDetail(workId: string | undefined) {
       .length;
   }, [state.baselineSubmittedVersion?.analysis?.sentenceComments, state.suggestionMarkings]);
 
+  const canLoadMoreVersions = useMemo(() => state.hiddenVersionCount > 0, [state.hiddenVersionCount]);
+
+  const loadMoreVersions = useCallback(() => {
+    setState((prev) => {
+      const nextLimit = prev.visibleVersionLimit + MAX_VISIBLE_VERSIONS;
+      const nextVersions = prev.allVersions.slice(0, nextLimit);
+      const hiddenVersionCount = Math.max(0, prev.allVersions.length - nextVersions.length);
+      return {
+        ...prev,
+        visibleVersionLimit: nextLimit,
+        versions: nextVersions,
+        hiddenVersionCount
+      };
+    });
+  }, []);
+
   return {
     state,
     canOperate,
@@ -666,6 +689,8 @@ export function useWorkDetail(workId: string | undefined) {
     loadAll,
     markSuggestionAction,
     setSuggestionNote,
-    unprocessedCommentCount
+    unprocessedCommentCount,
+    canLoadMoreVersions,
+    loadMoreVersions
   };
 }

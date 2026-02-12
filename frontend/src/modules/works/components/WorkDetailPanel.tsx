@@ -8,6 +8,7 @@ type WorkDetailPanelProps = {
   workId?: string;
   versions: WorkVersionSummary[];
   hiddenVersionCount: number;
+  canLoadMoreVersions: boolean;
   selectedVersion: WorkVersionDetail | null;
   baselineSubmittedVersion: WorkVersionDetail | null;
   suggestionMarkings: Record<string, { action: 'resolved' | 'rejected'; userNote?: string }>;
@@ -26,6 +27,7 @@ type WorkDetailPanelProps = {
   onSaveDraft: () => Promise<void>;
   onSubmit: () => void;
   onOpenVersion: (versionNumber: number) => void;
+  onLoadMoreVersions: () => void;
   onRevert: (versionNumber: number) => Promise<void>;
   onMarkSuggestionAction: (commentId: string, action: 'resolved' | 'rejected') => void;
   onSuggestionNoteChange: (commentId: string, note: string) => void;
@@ -38,6 +40,7 @@ export function WorkDetailPanel({
   workId,
   versions,
   hiddenVersionCount,
+  canLoadMoreVersions,
   selectedVersion,
   baselineSubmittedVersion,
   suggestionMarkings,
@@ -56,6 +59,7 @@ export function WorkDetailPanel({
   onSaveDraft,
   onSubmit,
   onOpenVersion,
+  onLoadMoreVersions,
   onRevert,
   onMarkSuggestionAction,
   onSuggestionNoteChange
@@ -106,8 +110,16 @@ export function WorkDetailPanel({
           Locked by another device. Read-only mode active. Retrying refresh in {lockRetryInSec}s.
         </p>
       )}
-      {error && <p className="contract-error">{error}</p>}
-      {info && <p className="contract-info">{info}</p>}
+      {error && (
+        <p className="contract-error" aria-live="polite">
+          {error}
+        </p>
+      )}
+      {info && (
+        <p className="contract-info" aria-live="polite">
+          {info}
+        </p>
+      )}
 
       <label htmlFor="work-editor-content">Content</label>
       <textarea
@@ -195,6 +207,11 @@ export function WorkDetailPanel({
         <h3>Versions</h3>
         {hiddenVersionCount > 0 && (
           <p>Showing latest {versions.length} versions. {hiddenVersionCount} older versions hidden.</p>
+        )}
+        {canLoadMoreVersions && (
+          <button type="button" onClick={onLoadMoreVersions}>
+            Load Older Versions
+          </button>
         )}
         {versions.length === 0 && <p>No versions yet.</p>}
         {versions.length > 0 && (

@@ -214,6 +214,10 @@ body {
   margin: 6px 0 0;
 }
 
+[aria-live="polite"] {
+  min-height: 1.2em;
+}
+
 .route-switches {
   display: flex;
   gap: 10px;
