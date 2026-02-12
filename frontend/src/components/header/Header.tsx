@@ -19,6 +19,9 @@ export function Header() {
               <Link to="/works" className="nav-link">
                 Works
               </Link>
+              <Link to="/account" className="nav-link">
+                Account
+              </Link>
               <Link to="/why" className="nav-link">
                 Why
               </Link>

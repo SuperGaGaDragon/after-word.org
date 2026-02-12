@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from './components/header';
 import { AboutPage } from './modules/about/AboutPage';
+import { AccountPage } from './modules/account/AccountPage';
 import { ProtectedRoute, PublicOnlyRoute } from './modules/auth/components/AuthGuards';
 import { LoginPage } from './modules/auth/LoginPage';
 import { SignupPage } from './modules/auth/SignupPage';
@@ -23,6 +24,7 @@ export function AppRouter() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/works" element={<WorksPage />} />
           <Route path="/works/:workId" element={<WorkDetailPage />} />
+          <Route path="/account" element={<AccountPage />} />
         </Route>
         <Route path="/why" element={<WhyPage />} />
         <Route path="/about" element={<AboutPage />} />
