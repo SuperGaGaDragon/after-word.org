@@ -40,6 +40,12 @@ def register_storage_executors() -> None:
 
 
 app = FastAPI()
+
+# Debug: Print CORS configuration on startup
+print(f"🔧 CORS Configuration:")
+print(f"   allow_origins: [{FRONTEND_BASE_URL}]")
+print(f"   allow_credentials: True")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[FRONTEND_BASE_URL],
