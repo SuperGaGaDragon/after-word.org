@@ -74,18 +74,18 @@
 补充: 回滚后会强制拉取 `newVersion` 详情并设为当前展示，避免右侧停留旧版本。✅
 
 ## Phase 6: 账号与上线
-6.1 接入 signup/login 并统一管理 token。
+6.1 接入 signup/login 并统一管理会话（httpOnly cookie）。
 6.2 未登录访问受保护页面时自动跳到登录页。
 6.3 Cloudflare Pages 配置 `Root=frontend`、`Build=npm run build`、`Output=dist`。
 
 验收:
 1. 登录态在刷新后可恢复。
-2. 鉴权失败时会清 token 并跳转登录。
+2. 鉴权失败时会清本地会话缓存并跳转登录。
 3. 线上刷新任意路由都能正确回到 SPA。
 
 当前状态:
 1. 登录态在刷新后可恢复。✅
-2. 鉴权失败时会清 token 并跳转登录。✅
+2. 鉴权失败时会清本地会话缓存并跳转登录。✅
 3. 线上刷新任意路由都能正确回到 SPA。✅
 
 ## Phase 7: 工作流稳定性修复
@@ -170,17 +170,17 @@
 6. 关键页面满足基础无障碍与移动端可用性要求。
 
 Phase 10 完成结论（前端范围）:
-1. Draft 历史前端分页（Load Older）与大列表可交互能力已落地。✅
+1. Draft 历史前端分页（Load Older）与大列表可交互能力已落地（含后端 `limit/cursor` 接入）。✅
 2. 轻量冲突防护（version conflict pre-check）已落地。✅
 3. ETag/304 前端协商缓存与写操作后缓存失效已落地。✅
 4. 测试与发布门禁（typecheck + vitest + build + bundle budget + GitHub Actions gate）已落地。✅
 5. A11y 与移动端基线（aria-live、focus-visible、移动端布局收敛）已落地。✅
 
 阻塞项（需后端/运维配合）:
-1. Draft cursor 分页 API 正式接入（`limit/cursor`）。⏳
+1. Draft cursor 分页 API 正式接入（`limit/cursor`）。✅
 2. 文本高亮 diff 算法（需要稳定文本锚点策略）。⏳
 3. 批量 analysis 读取端点接入。⏳
 4. 进度统计 dashboard 端点与页面联调。⏳
 5. Force Unlock（依赖后端锁详情与解锁 API）。⏳
-6. httpOnly cookie 会话改造（依赖后端/网关）。⏳
+6. httpOnly cookie 会话改造（前端适配完成，依赖后端/网关联调验证）。✅
 7. Sentry 与生产监控告警接入（依赖运维配置）。⏳

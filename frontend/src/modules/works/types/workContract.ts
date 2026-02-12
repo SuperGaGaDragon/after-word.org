@@ -79,6 +79,7 @@ export type WorkVersionDetail = {
 export type WorkVersionList = {
   currentVersion: number;
   versions: WorkVersionSummary[];
+  nextCursor: string | null;
 };
 
 export type RevertResponse = {

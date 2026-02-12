@@ -4,15 +4,12 @@ import { AuthUser } from '../types/authTypes';
 import {
   AUTH_SESSION_EXPIRED_EVENT,
   clearStoredSession,
-  getStoredToken,
   getStoredUser,
-  setStoredToken,
   setStoredUser
 } from './tokenStore';
 
 type AuthSessionValue = {
   user: AuthUser | null;
-  token: string | null;
   isAuthenticated: boolean;
   login: (emailOrUsername: string, password: string) => Promise<void>;
   signup: (email: string, username: string, password: string) => Promise<void>;
@@ -22,34 +19,27 @@ type AuthSessionValue = {
 const AuthSessionContext = createContext<AuthSessionValue | null>(null);
 
 export function AuthSessionProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => getStoredToken());
   const [user, setUser] = useState<AuthUser | null>(() => getStoredUser());
 
   async function login(emailOrUsername: string, password: string) {
     const result = await loginApi(emailOrUsername, password);
-    setStoredToken(result.token);
     setStoredUser(result.user);
-    setToken(result.token);
     setUser(result.user);
   }
 
   async function signup(email: string, username: string, password: string) {
     const result = await signupApi(email, username, password);
-    setStoredToken(result.token);
     setStoredUser(result.user);
-    setToken(result.token);
     setUser(result.user);
   }
 
   function logout() {
     clearStoredSession();
-    setToken(null);
     setUser(null);
   }
 
   useEffect(() => {
     function onSessionExpired() {
-      setToken(null);
       setUser(null);
     }
 
@@ -60,13 +50,12 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthSessionValue>(
     () => ({
       user,
-      token,
-      isAuthenticated: Boolean(token),
+      isAuthenticated: Boolean(user),
       login,
       signup,
       logout
     }),
-    [token, user]
+    [user]
   );
 
   return <AuthSessionContext.Provider value={value}>{children}</AuthSessionContext.Provider>;

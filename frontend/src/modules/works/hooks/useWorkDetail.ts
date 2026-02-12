@@ -28,6 +28,7 @@ type UseWorkDetailState = {
   versions: WorkVersionSummary[];
   hiddenVersionCount: number;
   visibleVersionLimit: number;
+  versionsNextCursor: string | null;
   displayedVersionNumber: number | null;
   analysesByVersion: Record<number, NonNullable<WorkVersionDetail['analysis']>>;
   selectedVersion: WorkVersionDetail | null;
@@ -130,6 +131,7 @@ export function useWorkDetail(workId: string | undefined) {
     versions: [],
     hiddenVersionCount: 0,
     visibleVersionLimit: MAX_VISIBLE_VERSIONS,
+    versionsNextCursor: null,
     displayedVersionNumber: null,
     analysesByVersion: {},
     selectedVersion: null,
@@ -174,7 +176,7 @@ export function useWorkDetail(workId: string | undefined) {
 
     const [workResult, allVersionsResult, submittedVersionsResult] = await Promise.allSettled([
       getWork(workId),
-      getVersionList(workId, 'all'),
+      getVersionList(workId, 'all', { limit: MAX_VISIBLE_VERSIONS }),
       getVersionList(workId, 'submitted')
     ]);
 
@@ -191,8 +193,8 @@ export function useWorkDetail(workId: string | undefined) {
     }
 
     const work = workResult.value;
-    const allVersions =
-      allVersionsResult.status === 'fulfilled' ? allVersionsResult.value.versions : [];
+    const allVersionsPage = allVersionsResult.status === 'fulfilled' ? allVersionsResult.value : null;
+    const allVersions = allVersionsPage?.versions ?? [];
     const latestSubmittedFromSubmittedList =
       submittedVersionsResult.status === 'fulfilled'
         ? findLatestSubmittedVersion(submittedVersionsResult.value.versions)
@@ -242,6 +244,7 @@ export function useWorkDetail(workId: string | undefined) {
         versions,
         hiddenVersionCount,
         visibleVersionLimit,
+        versionsNextCursor: allVersionsPage?.nextCursor ?? null,
         displayedVersionNumber,
         analysesByVersion,
         selectedVersion,
@@ -292,6 +295,28 @@ export function useWorkDetail(workId: string | undefined) {
   const setFaoReflectionDraft = useCallback((next: string) => {
     setState((prev) => ({ ...prev, faoReflectionDraft: next }));
   }, []);
+
+  const detectVersionConflict = useCallback(async () => {
+    if (!workId || !state.work) {
+      return false;
+    }
+
+    try {
+      const latestWork = await getWork(workId);
+      if (latestWork.currentVersion !== state.work.currentVersion) {
+        setState((prev) => ({
+          ...prev,
+          errorCode: 'version_conflict',
+          error:
+            'Version conflict detected. Reload latest version before saving or submitting to avoid overwrite.'
+        }));
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, [state.work, workId]);
 
   const runAutoSave = useCallback(
     async (content: string) => {
@@ -362,6 +387,13 @@ export function useWorkDetail(workId: string | undefined) {
         return;
       }
 
+      if (!autoSave) {
+        const conflicted = await detectVersionConflict();
+        if (conflicted) {
+          return;
+        }
+      }
+
       setState((prev) => ({
         ...prev,
         saving: true,
@@ -407,7 +439,7 @@ export function useWorkDetail(workId: string | undefined) {
         }));
       }
     },
-    [loadAll, state.content, workId]
+    [detectVersionConflict, loadAll, state.content, workId]
   );
 
   useEffect(() => {
@@ -487,6 +519,11 @@ export function useWorkDetail(workId: string | undefined) {
         return;
       }
 
+      const conflicted = await detectVersionConflict();
+      if (conflicted) {
+        return;
+      }
+
       if (autoSaveTimerRef.current) {
         clearTimeout(autoSaveTimerRef.current);
       }
@@ -560,6 +597,7 @@ export function useWorkDetail(workId: string | undefined) {
       }
     },
     [
+      detectVersionConflict,
       loadAll,
       state.baselineSubmittedVersion?.analysis?.sentenceComments,
       state.content,
@@ -609,6 +647,11 @@ export function useWorkDetail(workId: string | undefined) {
         return;
       }
 
+      const conflicted = await detectVersionConflict();
+      if (conflicted) {
+        return;
+      }
+
       setState((prev) => ({
         ...prev,
         reverting: true,
@@ -648,7 +691,7 @@ export function useWorkDetail(workId: string | undefined) {
         }));
       }
     },
-    [loadAll, workId]
+    [detectVersionConflict, loadAll, workId]
   );
 
   const unprocessedCommentCount = useMemo(() => {
@@ -661,9 +704,52 @@ export function useWorkDetail(workId: string | undefined) {
       .length;
   }, [state.baselineSubmittedVersion?.analysis?.sentenceComments, state.suggestionMarkings]);
 
-  const canLoadMoreVersions = useMemo(() => state.hiddenVersionCount > 0, [state.hiddenVersionCount]);
+  const canLoadMoreVersions = useMemo(
+    () => state.hiddenVersionCount > 0 || Boolean(state.versionsNextCursor),
+    [state.hiddenVersionCount, state.versionsNextCursor]
+  );
 
-  const loadMoreVersions = useCallback(() => {
+  const loadMoreVersions = useCallback(async () => {
+    if (!workId) {
+      return;
+    }
+
+    if (state.versionsNextCursor) {
+      try {
+        const nextPage = await getVersionList(workId, 'all', {
+          limit: MAX_VISIBLE_VERSIONS,
+          cursor: state.versionsNextCursor
+        });
+
+        setState((prev) => {
+          const existing = new Set(prev.versions.map((item) => item.versionNumber));
+          const merged = [...prev.versions];
+          for (const item of nextPage.versions) {
+            if (!existing.has(item.versionNumber)) {
+              merged.push(item);
+            }
+          }
+
+          return {
+            ...prev,
+            allVersions: merged,
+            versions: merged,
+            hiddenVersionCount: 0,
+            versionsNextCursor: nextPage.nextCursor
+          };
+        });
+        return;
+      } catch (error) {
+        const mapped = mapApiError(error);
+        setState((prev) => ({
+          ...prev,
+          error: mapped.message,
+          errorCode: mapped.code
+        }));
+        return;
+      }
+    }
+
     setState((prev) => {
       const nextLimit = prev.visibleVersionLimit + MAX_VISIBLE_VERSIONS;
       const nextVersions = prev.allVersions.slice(0, nextLimit);
@@ -675,7 +761,7 @@ export function useWorkDetail(workId: string | undefined) {
         hiddenVersionCount
       };
     });
-  }, []);
+  }, [state.versionsNextCursor, workId]);
 
   return {
     state,

@@ -19,7 +19,7 @@ import {
   WorkVersionDetail,
   WorkVersionList
 } from '../types/workContract';
-import { getStoredToken, handleSessionExpired } from '../../auth/session/tokenStore';
+import { handleSessionExpired } from '../../auth/session/tokenStore';
 
 type ApiErrorPayload = {
   code?: string;
@@ -68,13 +68,8 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const cacheKey = isGet ? `${getApiBaseUrl()}${path}` : '';
   const cached = isGet ? (getCache.get(cacheKey) as CachedGetEntry<T> | undefined) : undefined;
 
-  const token = getStoredToken();
   const headers = new Headers(init?.headers);
   headers.set('Content-Type', 'application/json');
-
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
 
   if (isGet && cached?.etag) {
     headers.set('If-None-Match', cached.etag);
@@ -82,6 +77,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
 
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     ...init,
+    credentials: 'include',
     headers
   });
 
@@ -214,12 +210,22 @@ export async function submitWork(
 export async function getVersionList(
   workId: string,
   type: 'all' | 'submitted' | 'draft' = 'all',
-  parent?: number
+  options?: {
+    parent?: number;
+    limit?: number;
+    cursor?: string;
+  }
 ): Promise<WorkVersionList> {
   const params = new URLSearchParams();
   params.set('type', type);
-  if (type === 'draft' && typeof parent === 'number') {
-    params.set('parent', String(parent));
+  if (type === 'draft' && typeof options?.parent === 'number') {
+    params.set('parent', String(options.parent));
+  }
+  if (typeof options?.limit === 'number' && Number.isFinite(options.limit)) {
+    params.set('limit', String(Math.max(1, options.limit)));
+  }
+  if (options?.cursor) {
+    params.set('cursor', options.cursor);
   }
 
   const payload = await requestJson<{
@@ -231,6 +237,7 @@ export async function getVersionList(
       change_type: string;
       created_at: string;
     }>;
+    next_cursor?: string | null;
   }>(`/api/work/${workId}/versions?${params.toString()}`);
 
   return fromApiVersionList(payload);
