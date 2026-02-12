@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuthSession } from '../auth/session/AuthSessionContext';
 import { TestRouteSwitches } from '../navigation/TestRouteSwitches';
 import { WorksListPanel } from './components/WorksListPanel';
 import { useWorksList } from './hooks/useWorksList';
 
 export function WorksPage() {
   const navigate = useNavigate();
+  const { user, logout } = useAuthSession();
   const { state, runCreate, runDelete } = useWorksList();
 
   async function handleCreate() {
@@ -21,6 +23,12 @@ export function WorksPage() {
       <header className="page-header">
         <h1>Works</h1>
         <p>Manage your works and open one to continue editing.</p>
+        <p>
+          Signed in as <strong>{user?.username || user?.email || 'user'}</strong>{' '}
+          <button type="button" onClick={logout}>
+            Sign Out
+          </button>
+        </p>
       </header>
 
       <WorksListPanel

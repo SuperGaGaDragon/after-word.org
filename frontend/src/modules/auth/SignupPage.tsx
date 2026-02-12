@@ -1,14 +1,29 @@
 import { FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthSession } from './session/AuthSessionContext';
 import { AuthShell } from './AuthShell';
 
 export function SignupPage() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { signup } = useAuthSession();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await signup(email, username, password);
+      navigate('/works', { replace: true });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -50,8 +65,11 @@ export function SignupPage() {
           required
         />
 
-        <button type="submit">Create Account</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Creating...' : 'Create Account'}
+        </button>
       </form>
+      {error && <p className="contract-error">{error}</p>}
 
       <p className="auth-footnote">
         Already have an account? <Link to="/auth/login">Sign in</Link>
