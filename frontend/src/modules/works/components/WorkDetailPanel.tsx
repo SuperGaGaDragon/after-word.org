@@ -1,8 +1,9 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent } from 'react';
 import { WorkVersionDetail, WorkVersionSummary } from '../types/workContract';
 
 type WorkDetailPanelProps = {
   content: string;
+  faoReflectionDraft: string;
   workId?: string;
   versions: WorkVersionSummary[];
   selectedVersion: WorkVersionDetail | null;
@@ -18,9 +19,10 @@ type WorkDetailPanelProps = {
   error: string | null;
   info: string | null;
   onContentChange: (value: string) => void;
+  onFaoReflectionChange: (value: string) => void;
   onSaveAuto: () => void;
   onSaveDraft: () => void;
-  onSubmit: (faoReflection: string) => void;
+  onSubmit: () => void;
   onOpenVersion: (versionNumber: number) => void;
   onRevert: (versionNumber: number) => void;
   onMarkSuggestionAction: (commentId: string, action: 'resolved' | 'rejected') => void;
@@ -29,6 +31,7 @@ type WorkDetailPanelProps = {
 
 export function WorkDetailPanel({
   content,
+  faoReflectionDraft,
   workId,
   versions,
   selectedVersion,
@@ -44,6 +47,7 @@ export function WorkDetailPanel({
   error,
   info,
   onContentChange,
+  onFaoReflectionChange,
   onSaveAuto,
   onSaveDraft,
   onSubmit,
@@ -52,11 +56,9 @@ export function WorkDetailPanel({
   onMarkSuggestionAction,
   onSuggestionNoteChange
 }: WorkDetailPanelProps) {
-  const [faoReflection, setFaoReflection] = useState('');
-
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSubmit(faoReflection);
+    onSubmit();
   }
 
   return (
@@ -144,9 +146,9 @@ export function WorkDetailPanel({
         <textarea
           id="submit-fao-reflection"
           rows={3}
-          value={faoReflection}
+          value={faoReflectionDraft}
           disabled={locked}
-          onChange={(event) => setFaoReflection(event.target.value)}
+          onChange={(event) => onFaoReflectionChange(event.target.value)}
           placeholder="optional reflection"
         />
 

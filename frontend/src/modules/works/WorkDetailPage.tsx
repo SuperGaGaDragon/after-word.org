@@ -8,6 +8,7 @@ export function WorkDetailPage() {
   const {
     state,
     setContent,
+    setFaoReflectionDraft,
     save,
     submit,
     openVersion,
@@ -27,6 +28,7 @@ export function WorkDetailPage() {
       <WorkDetailPanel
         workId={workId}
         content={state.content}
+        faoReflectionDraft={state.faoReflectionDraft}
         versions={state.versions}
         selectedVersion={state.selectedVersion}
         baselineSubmittedVersion={state.baselineSubmittedVersion}
@@ -41,9 +43,10 @@ export function WorkDetailPage() {
         error={state.error}
         info={state.info}
         onContentChange={setContent}
+        onFaoReflectionChange={setFaoReflectionDraft}
         onSaveAuto={() => void save(true)}
         onSaveDraft={() => void save(false)}
-        onSubmit={(faoReflection) => void submit(faoReflection)}
+        onSubmit={() => void submit()}
         onOpenVersion={(versionNumber) => void openVersion(versionNumber)}
         onRevert={(versionNumber) => void revert(versionNumber)}
         onMarkSuggestionAction={markSuggestionAction}

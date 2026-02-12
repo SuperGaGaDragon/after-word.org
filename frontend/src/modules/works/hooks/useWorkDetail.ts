@@ -18,6 +18,7 @@ type SuggestionMarking = {
 type UseWorkDetailState = {
   work: WorkDetail | null;
   content: string;
+  faoReflectionDraft: string;
   versions: WorkVersionSummary[];
   selectedVersion: WorkVersionDetail | null;
   baselineSubmittedVersion: WorkVersionDetail | null;
@@ -113,6 +114,7 @@ export function useWorkDetail(workId: string | undefined) {
   const [state, setState] = useState<UseWorkDetailState>({
     work: null,
     content: '',
+    faoReflectionDraft: '',
     versions: [],
     selectedVersion: null,
     baselineSubmittedVersion: null,
@@ -134,7 +136,8 @@ export function useWorkDetail(workId: string | undefined) {
   const pendingAutoSaveContentRef = useRef<string | null>(null);
   const lastSyncedContentRef = useRef('');
 
-  const loadAll = useCallback(async () => {
+  const loadAll = useCallback(async (options?: { preserveLocalDraft?: boolean }) => {
+    const preserveLocalDraft = options?.preserveLocalDraft ?? true;
     if (!workId) {
       setState((prev) => ({
         ...prev,
@@ -153,38 +156,14 @@ export function useWorkDetail(workId: string | undefined) {
       info: null
     }));
 
-    try {
-      const [work, versionList] = await Promise.all([getWork(workId), getVersionList(workId, 'all')]);
+    const [workResult, allVersionsResult, submittedVersionsResult] = await Promise.allSettled([
+      getWork(workId),
+      getVersionList(workId, 'all'),
+      getVersionList(workId, 'submitted')
+    ]);
 
-      const latestSubmitted = findLatestSubmittedVersion(versionList.versions);
-      const latestSubmittedDetail = latestSubmitted
-        ? await getVersionDetail(workId, latestSubmitted.versionNumber)
-        : null;
-
-      setState((prev) => {
-        const baselineVersionChanged =
-          latestSubmittedDetail?.versionNumber !== prev.baselineSubmittedVersion?.versionNumber;
-
-        return {
-          ...prev,
-          work,
-          content: work.content,
-          versions: versionList.versions,
-          selectedVersion: prev.selectedVersion ?? latestSubmittedDetail,
-          baselineSubmittedVersion: latestSubmittedDetail,
-          suggestionMarkings: baselineVersionChanged ? {} : prev.suggestionMarkings,
-          loading: false,
-          error: null,
-          errorCode: null,
-          locked: false,
-          lockRetryInSec: 0
-        };
-      });
-
-      lastSyncedContentRef.current = work.content;
-      pendingAutoSaveContentRef.current = null;
-    } catch (error) {
-      const mapped = mapApiError(error);
+    if (workResult.status === 'rejected') {
+      const mapped = mapApiError(workResult.reason);
       setState((prev) => ({
         ...prev,
         loading: false,
@@ -192,15 +171,72 @@ export function useWorkDetail(workId: string | undefined) {
         errorCode: mapped.code,
         locked: mapped.code === 'locked' ? true : prev.locked
       }));
+      return;
+    }
+
+    const work = workResult.value;
+    const versions =
+      allVersionsResult.status === 'fulfilled' ? allVersionsResult.value.versions : [];
+    const latestSubmittedFromSubmittedList =
+      submittedVersionsResult.status === 'fulfilled'
+        ? findLatestSubmittedVersion(submittedVersionsResult.value.versions)
+        : null;
+    const latestSubmitted =
+      latestSubmittedFromSubmittedList ?? findLatestSubmittedVersion(versions);
+
+    let latestSubmittedDetail: WorkVersionDetail | null = null;
+    if (latestSubmitted) {
+      try {
+        latestSubmittedDetail = await getVersionDetail(workId, latestSubmitted.versionNumber);
+      } catch {
+        latestSubmittedDetail = null;
+      }
+    }
+
+    setState((prev) => {
+      const baselineVersionChanged =
+        latestSubmittedDetail?.versionNumber !== prev.baselineSubmittedVersion?.versionNumber;
+      const hasUnsyncedLocalContent = prev.content !== lastSyncedContentRef.current;
+      const keepLocalContent = preserveLocalDraft && hasUnsyncedLocalContent;
+
+      return {
+        ...prev,
+        work,
+        content: keepLocalContent ? prev.content : work.content,
+        versions,
+        selectedVersion: prev.selectedVersion ?? latestSubmittedDetail,
+        baselineSubmittedVersion: latestSubmittedDetail,
+        suggestionMarkings: baselineVersionChanged ? {} : prev.suggestionMarkings,
+        loading: false,
+        error: null,
+        errorCode: null,
+        locked: false,
+        lockRetryInSec: 0,
+        info:
+          !latestSubmittedDetail && submittedVersionsResult.status === 'fulfilled'
+            ? 'No analysis yet. Submit to get feedback.'
+            : keepLocalContent
+              ? 'Server state refreshed, local unsaved text preserved.'
+            : prev.info
+      };
+    });
+
+    if (!preserveLocalDraft) {
+      lastSyncedContentRef.current = work.content;
+      pendingAutoSaveContentRef.current = null;
     }
   }, [workId]);
 
   useEffect(() => {
-    void loadAll();
+    void loadAll({ preserveLocalDraft: false });
   }, [loadAll]);
 
   const setContent = useCallback((next: string) => {
     setState((prev) => ({ ...prev, content: next }));
+  }, []);
+
+  const setFaoReflectionDraft = useCallback((next: string) => {
+    setState((prev) => ({ ...prev, faoReflectionDraft: next }));
   }, []);
 
   const runAutoSave = useCallback(
@@ -287,7 +323,7 @@ export function useWorkDetail(workId: string | undefined) {
         });
 
         if (!autoSave) {
-          await loadAll();
+          await loadAll({ preserveLocalDraft: false });
           lastSyncedContentRef.current = state.content;
         } else {
           lastSyncedContentRef.current = state.content;
@@ -353,7 +389,7 @@ export function useWorkDetail(workId: string | undefined) {
       remain -= 1;
       if (remain <= 0) {
         remain = LOCK_RETRY_INTERVAL_MS / 1000;
-        void loadAll();
+        void loadAll({ preserveLocalDraft: true });
       }
       setState((prev) => ({ ...prev, lockRetryInSec: remain }));
     }, 1000);
@@ -389,7 +425,7 @@ export function useWorkDetail(workId: string | undefined) {
   }, []);
 
   const submit = useCallback(
-    async (faoReflection: string) => {
+    async () => {
       if (!workId) {
         return;
       }
@@ -430,11 +466,11 @@ export function useWorkDetail(workId: string | undefined) {
         const result = await submitAndFetchAnalysis(workId, {
           content: state.content,
           deviceId: DEFAULT_DEVICE_ID,
-          faoReflection,
+          faoReflection: state.faoReflectionDraft,
           suggestionActions: state.suggestionMarkings
         });
 
-        await loadAll();
+        await loadAll({ preserveLocalDraft: false });
 
         setState((prev) => ({
           ...prev,
@@ -442,6 +478,7 @@ export function useWorkDetail(workId: string | undefined) {
           selectedVersion: result.versionDetail,
           baselineSubmittedVersion: result.versionDetail,
           suggestionMarkings: {},
+          faoReflectionDraft: '',
           locked: false,
           lockRetryInSec: 0,
           info: `Submitted version ${result.submit.version} and loaded analysis`
@@ -457,7 +494,14 @@ export function useWorkDetail(workId: string | undefined) {
         }));
       }
     },
-    [loadAll, state.baselineSubmittedVersion?.analysis?.sentenceComments, state.content, state.suggestionMarkings, workId]
+    [
+      loadAll,
+      state.baselineSubmittedVersion?.analysis?.sentenceComments,
+      state.content,
+      state.faoReflectionDraft,
+      state.suggestionMarkings,
+      workId
+    ]
   );
 
   const openVersion = useCallback(
@@ -504,7 +548,7 @@ export function useWorkDetail(workId: string | undefined) {
       try {
         const result = await revertToVersion(workId, targetVersion, DEFAULT_DEVICE_ID);
         const revertedDetail = await getVersionDetail(workId, result.newVersion);
-        await loadAll();
+        await loadAll({ preserveLocalDraft: false });
         setState((prev) => ({
           ...prev,
           selectedVersion: revertedDetail,
@@ -541,6 +585,7 @@ export function useWorkDetail(workId: string | undefined) {
     state,
     canOperate,
     setContent,
+    setFaoReflectionDraft,
     save,
     submit,
     openVersion,
