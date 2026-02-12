@@ -37,16 +37,34 @@ from backend.storage.db import execute_query
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
 
-def _show_test_info():
+def _run_integration_tests_on_startup():
     """
-    🚨 TEMPORARY: Show integration test information on startup.
+    🚨 TEMPORARY: Auto-run integration tests on Railway deployment startup.
 
     ⚠️  WARNING: This function MUST be deleted after acceptance testing! ⚠️
 
-    Provides instructions for running comprehensive backend integration tests.
+    This function automatically runs the full integration test suite when the
+    backend service starts on Railway. Test results will appear in Railway logs.
 
-    TODO: Remove this function after deployment verification
+    Set environment variable: RUN_INTEGRATION_TESTS=true to enable.
+
+    Tests validate:
+    - Phase 1-4: Auth, Work CRUD, Version system
+    - Phase 5-7: AI evaluation (first-time + iterative)
+    - Phase 8: Suggestion tracking and validation
+    - Phase 9: Version history and revert
+
+    TODO: Remove this function AND test files after deployment verification
     """
+    # Only run if explicitly enabled
+    if os.environ.get("RUN_INTEGRATION_TESTS") != "true":
+        print("ℹ️  Integration tests available (set RUN_INTEGRATION_TESTS=true to auto-run)")
+        return
+
+    import sys
+    import time
+    from pathlib import Path
+
     test_file = Path(__file__).parent / "test_integration.py"
 
     if not test_file.exists():
@@ -54,28 +72,64 @@ def _show_test_info():
         return
 
     print("\n" + "=" * 80)
-    print("🧪 [PHASE 10] Backend Integration Tests Available")
+    print("🧪🧪🧪 [PHASE 10] AUTO-RUNNING INTEGRATION TESTS 🧪🧪🧪")
+    print("=" * 80)
+    print("⚠️  TEMPORARY TEST CODE - WILL BE DELETED AFTER VERIFICATION")
     print("=" * 80)
     print("")
-    print("Comprehensive tests covering:")
-    print("  ✓ Authentication (signup/login)")
-    print("  ✓ Work CRUD operations")
-    print("  ✓ Version system (auto-save vs manual save)")
-    print("  ✓ AI evaluation (first-time submission)")
-    print("  ✓ AI evaluation (iterative with suggestion tracking)")
-    print("  ✓ Suggestion validation (2nd+ submission)")
-    print("  ✓ Version history and revert")
-    print("")
-    print("To run tests:")
-    print(f"  python {test_file}")
-    print("")
-    print("Or with custom base URL:")
-    print("  BASE_URL=https://your-api.com python backend/test_integration.py")
-    print("=" * 80 + "\n")
+
+    # Import and run tests
+    try:
+        # Add backend to path
+        backend_path = Path(__file__).parent.parent
+        if str(backend_path) not in sys.path:
+            sys.path.insert(0, str(backend_path))
+
+        # Give server a moment to fully start
+        print("⏳ Waiting 3 seconds for server to fully initialize...")
+        time.sleep(3)
+
+        # Import test module
+        from backend.test_integration import run_tests
+
+        # Run tests against localhost (same instance)
+        print("🚀 Running integration tests against http://localhost:8000")
+        print("")
+
+        success = run_tests()
+
+        print("")
+        print("=" * 80)
+        if success:
+            print("✅✅✅ ALL TESTS PASSED - PHASE 10 VERIFICATION COMPLETE ✅✅✅")
+            print("=" * 80)
+            print("")
+            print("🎯 Next steps:")
+            print("1. Remove RUN_INTEGRATION_TESTS environment variable from Railway")
+            print("2. Delete test code from backend/main.py (lines 18-110)")
+            print("3. Delete backend/test_integration.py")
+            print("4. Delete backend/TEST_PHASE10.md")
+            print("5. Commit: 'Phase 10 completed - Remove integration test code'")
+        else:
+            print("❌❌❌ SOME TESTS FAILED - REVIEW LOGS ABOVE ❌❌❌")
+            print("=" * 80)
+            print("")
+            print("⚠️  Fix issues before proceeding with cleanup")
+
+        print("=" * 80 + "\n")
+
+    except Exception as e:
+        print("")
+        print("=" * 80)
+        print(f"❌ TEST EXECUTION ERROR: {type(e).__name__}: {str(e)}")
+        print("=" * 80)
+        import traceback
+        traceback.print_exc()
+        print("")
 
 
-# Show test info on startup
-_show_test_info()
+# Auto-run tests on startup if enabled
+_run_integration_tests_on_startup()
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║                    END OF TEMPORARY TEST CODE                              ║
