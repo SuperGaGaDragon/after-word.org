@@ -29,6 +29,20 @@ def update_work_content(work_id: str, user_email: str, content: str, word_count:
     return _build_query(sql, params)
 
 
+def update_essay_prompt(work_id: str, user_email: str, essay_prompt: str) -> Dict[str, Any]:
+    """Update essay prompt for a work."""
+    sql = (
+        "UPDATE works SET essay_prompt = %(essay_prompt)s, updated_at = NOW() "
+        "WHERE id = %(work_id)s AND user_email = %(user_email)s"
+    )
+    params = {
+        "essay_prompt": essay_prompt,
+        "work_id": work_id,
+        "user_email": user_email,
+    }
+    return _build_query(sql, params)
+
+
 def delete_work(work_id: str, user_email: str) -> Dict[str, Any]:
     """Delete a work (cascade deletes related records)."""
     sql = "DELETE FROM works WHERE id = %(work_id)s AND user_email = %(user_email)s"

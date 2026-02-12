@@ -19,6 +19,7 @@ def generate_analysis(
     previous_analysis: Optional[Dict[str, Any]] = None,
     user_actions: Optional[Dict[str, Dict[str, Any]]] = None,
     user_reflection: Optional[str] = None,
+    essay_prompt: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Generate AI analysis for an essay submission.
@@ -31,6 +32,7 @@ def generate_analysis(
         previous_analysis: Previous analysis result (None for first submission)
         user_actions: User's actions on previous suggestions (None for first submission)
         user_reflection: User's reflection on FAO comment (optional)
+        essay_prompt: Essay prompt/requirements provided by user (optional)
 
     Returns:
         Dict with:
@@ -46,7 +48,7 @@ def generate_analysis(
     # Build appropriate prompt
     if is_first_submission:
         print(f"[ANALYZER] Generating first-time analysis for work {work_id}")
-        prompt = prompts.build_first_time_prompt(current_text)
+        prompt = prompts.build_first_time_prompt(current_text, essay_prompt)
     else:
         print(f"[ANALYZER] Generating iterative analysis for work {work_id}, version {current_version}")
 
@@ -66,6 +68,7 @@ def generate_analysis(
             previous_sentence_comments=previous_sentence_comments,
             user_actions=user_actions or {},
             user_reflection=user_reflection,
+            essay_prompt=essay_prompt,
         )
 
     # Call LLM API with JSON mode

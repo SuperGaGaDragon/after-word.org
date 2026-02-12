@@ -154,7 +154,8 @@ Get work details.
   "current_version": 5,
   "created_at": "2026-02-11T09:00:00Z",
   "updated_at": "2026-02-11T10:00:00Z",
-  "word_count": 1247
+  "word_count": 1247,
+  "essay_prompt": "Describe a time when you overcame a challenge"
 }
 ```
 

@@ -8,7 +8,7 @@ def _build_query(sql: str, params: Dict[str, Any]) -> Dict[str, Any]:
 
 def get_work(work_id: str, user_email: str) -> Dict[str, Any]:
     sql = (
-        "SELECT id, user_email, content, updated_at, created_at, current_version, word_count "
+        "SELECT id, user_email, content, updated_at, created_at, current_version, word_count, essay_prompt "
         "FROM works WHERE id = %(work_id)s AND user_email = %(user_email)s"
     )
     params = {"work_id": work_id, "user_email": user_email}

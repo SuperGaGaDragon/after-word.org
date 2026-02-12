@@ -75,6 +75,7 @@ def get_work_route(work_id: str, user: dict = Depends(require_user)) -> WorkGetR
         created_at=_format_updated_at(work.get("created_at")),
         updated_at=_format_updated_at(work.get("updated_at")),
         word_count=work.get("word_count", 0),
+        essay_prompt=work.get("essay_prompt"),
     )
 
 
@@ -83,7 +84,7 @@ def update_work_route(
     work_id: str, payload: WorkUpdateRequest, user: dict = Depends(require_user)
 ) -> WorkUpdateResponse:
     result = update_work(
-        work_id, user["email"], payload.content, payload.device_id, payload.auto_save
+        work_id, user["email"], payload.content, payload.device_id, payload.auto_save, payload.essay_prompt
     )
     return WorkUpdateResponse(ok=result["ok"], version=result.get("version"))
 

@@ -44,6 +44,7 @@ class WorkGetResponse(BaseModel):
     created_at: str = Field(..., description="ISO 8601 timestamp of creation")
     updated_at: str = Field(..., description="ISO 8601 timestamp of last update")
     word_count: int = Field(0, description="Total word count (English words + Chinese characters)")
+    essay_prompt: Optional[str] = Field(None, description="Essay prompt/requirements provided by user")
 
 
 # ============================================================================
@@ -61,6 +62,7 @@ class WorkUpdateRequest(BaseModel):
         description="If true, only update content without creating version. "
         "If false, create a new draft version.",
     )
+    essay_prompt: Optional[str] = Field(None, description="Essay prompt/requirements (optional)")
 
 
 class WorkUpdateResponse(BaseModel):

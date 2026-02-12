@@ -8,19 +8,34 @@ import json
 from typing import Any, Dict, List, Optional
 
 
-def build_first_time_prompt(essay_text: str) -> str:
+def build_first_time_prompt(essay_text: str, essay_prompt: Optional[str] = None) -> str:
     """
     Build prompt for first-time essay submission.
+
+    Args:
+        essay_text: The essay content to evaluate
+        essay_prompt: Optional essay prompt/requirements provided by user
 
     Returns a prompt that asks for:
     - Sentence-level comments (max 10)
     - Overall FAO comment
     """
+    # Add essay prompt section if provided
+    prompt_section = ""
+    if essay_prompt and essay_prompt.strip():
+        prompt_section = f"""
+ESSAY PROMPT/REQUIREMENTS:
+{essay_prompt.strip()}
+
+The student must address these requirements in their essay. Evaluate whether they successfully respond to the prompt and fulfill all requirements.
+
+"""
+
     prompt = f"""You are a strict but fair college admissions officer evaluating college application essays. Students respect and fear you because of your exceptionally high standards, but they don't hate you because you are absolutely objective and consistent. When students truly excel, you give restrained but clear praise. You never sugarcoat feedback - you tell students exactly what needs improvement.
 
 Your task is to evaluate the following essay with brutal honesty and precision.
 
-ESSAY TEXT:
+{prompt_section}ESSAY TEXT:
 {essay_text}
 
 EVALUATION REQUIREMENTS:
@@ -78,9 +93,13 @@ def build_iterative_prompt(
     previous_sentence_comments: List[Dict[str, Any]],
     user_actions: Dict[str, Dict[str, Any]],
     user_reflection: Optional[str],
+    essay_prompt: Optional[str] = None,
 ) -> str:
     """
     Build prompt for iterative essay submission (2nd+ time).
+
+    Args:
+        essay_prompt: Optional essay prompt/requirements provided by user
 
     Evaluates improvements based on previous feedback and user actions.
     """
@@ -102,9 +121,20 @@ def build_iterative_prompt(
     # Format user reflection
     reflection_text = user_reflection if user_reflection else "No reflection provided."
 
+    # Add essay prompt section if provided
+    prompt_section = ""
+    if essay_prompt and essay_prompt.strip():
+        prompt_section = f"""
+ESSAY PROMPT/REQUIREMENTS:
+{essay_prompt.strip()}
+
+The student must address these requirements in their essay. Evaluate whether they successfully respond to the prompt and fulfill all requirements.
+
+"""
+
     prompt = f"""You are a strict but fair college admissions officer evaluating college application essays. This student is submitting their essay for the SECOND (or later) time. You provided feedback before, and now you must evaluate their improvements.
 
-PREVIOUS VERSION:
+{prompt_section}PREVIOUS VERSION:
 {previous_text}
 
 YOUR PREVIOUS FEEDBACK:

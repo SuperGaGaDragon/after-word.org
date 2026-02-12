@@ -56,6 +56,7 @@ def update_work(
     content: str,
     device_id: str,
     auto_save: bool = True,
+    essay_prompt: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Update work content.
@@ -67,6 +68,7 @@ def update_work(
         device_id: Device ID for locking
         auto_save: If True, only update content without creating version.
                    If False, create a new draft version.
+        essay_prompt: Essay prompt/requirements (optional)
 
     Returns:
         Dict with 'ok' and 'version' (if created)
@@ -81,6 +83,11 @@ def update_work(
     # Update content and word count in works table
     query = work_repo.update_work_content(work_id, user_email, content, word_count)
     _run(query)
+
+    # Update essay prompt if provided
+    if essay_prompt is not None:
+        prompt_query = work_repo.update_essay_prompt(work_id, user_email, essay_prompt)
+        _run(prompt_query)
 
     result = {"ok": True}
 
@@ -133,7 +140,9 @@ def submit_work(
     Raises:
         BusinessError: If validation fails (e.g., unprocessed suggestions)
     """
-    _ = get_work(work_id, user_email)
+    work = get_work(work_id, user_email)
+    essay_prompt = work.get("essay_prompt")  # Get essay prompt for LLM analysis
+
     if not session_lock.acquire_lock(work_id, device_id):
         raise BusinessError("locked", "work locked")
 
@@ -175,6 +184,7 @@ def submit_work(
         previous_submission=latest_submission,
         user_reflection=user_reflection,
         suggestion_actions=suggestion_actions,
+        essay_prompt=essay_prompt,
     )
 
     return {
@@ -254,6 +264,7 @@ def _generate_and_save_analysis(
     previous_submission: Optional[Dict[str, Any]],
     user_reflection: Optional[str],
     suggestion_actions: Optional[Dict[str, Dict[str, Any]]],
+    essay_prompt: Optional[str],
 ) -> str:
     """
     Generate AI analysis and save to database.
@@ -265,6 +276,7 @@ def _generate_and_save_analysis(
         current_content: Current essay content
         previous_submission: Previous submitted version (None for first time)
         user_reflection: User's reflection on previous FAO comment
+        essay_prompt: Essay prompt/requirements provided by user
 
     Returns:
         analysis_id: ID of created analysis record
@@ -299,6 +311,7 @@ def _generate_and_save_analysis(
         previous_analysis=previous_analysis,
         user_actions=suggestion_actions,
         user_reflection=user_reflection,
+        essay_prompt=essay_prompt,
     )
 
     # Save analysis to database
