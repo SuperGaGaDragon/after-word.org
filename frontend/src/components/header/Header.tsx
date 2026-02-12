@@ -16,8 +16,8 @@ export function Header() {
         <nav className="header-nav">
           {isAuthenticated ? (
             <>
-              <Link to="/works" className="nav-link">
-                Works
+              <Link to="/workspace" className="nav-link">
+                Workspace
               </Link>
               <Link to="/why" className="nav-link">
                 Why

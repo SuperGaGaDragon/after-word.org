@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { WorkCard } from '../../components/modal/WorkCard';
 import { getTotalProjectCount, getTotalWordCount, listWorks } from '../works/api/workApi';
+import { WorkSummary } from '../works/types/workContract';
 import './HomePage.css';
 
 export function HomePage() {
+  const navigate = useNavigate();
   const [projectCount, setProjectCount] = useState<number | null>(null);
   const [wordCount, setWordCount] = useState<number | null>(null);
-  const [recentWorkId, setRecentWorkId] = useState<string | null>(null);
+  const [recentWork, setRecentWork] = useState<WorkSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export function HomePage() {
 
         // Get most recently updated work (list is already sorted by updated_at DESC)
         if (works.length > 0) {
-          setRecentWorkId(works[0].workId);
+          setRecentWork(works[0]);
         }
       } catch (error) {
         console.error('Failed to load statistics:', error);
@@ -66,13 +69,24 @@ export function HomePage() {
               <h3 className="quick-start-title">Quick Start</h3>
               {loading ? (
                 <p className="quick-start-loading">Loading...</p>
-              ) : recentWorkId ? (
-                <>
+              ) : recentWork ? (
+                <div className="quick-start-card-wrapper">
                   <p className="quick-start-description">Continue your most recent work</p>
-                  <Link to={`/works/${recentWorkId}`} className="btn-quick-start">
-                    Resume Editing
-                  </Link>
-                </>
+                  <WorkCard
+                    workId={recentWork.workId}
+                    title="Untitled Work"
+                    createdAt={recentWork.updatedAt}
+                    updatedAt={recentWork.updatedAt}
+                    onDelete={async (workId) => {
+                      // Refresh after delete
+                      const works = await listWorks();
+                      setRecentWork(works.length > 0 ? works[0] : null);
+                      // Update project count
+                      const count = await getTotalProjectCount();
+                      setProjectCount(count);
+                    }}
+                  />
+                </div>
               ) : (
                 <p className="quick-start-empty">No works yet. Create your first one!</p>
               )}
@@ -80,7 +94,7 @@ export function HomePage() {
           </div>
 
           <div className="hero-actions">
-            <Link to="/works" className="btn-primary-large">
+            <Link to="/workspace" className="btn-primary-large">
               Go to Workspace
             </Link>
           </div>

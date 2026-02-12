@@ -1,0 +1,175 @@
+/* WorkInfoDialog - Cold Theme Design System Compliant */
+
+/* Dropdown Menu Styles */
+.work-info-content {
+  min-width: 240px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-ui);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 24px rgba(58, 92, 160, 0.2);
+  padding: 0.5rem;
+  animation: slideDownAndFade 200ms ease;
+  z-index: 1000;
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.work-info-section {
+  padding: 0.5rem;
+}
+
+.work-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.work-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.work-info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.work-info-value {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.work-info-separator {
+  height: 1px;
+  background: var(--panel-border);
+  margin: 0.5rem 0;
+}
+
+.work-info-delete {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  color: #d93025;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 180ms ease;
+  outline: none;
+}
+
+.work-info-delete:hover {
+  background: rgba(217, 48, 37, 0.1);
+}
+
+.work-info-arrow {
+  fill: rgba(255, 255, 255, 0.95);
+}
+
+/* Delete Confirmation Dialog */
+.delete-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  animation: fadeIn 150ms ease;
+  z-index: 2000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.delete-dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 420px;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 16px 48px rgba(58, 92, 160, 0.3);
+  animation: slideUpAndFade 200ms ease;
+  z-index: 2001;
+}
+
+@keyframes slideUpAndFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.delete-dialog-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.delete-dialog-description {
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.delete-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.delete-dialog-btn-cancel,
+.delete-dialog-btn-delete {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: var(--radius-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.delete-dialog-btn-cancel {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+}
+
+.delete-dialog-btn-cancel:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.delete-dialog-btn-delete {
+  background: #d93025;
+  color: white;
+}
+
+.delete-dialog-btn-delete:hover {
+  background: #c92a1f;
+  transform: translateY(-1px);
+}

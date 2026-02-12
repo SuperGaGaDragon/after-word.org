@@ -1,0 +1,84 @@
+/* WorkCard - Cold Theme Design System Compliant */
+
+.work-card {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 4px 16px rgba(58, 92, 160, 0.08);
+  transition: all 180ms ease;
+}
+
+.work-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(58, 92, 160, 0.15);
+  border-color: var(--accent);
+}
+
+.work-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.work-card-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--accent);
+}
+
+.work-card-menu-btn {
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 180ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-card-menu-btn:hover {
+  background: rgba(23, 105, 255, 0.1);
+  color: var(--accent);
+}
+
+.work-card-menu-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.work-card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.work-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  word-break: break-word;
+  transition: color 180ms ease;
+}
+
+.work-card-link:hover .work-card-title {
+  color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .work-card {
+    padding: 1.25rem;
+  }
+
+  .work-card-title {
+    font-size: 1rem;
+  }
+}

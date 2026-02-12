@@ -8,7 +8,7 @@ import { SignupPage } from './modules/auth/SignupPage';
 import { HomePage } from './modules/home/HomePage';
 import { WhyPage } from './modules/why/WhyPage';
 import { WorkDetailPage } from './modules/works/WorkDetailPage';
-import { WorksPage } from './modules/works/WorksPage';
+import { WorkspacePage } from './modules/works/WorkspacePage';
 
 export function AppRouter() {
   return (
@@ -22,7 +22,7 @@ export function AppRouter() {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/works" element={<WorksPage />} />
+          <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/works/:workId" element={<WorkDetailPage />} />
           <Route path="/account" element={<AccountPage />} />
         </Route>

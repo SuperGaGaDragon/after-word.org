@@ -111,10 +111,14 @@
 }
 
 .quick-start-description {
-  margin: 0 0 1.5rem;
-  font-size: 0.95rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.quick-start-card-wrapper {
+  width: 100%;
 }
 
 .quick-start-loading,
@@ -122,28 +126,6 @@
   margin: 0;
   font-size: 0.95rem;
   color: var(--muted);
-}
-
-.btn-quick-start {
-  padding: 0.875rem 2rem;
-  border: none;
-  border-radius: var(--radius-ui);
-  background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  color: var(--button-text);
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(23, 105, 255, 0.2);
-}
-
-.btn-quick-start:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(23, 105, 255, 0.3);
 }
 
 /* Actions */
