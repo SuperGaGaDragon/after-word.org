@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { WorkVersionDetail, WorkVersionSummary } from '../types/workContract';
+import { countWords } from '../../../utils/wordCount';
 
 type WorkDetailPanelProps = {
   content: string;
@@ -71,6 +72,10 @@ export function WorkDetailPanel({
   const [pendingRevertVersion, setPendingRevertVersion] = useState<number | null>(null);
   const [confirmBusy, setConfirmBusy] = useState(false);
 
+  const essayPromptWordCount = useMemo(() => countWords(essayPrompt), [essayPrompt]);
+  const contentWordCount = useMemo(() => countWords(content), [content]);
+  const reflectionWordCount = useMemo(() => countWords(faoReflectionDraft), [faoReflectionDraft]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit();
@@ -125,7 +130,10 @@ export function WorkDetailPanel({
         </p>
       )}
 
-      <label htmlFor="work-editor-prompt">Essay Prompt / Requirements</label>
+      <label htmlFor="work-editor-prompt">
+        Essay Prompt / Requirements
+        <span className="word-count">{essayPromptWordCount} words</span>
+      </label>
       <textarea
         id="work-editor-prompt"
         rows={3}
@@ -135,7 +143,10 @@ export function WorkDetailPanel({
         placeholder="Enter your essay prompt or requirements (optional)"
       />
 
-      <label htmlFor="work-editor-content">Content</label>
+      <label htmlFor="work-editor-content">
+        Content
+        <span className="word-count">{contentWordCount} words</span>
+      </label>
       <textarea
         id="work-editor-content"
         rows={10}
@@ -202,7 +213,10 @@ export function WorkDetailPanel({
 
       <form onSubmit={handleSubmit} className="contract-grid-form">
         <h3>Submit</h3>
-        <label htmlFor="submit-fao-reflection">FAO Reflection</label>
+        <label htmlFor="submit-fao-reflection">
+          FAO Reflection
+          <span className="word-count">{reflectionWordCount} words</span>
+        </label>
         <textarea
           id="submit-fao-reflection"
           rows={3}

@@ -396,3 +396,11 @@ body {
   color: #d93025;
   font-weight: 600;
 }
+
+/* Word Count Display */
+.word-count {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
