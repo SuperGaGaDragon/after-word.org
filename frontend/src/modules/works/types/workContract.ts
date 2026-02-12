@@ -5,6 +5,17 @@ export type SuggestionActionInput = {
   userNote?: string;
 };
 
+export type WorkSummary = {
+  workId: string;
+  updatedAt: string;
+};
+
+export type WorkDetail = {
+  workId: string;
+  content: string;
+  currentVersion: number;
+};
+
 export type WorkUpdateInput = {
   content: string;
   deviceId: string;
@@ -13,7 +24,7 @@ export type WorkUpdateInput = {
 
 export type WorkUpdateResponse = {
   ok: boolean;
-  version: number;
+  version?: number;
 };
 
 export type WorkSubmitInput = {
@@ -26,7 +37,7 @@ export type WorkSubmitInput = {
 export type WorkSubmitResponse = {
   ok: boolean;
   version: number;
-  analysisId: string;
+  analysisId?: string;
 };
 
 export type AnalysisComment = {
@@ -47,12 +58,32 @@ export type WorkAnalysis = {
   reflectionComment?: string;
 };
 
+export type WorkVersionSummary = {
+  versionNumber: number;
+  contentPreview: string;
+  isSubmitted: boolean;
+  changeType: string;
+  createdAt: string;
+};
+
 export type WorkVersionDetail = {
   versionNumber: number;
   content: string;
   isSubmitted: boolean;
+  userReflection?: string;
+  changeType: string;
   createdAt: string;
   analysis?: WorkAnalysis;
+};
+
+export type WorkVersionList = {
+  currentVersion: number;
+  versions: WorkVersionSummary[];
+};
+
+export type RevertResponse = {
+  ok: boolean;
+  newVersion: number;
 };
 
 export type SubmitAndFetchAnalysisResult = {

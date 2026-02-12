@@ -1,19 +1,41 @@
 import { useParams } from 'react-router-dom';
 import { TestRouteSwitches } from '../navigation/TestRouteSwitches';
-import { Phase2ContractPanel } from './components/Phase2ContractPanel';
+import { WorkDetailPanel } from './components/WorkDetailPanel';
+import { useWorkDetail } from './hooks/useWorkDetail';
 
 export function WorkDetailPage() {
   const { workId } = useParams<{ workId: string }>();
+  const { state, setContent, save, submit, openVersion, revert } = useWorkDetail(workId);
 
   return (
     <main className="page">
       <header className="page-header">
         <h1>Work Detail</h1>
-        {/* TEST ONLY: detail content is intentionally minimal for route plumbing validation. */}
-        <p>work_id: {workId ?? ''}</p>
+        <p>Read, save, submit, inspect versions, and revert.</p>
       </header>
 
-      <Phase2ContractPanel workId={workId} />
+      <WorkDetailPanel
+        workId={workId}
+        content={state.content}
+        versions={state.versions}
+        selectedVersion={state.selectedVersion}
+        loading={state.loading}
+        saving={state.saving}
+        submitting={state.submitting}
+        reverting={state.reverting}
+        locked={state.locked}
+        lockRetryInSec={state.lockRetryInSec}
+        error={state.error}
+        info={state.info}
+        onContentChange={setContent}
+        onSaveAuto={() => void save(true)}
+        onSaveDraft={() => void save(false)}
+        onSubmit={(faoReflection, suggestionActions) =>
+          void submit(faoReflection, suggestionActions)
+        }
+        onOpenVersion={(versionNumber) => void openVersion(versionNumber)}
+        onRevert={(versionNumber) => void revert(versionNumber)}
+      />
 
       <TestRouteSwitches className="route-switches" />
     </main>

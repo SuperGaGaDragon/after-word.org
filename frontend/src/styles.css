@@ -55,6 +55,121 @@ body {
   cursor: pointer;
 }
 
+.works-panel,
+.work-detail-panel {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.works-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.works-panel-header h2 {
+  margin: 0;
+}
+
+.works-panel-header button {
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: #ffffff;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.works-list,
+.version-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.works-item,
+.version-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.works-item p,
+.version-item p {
+  margin: 4px 0 0;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.works-item button,
+.version-actions button,
+.work-detail-panel button {
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #1a73e8;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.work-detail-panel h2,
+.work-detail-panel h3 {
+  margin: 0 0 8px;
+}
+
+.work-detail-panel textarea,
+.work-detail-panel input,
+.work-detail-panel select {
+  width: 100%;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.contract-grid-form {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.contract-grid-form h3 {
+  margin: 0 0 4px;
+}
+
+.version-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.selected-version {
+  margin-top: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.lock-banner {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #f9ab00;
+  border-radius: 8px;
+  background: #fff7e0;
+  color: #8a4b00;
+}
+
 .route-switches {
   display: flex;
   gap: 10px;
