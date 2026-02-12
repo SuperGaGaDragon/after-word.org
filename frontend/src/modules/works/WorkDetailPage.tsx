@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { TestRouteSwitches } from '../navigation/TestRouteSwitches';
 import { WorkDetailPanel } from './components/WorkDetailPanel';
 import { useWorkDetail } from './hooks/useWorkDetail';
 
@@ -58,8 +57,6 @@ export function WorkDetailPage() {
         onMarkSuggestionAction={markSuggestionAction}
         onSuggestionNoteChange={setSuggestionNote}
       />
-
-      <TestRouteSwitches className="route-switches" />
     </main>
   );
 }

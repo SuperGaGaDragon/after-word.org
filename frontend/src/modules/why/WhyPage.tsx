@@ -1,5 +1,3 @@
-import { TestRouteSwitches } from '../navigation/TestRouteSwitches';
-
 export function WhyPage() {
   return (
     <main className="page">
@@ -8,8 +6,6 @@ export function WhyPage() {
         {/* TEST ONLY: this text is temporary while building vertical slices. */}
         <p>Route ready for /why.</p>
       </header>
-
-      <TestRouteSwitches className="route-switches" />
     </main>
   );
 }

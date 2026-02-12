@@ -1,5 +1,3 @@
-import { TestRouteSwitches } from '../navigation/TestRouteSwitches';
-
 export function AboutPage() {
   return (
     <main className="page">
@@ -8,8 +6,6 @@ export function AboutPage() {
         {/* TEST ONLY: this text is temporary while building vertical slices. */}
         <p>Route ready for /about.</p>
       </header>
-
-      <TestRouteSwitches className="route-switches" />
     </main>
   );
 }
