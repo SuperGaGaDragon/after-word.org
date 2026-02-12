@@ -92,6 +92,7 @@ def submit_work_route(
         payload.content,
         payload.device_id,
         payload.fao_reflection,
+        payload.suggestion_actions,
     )
     return WorkSubmitResponse(
         ok=result["ok"],
