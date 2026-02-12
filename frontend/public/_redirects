@@ -1,1 +1,4 @@
+# SPA fallback for React Router
+# Cloudflare Pages handles this automatically, but explicit rule for clarity
+/api/* https://api.after-word.org/:splat 200
 /* /index.html 200
