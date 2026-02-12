@@ -16,9 +16,10 @@
 2.3 submit 后统一执行“submit + 版本详情二次请求”流程。
 
 验收:
-1. `suggestion_actions` 发送字段是 `action` 和 `user_note`。
-2. 自动保存与手动保存行为和版本结果符合预期。
-3. submit 后右侧评论来自 `versions/{version}` 响应而非 submit 响应。
+1. `update` 请求体固定为 `{content, device_id, auto_save: true|false}`。
+2. `submit` 请求体包含 `content`、`device_id`、`fao_reflection` 和 `suggestion_actions[action,user_note]`。
+3. 每次 submit 成功后必定发起 `GET /api/work/{work_id}/versions/{version}` 获取 analysis。
+4. Network 面板中不出现 `userAction`、`userNote` 等前端字段名。
 
 ## Phase 3: Works 列表与详情
 3.1 在 `/works` 页面接入 list/create/delete 三个 work 接口。
@@ -59,3 +60,48 @@
 1. 登录态在刷新后可恢复。
 2. 鉴权失败时会清 token 并跳转登录。
 3. 线上刷新任意路由都能正确回到 SPA。
+
+## Phase 7: 工作流稳定性修复
+7.1 初始加载改为并行请求并处理“未提交版本”空态。
+7.2 自动保存改为串行队列并只保留最后一次内容。
+7.3 submit 失败时不清理本地 marking 与 reflection 草稿。
+
+验收:
+1. 首次 work 打开不会触发 `versions/undefined` 请求。
+2. 连续输入场景下不会出现旧保存覆盖新内容。
+3. 提交失败后用户标记和文本不会丢失。
+
+不做（留到 Phase 10）:
+1. Draft 分页后端 API（当前先本地截断）。
+2. 文本高亮 diff 算法（当前先近似查找）。
+3. 基于版本号的 optimistic locking。
+
+## Phase 8: 状态与性能修复
+8.1 analysis 状态改为按版本缓存并分离当前版本与展示版本。
+8.2 draft history 默认限制数量并支持分页或截断策略。
+8.3 本地草稿缓存增加过期与容量清理策略。
+
+验收:
+1. 查看历史版本后返回编辑页仍保留最新 analysis。
+2. drafts 量级很大时页面仍可交互。
+3. localStorage 不会无限增长。
+
+不做（留到 Phase 10）:
+1. ETag/304 缓存协商。
+2. 后端批量 analysis 读取端点。
+3. 进度统计 dashboard 端点与页面。
+
+## Phase 9: 体验与安全基线
+9.1 锁冲突界面展示倒计时并缩短重试周期。
+9.2 回滚弹窗明确说明版本后果和丢失风险。
+9.3 会话过期统一拦截并在跳转前保护本地草稿。
+
+验收:
+1. 锁释放后可在短时间内自动恢复编辑。
+2. 用户回滚前能明确理解影响范围。
+3. 401 发生时不会直接丢失当前编辑内容。
+
+不做（留到 Phase 10）:
+1. Force Unlock（待后端锁详情与解锁 API 支持）。
+2. httpOnly cookie 会话改造。
+3. Sentry 与生产监控接入。
