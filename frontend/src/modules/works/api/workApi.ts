@@ -19,6 +19,7 @@ import {
   WorkVersionDetail,
   WorkVersionList
 } from '../types/workContract';
+import { getStoredToken } from '../../auth/session/tokenStore';
 
 type ApiErrorPayload = {
   code?: string;
@@ -39,18 +40,22 @@ export class ApiRequestError extends Error {
 
 function getApiBaseUrl(): string {
   const raw = import.meta.env.VITE_API_BASE_URL;
-  if (!raw) {
-    return '';
+  if (raw) {
+    return String(raw).replace(/\/$/, '');
   }
-  return String(raw).replace(/\/$/, '');
-}
 
-function getAuthToken(): string | null {
-  return localStorage.getItem('token');
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname.endsWith('after-word.org')
+  ) {
+    return 'https://api.after-word.org';
+  }
+
+  return '';
 }
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const token = getAuthToken();
+  const token = getStoredToken();
   const headers = new Headers(init?.headers);
   headers.set('Content-Type', 'application/json');
 
@@ -72,6 +77,13 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     }
 
     const code = payload?.code;
+    if (response.status === 405) {
+      throw new ApiRequestError(
+        'Method not allowed. Check VITE_API_BASE_URL and ensure requests go to the backend API domain.',
+        response.status,
+        code
+      );
+    }
     const message = payload?.message ?? `Request failed with status ${response.status}`;
     throw new ApiRequestError(message, response.status, code);
   }

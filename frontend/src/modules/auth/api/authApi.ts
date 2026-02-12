@@ -7,10 +7,18 @@ type ApiErrorPayload = {
 
 function getApiBaseUrl(): string {
   const raw = import.meta.env.VITE_API_BASE_URL;
-  if (!raw) {
-    return '';
+  if (raw) {
+    return String(raw).replace(/\/$/, '');
   }
-  return String(raw).replace(/\/$/, '');
+
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname.endsWith('after-word.org')
+  ) {
+    return 'https://api.after-word.org';
+  }
+
+  return '';
 }
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
@@ -28,6 +36,11 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
       payload = (await response.json()) as ApiErrorPayload;
     } catch {
       payload = undefined;
+    }
+    if (response.status === 405) {
+      throw new Error(
+        'Method not allowed. Check VITE_API_BASE_URL and ensure requests go to the backend API domain.'
+      );
     }
     throw new Error(payload?.message ?? `Request failed with status ${response.status}`);
   }

@@ -1,6 +1,13 @@
 import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
 import { loginApi, signupApi } from '../api/authApi';
 import { AuthUser } from '../types/authTypes';
+import {
+  clearStoredSession,
+  getStoredToken,
+  getStoredUser,
+  setStoredToken,
+  setStoredUser
+} from './tokenStore';
 
 type AuthSessionValue = {
   user: AuthUser | null;
@@ -11,46 +18,30 @@ type AuthSessionValue = {
   logout: () => void;
 };
 
-const TOKEN_KEY = 'token';
-const USER_KEY = 'auth_user';
-
 const AuthSessionContext = createContext<AuthSessionValue | null>(null);
 
-function readStoredUser(): AuthUser | null {
-  const raw = localStorage.getItem(USER_KEY);
-  if (!raw) {
-    return null;
-  }
-  try {
-    return JSON.parse(raw) as AuthUser;
-  } catch {
-    return null;
-  }
-}
-
 export function AuthSessionProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
-  const [user, setUser] = useState<AuthUser | null>(() => readStoredUser());
+  const [token, setToken] = useState<string | null>(() => getStoredToken());
+  const [user, setUser] = useState<AuthUser | null>(() => getStoredUser());
 
   async function login(emailOrUsername: string, password: string) {
     const result = await loginApi(emailOrUsername, password);
-    localStorage.setItem(TOKEN_KEY, result.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(result.user));
+    setStoredToken(result.token);
+    setStoredUser(result.user);
     setToken(result.token);
     setUser(result.user);
   }
 
   async function signup(email: string, username: string, password: string) {
     const result = await signupApi(email, username, password);
-    localStorage.setItem(TOKEN_KEY, result.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(result.user));
+    setStoredToken(result.token);
+    setStoredUser(result.user);
     setToken(result.token);
     setUser(result.user);
   }
 
   function logout() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    clearStoredSession();
     setToken(null);
     setUser(null);
   }
