@@ -39,7 +39,11 @@ def get_current_version_number(work_id: str) -> int:
 def get_latest_submitted_version(work_id: str) -> Optional[Dict[str, Any]]:
     """Get the most recent submitted version for a work."""
     query = version_repo.get_latest_submitted_version(work_id)
-    return _run(query)
+    result = _run(query)
+    # Handle list result from ORDER BY query (fetchall returns list)
+    if isinstance(result, list):
+        return result[0] if result else None
+    return result
 
 
 def create_draft_version(
