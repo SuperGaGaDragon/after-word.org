@@ -108,6 +108,20 @@ Change username (requires auth).
 
 ---
 
+#### GET /api/auth/me
+Get current user information (requires auth).
+
+**Response:**
+```json
+{
+  "id": null,
+  "email": "user@example.com",
+  "username": "username"
+}
+```
+
+---
+
 ### Works
 
 #### POST /api/work/create
