@@ -193,7 +193,8 @@ Update work content (auto-save draft).
 {
   "content": "updated content",
   "device_id": "device_uuid",
-  "auto_save": false
+  "auto_save": false,
+  "essay_prompt": "Describe a time when you overcame a challenge (optional)"
 }
 ```
 
@@ -205,9 +206,11 @@ Update work content (auto-save draft).
 }
 ```
 
-**auto_save**:
-- `false` (default): Create new draft version
-- `true`: Update content only, no new version
+**Parameters**:
+- `auto_save` (boolean):
+  - `false` (default): Create new draft version
+  - `true`: Update content only, no new version
+- `essay_prompt` (string, optional): Essay prompt/requirements that will be sent to LLM during analysis
 
 ---
 
