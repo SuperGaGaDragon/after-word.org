@@ -67,7 +67,6 @@ type ApiVersionDetail = {
 type ApiVersionList = {
   current_version: number;
   versions: ApiVersionSummary[];
-  next_cursor?: string | null;
 };
 
 type ApiRevertResponse = {
@@ -126,8 +125,7 @@ export function fromApiVersionList(payload: ApiVersionList): WorkVersionList {
       isSubmitted: item.is_submitted,
       changeType: item.change_type,
       createdAt: item.created_at
-    })),
-    nextCursor: payload.next_cursor ?? null
+    }))
   };
 }
 

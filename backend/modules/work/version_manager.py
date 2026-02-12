@@ -128,21 +128,14 @@ def get_version_list(
     work_id: str,
     version_type: Optional[str] = None,
     parent_version: Optional[int] = None,
-    limit: Optional[int] = None,
-    cursor: Optional[str] = None,
 ) -> list:
     """
-    Get version list for a work with optional pagination.
+    Get version list for a work.
 
     Args:
         work_id: Work ID
         version_type: 'submitted', 'draft', or None for all
         parent_version: Filter drafts by parent submission version
-        limit: Max number of results per page
-        cursor: Pagination cursor (created_at timestamp)
-
-    Returns:
-        List of version summaries, ordered by created_at DESC
     """
     is_submitted = None
     if version_type == "submitted":
@@ -154,15 +147,8 @@ def get_version_list(
         work_id=work_id,
         is_submitted=is_submitted,
         parent_submission_version=parent_version,
-        limit=limit,
-        cursor=cursor,
     )
-    result = _run(query)
-
-    # Handle list result from ORDER BY query
-    if isinstance(result, list):
-        return result
-    return [] if result is None else [result]
+    return _run(query) or []
 
 
 def get_version_detail(work_id: str, version_number: int) -> Optional[Dict[str, Any]]:

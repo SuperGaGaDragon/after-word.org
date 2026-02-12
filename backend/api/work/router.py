@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from fastapi import APIRouter, Depends
 
@@ -113,41 +112,17 @@ def get_versions_route(
     work_id: str,
     user: dict = Depends(require_user),
     type: str = "all",
-    parent: Optional[int] = None,
-    limit: Optional[int] = None,
-    cursor: Optional[str] = None,
+    parent: int = None,
 ) -> VersionListResponse:
-    """
-    Get version list with optional cursor-based pagination.
-
-    Query params:
-    - type: 'all', 'submitted', or 'draft' (default: 'all')
-    - parent: Filter drafts by parent submission version
-    - limit: Max results per page (e.g., 50)
-    - cursor: Pagination cursor (created_at timestamp from previous response)
-
-    Returns versions ordered by created_at DESC.
-    If limit is set and more results exist, next_cursor will be provided.
-    """
     # Verify ownership
     _ = get_work(work_id, user["email"])
 
     # Get current version
     current_version = version_manager.get_current_version_number(work_id)
 
-    # Get version list (fetch limit+1 to check if more pages exist)
+    # Get version list
     version_type = None if type == "all" else type
-    fetch_limit = (limit + 1) if limit else None
-    versions = version_manager.get_version_list(
-        work_id, version_type, parent, fetch_limit, cursor
-    )
-
-    # Calculate next_cursor
-    next_cursor = None
-    if limit and len(versions) > limit:
-        # More results exist, use created_at of last item as cursor
-        versions = versions[:limit]  # Trim to requested limit
-        next_cursor = versions[-1].get("created_at")
+    versions = version_manager.get_version_list(work_id, version_type, parent)
 
     items = [
         VersionListItem(
@@ -160,9 +135,7 @@ def get_versions_route(
         for v in versions
     ]
 
-    return VersionListResponse(
-        current_version=current_version, versions=items, next_cursor=next_cursor
-    )
+    return VersionListResponse(current_version=current_version, versions=items)
 
 
 @router.get("/{work_id}/versions/{version_number}", response_model=VersionDetailResponse)

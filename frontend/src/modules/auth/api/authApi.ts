@@ -24,7 +24,6 @@ function getApiBaseUrl(): string {
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     ...init,
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...(init?.headers ?? {})

@@ -5,5 +5,6 @@ export type AuthUser = {
 };
 
 export type AuthResponse = {
+  token: string;
   user: AuthUser;
 };

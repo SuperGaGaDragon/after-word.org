@@ -5,6 +5,25 @@ interface AppShellProps {
   children: ReactNode
 }
 
+type ThemeName =
+  | 'dark'
+  | 'cold'
+  | 'warm'
+  | 'v2'
+  | 'v3'
+  | 'v4'
+  | 'v5'
+  | 'v6'
+  | 'v7'
+  | 'v8'
+  | 'v9'
+  | 'v10'
+  | 'v11'
+  | 'v12'
+  | 'v13'
+  | 'v14'
+  | 'v15'
+
 const navItems = [
   { to: '/', label: 'Overview' },
   { to: '/workbench', label: 'Workbench' },
@@ -12,11 +31,31 @@ const navItems = [
   { to: '/versions', label: 'Version Timeline' },
 ]
 
+const themeOptions: ThemeName[] = [
+  'dark',
+  'cold',
+  'warm',
+  'v2',
+  'v3',
+  'v4',
+  'v5',
+  'v6',
+  'v7',
+  'v8',
+  'v9',
+  'v10',
+  'v11',
+  'v12',
+  'v13',
+  'v14',
+  'v15',
+]
+
 export default function AppShell({ children }: AppShellProps) {
-  const [theme, setTheme] = useState<'dark' | 'cold' | 'warm' | 'v2'>(() => {
+  const [theme, setTheme] = useState<ThemeName>(() => {
     const saved = localStorage.getItem('ui_demo_theme')
-    if (saved === 'dark' || saved === 'warm' || saved === 'cold' || saved === 'v2') {
-      return saved
+    if (saved && themeOptions.includes(saved as ThemeName)) {
+      return saved as ThemeName
     }
     return 'cold'
   })
@@ -60,12 +99,13 @@ export default function AppShell({ children }: AppShellProps) {
               id="theme-select"
               className="theme-select"
               value={theme}
-              onChange={(event) => setTheme(event.target.value as 'dark' | 'cold' | 'warm' | 'v2')}
+              onChange={(event) => setTheme(event.target.value as ThemeName)}
             >
-              <option value="dark">Dark</option>
-              <option value="cold">Cold</option>
-              <option value="warm">Warm</option>
-              <option value="v2">V2</option>
+              {themeOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option === 'cold' ? 'Cold（暂定）' : option.toUpperCase()}
+                </option>
+              ))}
             </select>
           </div>
         </div>

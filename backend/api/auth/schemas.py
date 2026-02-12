@@ -35,10 +35,5 @@ class AuthResponse(BaseModel):
     user: UserOut
 
 
-class AuthCookieResponse(BaseModel):
-    """Response for cookie-based auth (no token in body)."""
-    user: UserOut
-
-
 class OkResponse(BaseModel):
     ok: bool
