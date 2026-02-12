@@ -51,3 +51,13 @@ def change_username_route(
 ) -> OkResponse:
     change_username(user["email"], payload.new_username)
     return OkResponse(ok=True)
+
+
+@router.get("/me", response_model=UserOut)
+def get_current_user(user: dict = Depends(require_user)) -> UserOut:
+    """Get current user information from JWT token."""
+    return UserOut(
+        id=None,  # JWT doesn't contain user ID
+        email=user["email"],
+        username=user["username"]
+    )
