@@ -22,3 +22,12 @@ def list_works(user_email: str) -> Dict[str, Any]:
         "ORDER BY updated_at DESC"
     )
     return _build_query(sql, {"user_email": user_email})
+
+
+def get_total_word_count(user_email: str) -> Dict[str, Any]:
+    """Get total word count across all works for a user."""
+    sql = (
+        "SELECT COALESCE(SUM(word_count), 0) as total_word_count "
+        "FROM works WHERE user_email = %(user_email)s"
+    )
+    return _build_query(sql, {"user_email": user_email})

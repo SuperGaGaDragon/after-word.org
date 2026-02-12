@@ -7,6 +7,7 @@ from backend.api.work.schemas import (
     OkResponse,
     RevertRequest,
     RevertResponse,
+    TotalWordCountResponse,
     VersionDetailResponse,
     VersionListItem,
     VersionListResponse,
@@ -30,6 +31,7 @@ from backend.modules.work.manager import (
     update_work,
 )
 from backend.storage.text_analysis import repo as analysis_repo
+from backend.storage.work_retrieve import repo as work_retrieve_repo
 
 router = APIRouter(prefix="/api/work", tags=["work"])
 
@@ -63,6 +65,18 @@ def list_works_route(user: dict = Depends(require_user)) -> WorkListResponse:
         for work in works
     ]
     return WorkListResponse(items=items)
+
+
+@router.get("/total_word_count", response_model=TotalWordCountResponse)
+def get_total_word_count_route(user: dict = Depends(require_user)) -> TotalWordCountResponse:
+    """Get total word count across all user's works."""
+    from backend.storage.db import execute_query
+
+    query = work_retrieve_repo.get_total_word_count(user["email"])
+    result = execute_query(query)
+    total = result.get("total_word_count", 0) if result else 0
+
+    return TotalWordCountResponse(total_word_count=total)
 
 
 @router.get("/{work_id}", response_model=WorkGetResponse)

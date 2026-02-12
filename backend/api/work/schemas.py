@@ -184,3 +184,9 @@ class OkResponse(BaseModel):
     """Generic success response."""
 
     ok: bool = Field(..., description="Success indicator")
+
+
+class TotalWordCountResponse(BaseModel):
+    """Response for total word count across all works."""
+
+    total_word_count: int = Field(..., description="Total word count across all user's works")
