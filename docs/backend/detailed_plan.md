@@ -110,11 +110,11 @@
 4. 解析OpenAI响应
 
 **验收：**
-- [ ] 第一次生成FAO + sentence comments
-- [ ] 迭代生成带improvement_feedback
-- [ ] 有reflection时生成reflection_comment
-- [ ] 解析JSON正确
-- [ ] 错误处理完善
+- [x] 第一次生成FAO + sentence comments
+- [x] 迭代生成带improvement_feedback
+- [x] 有reflection时生成reflection_comment
+- [x] 解析JSON正确
+- [x] 错误处理完善
 
 ---
 
