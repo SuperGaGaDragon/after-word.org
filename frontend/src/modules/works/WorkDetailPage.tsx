@@ -7,6 +7,7 @@ export function WorkDetailPage() {
   const {
     state,
     setContent,
+    setEssayPrompt,
     setFaoReflectionDraft,
     save,
     submit,
@@ -29,6 +30,7 @@ export function WorkDetailPage() {
       <WorkDetailPanel
         workId={workId}
         content={state.content}
+        essayPrompt={state.essayPrompt}
         faoReflectionDraft={state.faoReflectionDraft}
         currentVersionNumber={state.work?.currentVersion}
         versions={state.versions}
@@ -47,6 +49,7 @@ export function WorkDetailPage() {
         error={state.error}
         info={state.info}
         onContentChange={setContent}
+        onEssayPromptChange={setEssayPrompt}
         onFaoReflectionChange={setFaoReflectionDraft}
         onSaveAuto={() => void save(true)}
         onSaveDraft={() => save(false)}

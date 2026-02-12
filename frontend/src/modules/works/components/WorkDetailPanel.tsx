@@ -3,6 +3,7 @@ import { WorkVersionDetail, WorkVersionSummary } from '../types/workContract';
 
 type WorkDetailPanelProps = {
   content: string;
+  essayPrompt: string;
   faoReflectionDraft: string;
   currentVersionNumber?: number;
   workId?: string;
@@ -22,6 +23,7 @@ type WorkDetailPanelProps = {
   error: string | null;
   info: string | null;
   onContentChange: (value: string) => void;
+  onEssayPromptChange: (value: string) => void;
   onFaoReflectionChange: (value: string) => void;
   onSaveAuto: () => void;
   onSaveDraft: () => Promise<void>;
@@ -35,6 +37,7 @@ type WorkDetailPanelProps = {
 
 export function WorkDetailPanel({
   content,
+  essayPrompt,
   faoReflectionDraft,
   currentVersionNumber,
   workId,
@@ -54,6 +57,7 @@ export function WorkDetailPanel({
   error,
   info,
   onContentChange,
+  onEssayPromptChange,
   onFaoReflectionChange,
   onSaveAuto,
   onSaveDraft,
@@ -120,6 +124,16 @@ export function WorkDetailPanel({
           {info}
         </p>
       )}
+
+      <label htmlFor="work-editor-prompt">Essay Prompt / Requirements</label>
+      <textarea
+        id="work-editor-prompt"
+        rows={3}
+        value={essayPrompt}
+        readOnly={locked}
+        onChange={(event) => onEssayPromptChange(event.target.value)}
+        placeholder="Enter your essay prompt or requirements (optional)"
+      />
 
       <label htmlFor="work-editor-content">Content</label>
       <textarea

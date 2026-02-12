@@ -23,6 +23,7 @@ type SuggestionMarking = {
 type UseWorkDetailState = {
   work: WorkDetail | null;
   content: string;
+  essayPrompt: string;
   faoReflectionDraft: string;
   allVersions: WorkVersionSummary[];
   versions: WorkVersionSummary[];
@@ -125,6 +126,7 @@ export function useWorkDetail(workId: string | undefined) {
   const [state, setState] = useState<UseWorkDetailState>({
     work: null,
     content: '',
+    essayPrompt: '',
     faoReflectionDraft: '',
     allVersions: [],
     versions: [],
@@ -238,6 +240,7 @@ export function useWorkDetail(workId: string | undefined) {
         ...prev,
         work,
         content: nextContent,
+        essayPrompt: work.essayPrompt ?? '',
         allVersions,
         versions,
         hiddenVersionCount,
@@ -275,6 +278,10 @@ export function useWorkDetail(workId: string | undefined) {
 
   const setContent = useCallback((next: string) => {
     setState((prev) => ({ ...prev, content: next }));
+  }, []);
+
+  const setEssayPrompt = useCallback((next: string) => {
+    setState((prev) => ({ ...prev, essayPrompt: next }));
   }, []);
 
   useEffect(() => {
@@ -323,7 +330,8 @@ export function useWorkDetail(workId: string | undefined) {
         await updateWork(workId, {
           content,
           deviceId: DEFAULT_DEVICE_ID,
-          autoSave: true
+          autoSave: true,
+          essayPrompt: state.essayPrompt
         });
 
         lastSyncedContentRef.current = content;
@@ -374,7 +382,8 @@ export function useWorkDetail(workId: string | undefined) {
         const result = await updateWork(workId, {
           content: state.content,
           deviceId: DEFAULT_DEVICE_ID,
-          autoSave
+          autoSave,
+          essayPrompt: state.essayPrompt
         });
 
         if (!autoSave) {
@@ -681,6 +690,7 @@ export function useWorkDetail(workId: string | undefined) {
     state,
     canOperate,
     setContent,
+    setEssayPrompt,
     setFaoReflectionDraft,
     save,
     submit,
