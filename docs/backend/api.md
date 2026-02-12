@@ -228,6 +228,25 @@ Update work content (auto-save draft).
 
 ---
 
+#### POST /api/work/{work_id}/rename
+Rename a work.
+
+**Request:**
+```json
+{
+  "title": "My Essay Title"
+}
+```
+
+**Response:**
+```json
+{
+  "ok": true
+}
+```
+
+---
+
 #### POST /api/work/{work_id}/submit
 Submit work (create submitted version + trigger AI evaluation).
 
