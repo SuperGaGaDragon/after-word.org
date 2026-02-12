@@ -159,6 +159,18 @@ export async function listWorks(): Promise<WorkSummary[]> {
   return fromApiWorkList(payload.items);
 }
 
+export async function getTotalWordCount(): Promise<number> {
+  const payload = await requestJson<{ total_word_count: number }>('/api/work/total_word_count');
+  return payload.total_word_count;
+}
+
+export async function getTotalProjectCount(): Promise<number> {
+  const payload = await requestJson<{ total_project_count: number }>(
+    '/api/work/total_project_count'
+  );
+  return payload.total_project_count;
+}
+
 export async function deleteWork(workId: string): Promise<void> {
   await requestJson<{ ok: boolean }>(`/api/work/${workId}`, {
     method: 'DELETE'
