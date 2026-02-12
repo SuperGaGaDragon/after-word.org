@@ -5,6 +5,7 @@ from backend.errors import BusinessError
 from backend.modules.llm_gateway import analyzer
 from backend.modules.session_lock import lock as session_lock
 from backend.modules.work import version_manager
+from backend.modules.work.utils import count_words
 from backend.storage.suggestion_resolution import repo as resolution_repo
 from backend.storage.text_analysis import repo as analysis_repo
 from backend.storage.work import repo as work_repo
@@ -74,8 +75,11 @@ def update_work(
     if not session_lock.acquire_lock(work_id, device_id):
         raise BusinessError("locked", "work locked")
 
-    # Update content in works table
-    query = work_repo.update_work_content(work_id, user_email, content)
+    # Calculate word count
+    word_count = count_words(content)
+
+    # Update content and word count in works table
+    query = work_repo.update_work_content(work_id, user_email, content, word_count)
     _run(query)
 
     result = {"ok": True}
@@ -148,8 +152,11 @@ def submit_work(
         user_reflection=user_reflection,
     )
 
-    # Update content in works table
-    query = work_repo.update_work_content(work_id, user_email, content)
+    # Calculate word count
+    word_count = count_words(content)
+
+    # Update content and word count in works table
+    query = work_repo.update_work_content(work_id, user_email, content, word_count)
     _run(query)
 
     # Clean up draft versions after previous submission

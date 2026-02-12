@@ -24,7 +24,9 @@ class WorkListItem(BaseModel):
     """Single item in works list."""
 
     work_id: str = Field(..., description="Work unique identifier")
+    created_at: str = Field(..., description="ISO 8601 timestamp of creation")
     updated_at: str = Field(..., description="ISO 8601 timestamp of last update")
+    word_count: int = Field(0, description="Total word count (English words + Chinese characters)")
 
 
 class WorkListResponse(BaseModel):
@@ -39,6 +41,9 @@ class WorkGetResponse(BaseModel):
     work_id: str = Field(..., description="Work unique identifier")
     content: str = Field(..., description="Current essay content")
     current_version: int = Field(0, description="Current version number")
+    created_at: str = Field(..., description="ISO 8601 timestamp of creation")
+    updated_at: str = Field(..., description="ISO 8601 timestamp of last update")
+    word_count: int = Field(0, description="Total word count (English words + Chinese characters)")
 
 
 # ============================================================================

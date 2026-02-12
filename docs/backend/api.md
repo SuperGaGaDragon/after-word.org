@@ -133,7 +133,9 @@ Get all works for current user.
   "items": [
     {
       "work_id": "uuid",
-      "updated_at": "2026-02-11T10:00:00Z"
+      "created_at": "2026-02-11T09:00:00Z",
+      "updated_at": "2026-02-11T10:00:00Z",
+      "word_count": 1247
     }
   ]
 }
@@ -149,7 +151,10 @@ Get work details.
 {
   "work_id": "uuid",
   "content": "essay content...",
-  "current_version": 5
+  "current_version": 5,
+  "created_at": "2026-02-11T09:00:00Z",
+  "updated_at": "2026-02-11T10:00:00Z",
+  "word_count": 1247
 }
 ```
 

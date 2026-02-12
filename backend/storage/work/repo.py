@@ -15,13 +15,14 @@ def create_work(user_email: str) -> Dict[str, Any]:
     return _build_query(sql, {"user_email": user_email})
 
 
-def update_work_content(work_id: str, user_email: str, content: str) -> Dict[str, Any]:
+def update_work_content(work_id: str, user_email: str, content: str, word_count: int) -> Dict[str, Any]:
     sql = (
-        "UPDATE works SET content = %(content)s, updated_at = NOW() "
+        "UPDATE works SET content = %(content)s, word_count = %(word_count)s, updated_at = NOW() "
         "WHERE id = %(work_id)s AND user_email = %(user_email)s"
     )
     params = {
         "content": content,
+        "word_count": word_count,
         "work_id": work_id,
         "user_email": user_email,
     }

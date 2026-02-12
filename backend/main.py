@@ -39,7 +39,45 @@ def register_storage_executors() -> None:
     conversation_manager.set_query_executor(execute_query)
 
 
+# ============================================================================
+# TEMPORARY DATABASE MIGRATION - FOR TESTING ONLY
+# ============================================================================
+# TODO: DELETE THIS FUNCTION AFTER DEPLOYMENT TO RAILWAY
+# This function adds word_count field to works table
+# Execute once on Railway, then remove this code
+# ============================================================================
+def _temp_migration_add_word_count() -> None:
+    """
+    TEMPORARY: Add word_count column to works table.
+
+    This is a one-time migration for testing purposes.
+    After Railway executes this successfully, DELETE this entire function
+    and its call in the startup event.
+    """
+    try:
+        migration_sql = {
+            "sql": "ALTER TABLE works ADD COLUMN IF NOT EXISTS word_count INT DEFAULT 0;",
+            "params": {}
+        }
+        execute_query(migration_sql)
+        print("[TEMP MIGRATION] ✓ word_count column added to works table")
+        print("[TEMP MIGRATION] ⚠️  REMEMBER TO DELETE THIS CODE AFTER DEPLOYMENT")
+    except Exception as e:
+        print(f"[TEMP MIGRATION] Migration failed or already applied: {e}")
+
+
 app = FastAPI()
+
+# ============================================================================
+# TEMPORARY: Run migration on startup
+# TODO: DELETE THIS EVENT HANDLER AFTER RAILWAY DEPLOYMENT
+# ============================================================================
+@app.on_event("startup")
+async def temp_startup_migration():
+    """TEMPORARY: Run word_count migration on startup. DELETE AFTER USE."""
+    _temp_migration_add_word_count()
+# ============================================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[FRONTEND_BASE_URL],

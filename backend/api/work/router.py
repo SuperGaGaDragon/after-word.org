@@ -55,7 +55,10 @@ def list_works_route(user: dict = Depends(require_user)) -> WorkListResponse:
     works = list_works(user["email"]) or []
     items = [
         WorkListItem(
-            work_id=work.get("id", ""), updated_at=_format_updated_at(work.get("updated_at"))
+            work_id=work.get("id", ""),
+            created_at=_format_updated_at(work.get("created_at")),
+            updated_at=_format_updated_at(work.get("updated_at")),
+            word_count=work.get("word_count", 0)
         )
         for work in works
     ]
@@ -69,6 +72,9 @@ def get_work_route(work_id: str, user: dict = Depends(require_user)) -> WorkGetR
         work_id=work.get("id", ""),
         content=work.get("content", ""),
         current_version=work.get("current_version", 0),
+        created_at=_format_updated_at(work.get("created_at")),
+        updated_at=_format_updated_at(work.get("updated_at")),
+        word_count=work.get("word_count", 0),
     )
 
 
