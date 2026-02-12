@@ -8,6 +8,7 @@ export type SuggestionActionInput = {
 export type WorkSummary = {
   workId: string;
   updatedAt: string;
+  title?: string;
 };
 
 export type WorkDetail = {
@@ -15,6 +16,7 @@ export type WorkDetail = {
   content: string;
   currentVersion: number;
   essayPrompt?: string;
+  title?: string;
 };
 
 export type WorkUpdateInput = {

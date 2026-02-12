@@ -1,0 +1,31 @@
+.editable-title {
+  cursor: pointer;
+  user-select: none;
+}
+
+.editable-title:hover {
+  opacity: 0.8;
+}
+
+.editable-title-input {
+  width: 100%;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-ui);
+  padding: 0.25rem 0.5rem;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+}
+
+.editable-title-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(23, 105, 255, 0.1);
+}
+
+.editable-title-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

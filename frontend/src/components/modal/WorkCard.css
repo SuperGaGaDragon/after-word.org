@@ -53,9 +53,8 @@
   height: 1.1rem;
 }
 
-.work-card-link {
-  text-decoration: none;
-  display: block;
+.work-card-title-wrapper {
+  cursor: pointer;
 }
 
 .work-card-title {
@@ -68,7 +67,7 @@
   transition: color 180ms ease;
 }
 
-.work-card-link:hover .work-card-title {
+.work-card-title-wrapper:hover .work-card-title {
   color: var(--accent);
 }
 

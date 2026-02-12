@@ -22,6 +22,7 @@ type ApiSubmitResponse = {
 type ApiWorkListItem = {
   work_id: string;
   updated_at: string;
+  title?: string;
 };
 
 type ApiWorkDetail = {
@@ -29,6 +30,7 @@ type ApiWorkDetail = {
   content: string;
   current_version: number;
   essay_prompt?: string;
+  title?: string;
 };
 
 type ApiAnalysisComment = {
@@ -105,7 +107,8 @@ export function fromApiSubmitResponse(payload: ApiSubmitResponse): WorkSubmitRes
 export function fromApiWorkList(items: ApiWorkListItem[]): WorkSummary[] {
   return items.map((item) => ({
     workId: item.work_id,
-    updatedAt: item.updated_at
+    updatedAt: item.updated_at,
+    title: item.title
   }));
 }
 
@@ -114,7 +117,8 @@ export function fromApiWorkDetail(payload: ApiWorkDetail): WorkDetail {
     workId: payload.work_id,
     content: payload.content,
     currentVersion: payload.current_version,
-    essayPrompt: payload.essay_prompt
+    essayPrompt: payload.essay_prompt,
+    title: payload.title
   };
 }
 

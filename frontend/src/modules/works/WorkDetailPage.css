@@ -1,0 +1,10 @@
+.work-detail-title {
+  margin: 0;
+}
+
+.work-detail-title .editable-title,
+.work-detail-title .editable-title-input {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}

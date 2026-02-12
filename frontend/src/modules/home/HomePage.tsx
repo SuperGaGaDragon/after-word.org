@@ -74,7 +74,7 @@ export function HomePage() {
                   <p className="quick-start-description">Continue your most recent work</p>
                   <WorkCard
                     workId={recentWork.workId}
-                    title="Untitled Work"
+                    title={recentWork.title || 'Untitled Work'}
                     createdAt={recentWork.updatedAt}
                     updatedAt={recentWork.updatedAt}
                     onDelete={async (workId) => {
@@ -84,6 +84,11 @@ export function HomePage() {
                       // Update project count
                       const count = await getTotalProjectCount();
                       setProjectCount(count);
+                    }}
+                    onRename={async () => {
+                      // Refresh after rename
+                      const works = await listWorks();
+                      setRecentWork(works.length > 0 ? works[0] : null);
                     }}
                   />
                 </div>

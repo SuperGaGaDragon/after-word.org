@@ -5,7 +5,7 @@ import './WorkspacePage.css';
 
 export function WorkspacePage() {
   const navigate = useNavigate();
-  const { state, runCreate, runDelete } = useWorksList();
+  const { state, runCreate, runDelete, reload } = useWorksList();
 
   async function handleCreate() {
     const workId = await runCreate();
@@ -16,10 +16,9 @@ export function WorkspacePage() {
     await runDelete(workId);
   }
 
-  function extractTitle(work: { workId: string; updatedAt: string }): string {
-    // TODO: When work has content/title field, use it
-    // For now, return "Untitled Work"
-    return 'Untitled Work';
+  async function handleRename() {
+    // Refresh the list after rename to get updated title
+    await reload();
   }
 
   return (
@@ -53,10 +52,11 @@ export function WorkspacePage() {
               <WorkCard
                 key={work.workId}
                 workId={work.workId}
-                title={extractTitle(work)}
+                title={work.title || 'Untitled Work'}
                 createdAt={work.updatedAt} // TODO: Use actual createdAt when available
                 updatedAt={work.updatedAt}
                 onDelete={handleDelete}
+                onRename={handleRename}
               />
             ))}
           </div>

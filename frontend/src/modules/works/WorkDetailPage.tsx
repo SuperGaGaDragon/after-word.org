@@ -1,6 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { WorkDetailPanel } from './components/WorkDetailPanel';
 import { useWorkDetail } from './hooks/useWorkDetail';
+import { renameWork } from './api/workApi';
+import { EditableTitle } from '../../components/modal/EditableTitle';
+import './WorkDetailPage.css';
 
 export function WorkDetailPage() {
   const { workId } = useParams<{ workId: string }>();
@@ -13,6 +16,7 @@ export function WorkDetailPage() {
     submit,
     openVersion,
     revert,
+    loadAll,
     markSuggestionAction,
     setSuggestionNote,
     unprocessedCommentCount,
@@ -20,10 +24,23 @@ export function WorkDetailPage() {
     loadMoreVersions
   } = useWorkDetail(workId);
 
+  const handleRename = async (newTitle: string) => {
+    if (workId) {
+      await renameWork(workId, newTitle);
+      await loadAll({ preserveLocalDraft: true });
+    }
+  };
+
   return (
     <main className="page">
       <header className="page-header">
-        <h1>Work Detail</h1>
+        <h1 className="work-detail-title">
+          <EditableTitle
+            title={state.work?.title || ''}
+            placeholder="Untitled Work"
+            onRename={handleRename}
+          />
+        </h1>
         <p>Read, save, submit, inspect versions, and revert.</p>
       </header>
 

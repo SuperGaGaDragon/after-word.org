@@ -153,7 +153,7 @@ export async function createWork(): Promise<string> {
 }
 
 export async function listWorks(): Promise<WorkSummary[]> {
-  const payload = await requestJson<{ items: Array<{ work_id: string; updated_at: string }> }>(
+  const payload = await requestJson<{ items: Array<{ work_id: string; updated_at: string; title?: string }> }>(
     '/api/work/list'
   );
   return fromApiWorkList(payload.items);
@@ -184,6 +184,7 @@ export async function getWork(workId: string): Promise<WorkDetail> {
     content: string;
     current_version: number;
     essay_prompt?: string;
+    title?: string;
   }>(
     `/api/work/${workId}`
   );
@@ -303,6 +304,14 @@ export async function revertToVersion(
 
   invalidateWorkCache(workId);
   return fromApiRevertResponse(payload);
+}
+
+export async function renameWork(workId: string, title: string): Promise<void> {
+  await requestJson<{ ok: boolean }>(`/api/work/${workId}/rename`, {
+    method: 'POST',
+    body: JSON.stringify({ title })
+  });
+  invalidateWorkCache(workId);
 }
 
 export async function submitAndFetchAnalysis(
