@@ -11,6 +11,7 @@ Tests the complete user journey:
 """
 
 import json
+import os
 import time
 import uuid
 from typing import Any, Dict, Optional
@@ -18,7 +19,9 @@ from typing import Any, Dict, Optional
 import httpx
 
 # Test configuration
-BASE_URL = "http://localhost:8000"  # Change for production
+# Railway uses PORT env var, default to 8000 for local testing
+PORT = os.environ.get("PORT", "8000")
+BASE_URL = os.environ.get("BASE_URL", f"http://localhost:{PORT}")
 TEST_USER_EMAIL = f"test_{uuid.uuid4().hex[:8]}@test.com"
 TEST_USER_USERNAME = f"testuser_{uuid.uuid4().hex[:8]}"
 TEST_USER_PASSWORD = "TestPass123!"
