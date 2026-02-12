@@ -24,6 +24,7 @@ class WorkListItem(BaseModel):
     """Single item in works list."""
 
     work_id: str = Field(..., description="Work unique identifier")
+    title: str = Field("", description="Work title/name")
     created_at: str = Field(..., description="ISO 8601 timestamp of creation")
     updated_at: str = Field(..., description="ISO 8601 timestamp of last update")
     word_count: int = Field(0, description="Total word count (English words + Chinese characters)")
@@ -39,6 +40,7 @@ class WorkGetResponse(BaseModel):
     """Response for getting work details."""
 
     work_id: str = Field(..., description="Work unique identifier")
+    title: str = Field("", description="Work title/name")
     content: str = Field(..., description="Current essay content")
     current_version: int = Field(0, description="Current version number")
     created_at: str = Field(..., description="ISO 8601 timestamp of creation")
@@ -196,3 +198,15 @@ class TotalProjectCountResponse(BaseModel):
     """Response for total project count."""
 
     total_project_count: int = Field(..., description="Total number of projects (works)")
+
+
+class RenameWorkRequest(BaseModel):
+    """Request to rename a work."""
+
+    title: str = Field(..., description="New title for the work", max_length=255)
+
+
+class RenameWorkResponse(BaseModel):
+    """Response after renaming a work."""
+
+    ok: bool = Field(..., description="Success indicator")

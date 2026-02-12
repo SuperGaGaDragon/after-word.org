@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends
 from backend.api.auth.deps import require_user
 from backend.api.work.schemas import (
     OkResponse,
+    RenameWorkRequest,
+    RenameWorkResponse,
     RevertRequest,
     RevertResponse,
     TotalProjectCountResponse,
@@ -59,6 +61,7 @@ def list_works_route(user: dict = Depends(require_user)) -> WorkListResponse:
     items = [
         WorkListItem(
             work_id=work.get("id", ""),
+            title=work.get("title", ""),
             created_at=_format_updated_at(work.get("created_at")),
             updated_at=_format_updated_at(work.get("updated_at")),
             word_count=work.get("word_count", 0)
@@ -97,6 +100,7 @@ def get_work_route(work_id: str, user: dict = Depends(require_user)) -> WorkGetR
     work = get_work(work_id, user["email"])
     return WorkGetResponse(
         work_id=work.get("id", ""),
+        title=work.get("title", ""),
         content=work.get("content", ""),
         current_version=work.get("current_version", 0),
         created_at=_format_updated_at(work.get("created_at")),
@@ -133,6 +137,24 @@ def submit_work_route(
         version=result["version"],
         analysis_id=result.get("analysis_id"),
     )
+
+
+@router.post("/{work_id}/rename", response_model=RenameWorkResponse)
+def rename_work_route(
+    work_id: str, payload: RenameWorkRequest, user: dict = Depends(require_user)
+) -> RenameWorkResponse:
+    """Rename a work."""
+    from backend.storage.db import execute_query
+    from backend.storage.work import repo as work_repo
+
+    # Verify ownership
+    _ = get_work(work_id, user["email"])
+
+    # Update title
+    query = work_repo.update_title(work_id, user["email"], payload.title)
+    execute_query(query)
+
+    return RenameWorkResponse(ok=True)
 
 
 @router.delete("/{work_id}", response_model=OkResponse)
