@@ -170,6 +170,34 @@ body {
   color: #8a4b00;
 }
 
+.analysis-section {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.analysis-details {
+  margin-top: 12px;
+}
+
+.comment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.comment-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.comment-item p {
+  margin: 6px 0 0;
+}
+
 .route-switches {
   display: flex;
   gap: 10px;

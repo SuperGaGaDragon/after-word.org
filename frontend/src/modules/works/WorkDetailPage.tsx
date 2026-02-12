@@ -5,7 +5,17 @@ import { useWorkDetail } from './hooks/useWorkDetail';
 
 export function WorkDetailPage() {
   const { workId } = useParams<{ workId: string }>();
-  const { state, setContent, save, submit, openVersion, revert } = useWorkDetail(workId);
+  const {
+    state,
+    setContent,
+    save,
+    submit,
+    openVersion,
+    revert,
+    markSuggestionAction,
+    setSuggestionNote,
+    unprocessedCommentCount
+  } = useWorkDetail(workId);
 
   return (
     <main className="page">
@@ -19,6 +29,9 @@ export function WorkDetailPage() {
         content={state.content}
         versions={state.versions}
         selectedVersion={state.selectedVersion}
+        baselineSubmittedVersion={state.baselineSubmittedVersion}
+        suggestionMarkings={state.suggestionMarkings}
+        unprocessedCommentCount={unprocessedCommentCount}
         loading={state.loading}
         saving={state.saving}
         submitting={state.submitting}
@@ -30,11 +43,11 @@ export function WorkDetailPage() {
         onContentChange={setContent}
         onSaveAuto={() => void save(true)}
         onSaveDraft={() => void save(false)}
-        onSubmit={(faoReflection, suggestionActions) =>
-          void submit(faoReflection, suggestionActions)
-        }
+        onSubmit={(faoReflection) => void submit(faoReflection)}
         onOpenVersion={(versionNumber) => void openVersion(versionNumber)}
         onRevert={(versionNumber) => void revert(versionNumber)}
+        onMarkSuggestionAction={markSuggestionAction}
+        onSuggestionNoteChange={setSuggestionNote}
       />
 
       <TestRouteSwitches className="route-switches" />

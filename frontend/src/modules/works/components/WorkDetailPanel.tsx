@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { WorkVersionDetail, WorkVersionSummary } from '../types/workContract';
 
 type WorkDetailPanelProps = {
@@ -6,6 +6,9 @@ type WorkDetailPanelProps = {
   workId?: string;
   versions: WorkVersionSummary[];
   selectedVersion: WorkVersionDetail | null;
+  baselineSubmittedVersion: WorkVersionDetail | null;
+  suggestionMarkings: Record<string, { action: 'resolved' | 'rejected'; userNote?: string }>;
+  unprocessedCommentCount: number;
   loading: boolean;
   saving: boolean;
   submitting: boolean;
@@ -17,12 +20,11 @@ type WorkDetailPanelProps = {
   onContentChange: (value: string) => void;
   onSaveAuto: () => void;
   onSaveDraft: () => void;
-  onSubmit: (
-    faoReflection: string,
-    suggestionActions: Record<string, { action: 'resolved' | 'rejected'; userNote?: string }>
-  ) => void;
+  onSubmit: (faoReflection: string) => void;
   onOpenVersion: (versionNumber: number) => void;
   onRevert: (versionNumber: number) => void;
+  onMarkSuggestionAction: (commentId: string, action: 'resolved' | 'rejected') => void;
+  onSuggestionNoteChange: (commentId: string, note: string) => void;
 };
 
 export function WorkDetailPanel({
@@ -30,6 +32,9 @@ export function WorkDetailPanel({
   workId,
   versions,
   selectedVersion,
+  baselineSubmittedVersion,
+  suggestionMarkings,
+  unprocessedCommentCount,
   loading,
   saving,
   submitting,
@@ -43,30 +48,15 @@ export function WorkDetailPanel({
   onSaveDraft,
   onSubmit,
   onOpenVersion,
-  onRevert
+  onRevert,
+  onMarkSuggestionAction,
+  onSuggestionNoteChange
 }: WorkDetailPanelProps) {
-  const [commentId, setCommentId] = useState('');
-  const [action, setAction] = useState<'resolved' | 'rejected'>('resolved');
-  const [note, setNote] = useState('');
   const [faoReflection, setFaoReflection] = useState('');
-
-  const suggestionActions = useMemo(() => {
-    const trimmedId = commentId.trim();
-    if (!trimmedId) {
-      return {};
-    }
-
-    return {
-      [trimmedId]: {
-        action,
-        userNote: note
-      }
-    };
-  }, [action, commentId, note]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSubmit(faoReflection, suggestionActions);
+    onSubmit(faoReflection);
   }
 
   return (
@@ -101,41 +91,55 @@ export function WorkDetailPanel({
         </button>
       </div>
 
-      {/* TEST ONLY: suggestion mapping form validates submit payload contract. */}
+      <section className="analysis-section">
+        <h3>Current Submission Review Queue</h3>
+        {!baselineSubmittedVersion?.analysis && (
+          <p>No prior submitted analysis. First submit can proceed directly.</p>
+        )}
+        {baselineSubmittedVersion?.analysis && (
+          <>
+            <p>Unprocessed sentence comments: {unprocessedCommentCount}</p>
+            <ul className="comment-list">
+              {baselineSubmittedVersion.analysis.sentenceComments.map((comment) => {
+                const marking = suggestionMarkings[comment.id];
+                return (
+                  <li key={comment.id} className="comment-item">
+                    <strong>{comment.title}</strong>
+                    <p>{comment.description}</p>
+                    <p>{comment.suggestion}</p>
+                    <div className="contract-actions">
+                      <button
+                        type="button"
+                        disabled={locked}
+                        onClick={() => onMarkSuggestionAction(comment.id, 'resolved')}
+                      >
+                        {marking?.action === 'resolved' ? 'Resolved ✓' : 'Mark Resolved'}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={locked}
+                        onClick={() => onMarkSuggestionAction(comment.id, 'rejected')}
+                      >
+                        {marking?.action === 'rejected' ? 'Rejected ✓' : 'Reject'}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={marking?.userNote ?? ''}
+                      disabled={locked || marking?.action !== 'resolved'}
+                      placeholder="Optional note when resolved"
+                      onChange={(event) => onSuggestionNoteChange(comment.id, event.target.value)}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </section>
+
       <form onSubmit={handleSubmit} className="contract-grid-form">
-        <h3>Submit Contract Inputs</h3>
-
-        <label htmlFor="submit-comment-id">Comment ID</label>
-        <input
-          id="submit-comment-id"
-          type="text"
-          value={commentId}
-          disabled={locked}
-          onChange={(event) => setCommentId(event.target.value)}
-          placeholder="suggestion_uuid"
-        />
-
-        <label htmlFor="submit-action">Action</label>
-        <select
-          id="submit-action"
-          value={action}
-          disabled={locked}
-          onChange={(event) => setAction(event.target.value as 'resolved' | 'rejected')}
-        >
-          <option value="resolved">resolved</option>
-          <option value="rejected">rejected</option>
-        </select>
-
-        <label htmlFor="submit-note">User Note</label>
-        <input
-          id="submit-note"
-          type="text"
-          value={note}
-          disabled={locked}
-          onChange={(event) => setNote(event.target.value)}
-          placeholder="optional"
-        />
-
+        <h3>Submit</h3>
         <label htmlFor="submit-fao-reflection">FAO Reflection</label>
         <textarea
           id="submit-fao-reflection"
@@ -184,12 +188,30 @@ export function WorkDetailPanel({
         <section className="selected-version">
           <h3>Selected Version: v{selectedVersion.versionNumber}</h3>
           <p>{selectedVersion.changeType}</p>
-          <p>{selectedVersion.content.slice(0, 240)}</p>
+          <p>{selectedVersion.content.slice(0, 300)}</p>
           {selectedVersion.analysis && (
-            <div>
-              <h4>Analysis</h4>
+            <div className="analysis-details">
+              <h4>FAO Comment</h4>
               <p>{selectedVersion.analysis.faoComment}</p>
-              <p>Sentence comments: {selectedVersion.analysis.sentenceComments.length}</p>
+
+              {selectedVersion.analysis.reflectionComment && (
+                <>
+                  <h4>Reflection Comment</h4>
+                  <p>{selectedVersion.analysis.reflectionComment}</p>
+                </>
+              )}
+
+              <h4>Sentence Comments ({selectedVersion.analysis.sentenceComments.length})</h4>
+              <ul className="comment-list">
+                {selectedVersion.analysis.sentenceComments.map((comment) => (
+                  <li key={comment.id} className="comment-item">
+                    <strong>{comment.title}</strong>
+                    <p>{comment.description}</p>
+                    <p>{comment.suggestion}</p>
+                    {comment.improvementFeedback && <p>{comment.improvementFeedback}</p>}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </section>
