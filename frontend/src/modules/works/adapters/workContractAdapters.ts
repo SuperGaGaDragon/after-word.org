@@ -28,6 +28,7 @@ type ApiWorkDetail = {
   work_id: string;
   content: string;
   current_version: number;
+  essay_prompt?: string;
 };
 
 type ApiAnalysisComment = {
@@ -112,7 +113,8 @@ export function fromApiWorkDetail(payload: ApiWorkDetail): WorkDetail {
   return {
     workId: payload.work_id,
     content: payload.content,
-    currentVersion: payload.current_version
+    currentVersion: payload.current_version,
+    essayPrompt: payload.essay_prompt
   };
 }
 

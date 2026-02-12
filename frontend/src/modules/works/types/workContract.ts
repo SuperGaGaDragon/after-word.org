@@ -14,12 +14,14 @@ export type WorkDetail = {
   workId: string;
   content: string;
   currentVersion: number;
+  essayPrompt?: string;
 };
 
 export type WorkUpdateInput = {
   content: string;
   deviceId: string;
   autoSave: boolean;
+  essayPrompt?: string;
 };
 
 export type WorkUpdateResponse = {

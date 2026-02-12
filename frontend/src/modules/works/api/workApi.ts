@@ -167,7 +167,12 @@ export async function deleteWork(workId: string): Promise<void> {
 }
 
 export async function getWork(workId: string): Promise<WorkDetail> {
-  const payload = await requestJson<{ work_id: string; content: string; current_version: number }>(
+  const payload = await requestJson<{
+    work_id: string;
+    content: string;
+    current_version: number;
+    essay_prompt?: string;
+  }>(
     `/api/work/${workId}`
   );
   return fromApiWorkDetail(payload);
@@ -182,7 +187,8 @@ export async function updateWork(
     body: JSON.stringify({
       content: input.content,
       device_id: input.deviceId,
-      auto_save: input.autoSave
+      auto_save: input.autoSave,
+      essay_prompt: input.essayPrompt
     })
   });
   invalidateWorkCache(workId);
