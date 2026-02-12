@@ -1,8 +1,11 @@
+import json
 from typing import Any, Callable, Dict, Optional
 
 from backend.errors import BusinessError
+from backend.modules.llm_gateway import analyzer
 from backend.modules.session_lock import lock as session_lock
 from backend.modules.work import version_manager
+from backend.storage.text_analysis import repo as analysis_repo
 from backend.storage.work import repo as work_repo
 from backend.storage.work_retrieve import repo as work_retrieve_repo
 
@@ -145,14 +148,98 @@ def submit_work(
 
     session_lock.refresh_lock(work_id, device_id)
 
-    # TODO: Trigger AI analysis (Phase 6-7)
-    # analysis_id = generate_and_save_analysis(...)
+    # Generate AI analysis
+    analysis_id = _generate_and_save_analysis(
+        work_id=work_id,
+        user_email=user_email,
+        current_version=new_version,
+        current_content=content,
+        previous_submission=latest_submission,
+        user_reflection=user_reflection,
+    )
 
     return {
         "ok": True,
         "version": new_version,
-        # "analysis_id": analysis_id,  # Will be added in Phase 7
+        "analysis_id": analysis_id,
     }
+
+
+def _generate_and_save_analysis(
+    work_id: str,
+    user_email: str,
+    current_version: int,
+    current_content: str,
+    previous_submission: Optional[Dict[str, Any]],
+    user_reflection: Optional[str],
+) -> str:
+    """
+    Generate AI analysis and save to database.
+
+    Args:
+        work_id: Work ID
+        user_email: User email
+        current_version: Current version number
+        current_content: Current essay content
+        previous_submission: Previous submitted version (None for first time)
+        user_reflection: User's reflection on previous FAO comment
+
+    Returns:
+        analysis_id: ID of created analysis record
+
+    Raises:
+        BusinessError: If analysis generation or saving fails
+    """
+    # Get previous analysis if this is not first submission
+    previous_text = None
+    previous_analysis = None
+
+    if previous_submission:
+        prev_version_num = previous_submission.get("version_number")
+        previous_text = previous_submission.get("content")
+
+        # Get previous analysis
+        prev_analysis_query = analysis_repo.get_analysis_by_version(work_id, prev_version_num)
+        prev_analysis_result = _run(prev_analysis_query)
+
+        if prev_analysis_result:
+            previous_analysis = {
+                "fao_comment": prev_analysis_result.get("fao_comment"),
+                "sentence_comments": prev_analysis_result.get("sentence_comments"),
+            }
+
+    # Generate analysis using AI
+    analysis = analyzer.generate_analysis(
+        work_id=work_id,
+        current_text=current_content,
+        current_version=current_version,
+        previous_text=previous_text,
+        previous_analysis=previous_analysis,
+        user_actions=None,  # TODO: Phase 8 - Parse from request
+        user_reflection=user_reflection,
+    )
+
+    # Save analysis to database
+    sentence_comments_json = json.dumps(analysis["sentence_comments"])
+
+    save_query = analysis_repo.create_analysis(
+        work_id=work_id,
+        user_email=user_email,
+        version_number=current_version,
+        text_snapshot=current_content,
+        fao_comment=analysis["fao_comment"],
+        sentence_comments=sentence_comments_json,
+        reflection_comment=analysis.get("reflection_comment"),
+    )
+
+    result = _run(save_query)
+    if not result or not result.get("id"):
+        raise BusinessError("analysis_save_failed", "Failed to save analysis to database")
+
+    analysis_id = result["id"]
+    print(f"[WORK MANAGER] Analysis saved: {analysis_id}")
+
+    return analysis_id
 
 
 def delete_work(work_id: str, user_email: str) -> bool:

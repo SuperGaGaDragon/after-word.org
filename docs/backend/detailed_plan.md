@@ -126,10 +126,10 @@
 3. 返回analysis_id
 
 **验收：**
-- [ ] Submit自动触发AI评价
-- [ ] 分析结果正确保存
-- [ ] 关联到正确的版本号
-- [ ] API返回analysis数据
+- [x] Submit自动触发AI评价
+- [x] 分析结果正确保存
+- [x] 关联到正确的版本号
+- [x] API返回analysis数据
 
 ---
 
