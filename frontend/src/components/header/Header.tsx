@@ -19,9 +19,6 @@ export function Header() {
               <Link to="/works" className="nav-link">
                 Works
               </Link>
-              <Link to="/account" className="nav-link">
-                Account
-              </Link>
               <Link to="/why" className="nav-link">
                 Why
               </Link>
@@ -29,10 +26,9 @@ export function Header() {
                 About
               </Link>
               <div className="header-user">
-                <span className="user-name">{user?.username || user?.email}</span>
-                <button type="button" onClick={logout} className="btn-logout">
-                  Sign Out
-                </button>
+                <Link to="/account" className="user-link">
+                  {user?.username || user?.email}
+                </Link>
               </div>
             </>
           ) : (

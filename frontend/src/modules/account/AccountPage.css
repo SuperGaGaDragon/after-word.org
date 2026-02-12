@@ -65,6 +65,21 @@
   font-weight: 700;
 }
 
+.nav-divider {
+  height: 1px;
+  background: var(--panel-border);
+  margin: 0.5rem 0;
+}
+
+.nav-logout {
+  color: #d93025;
+}
+
+.nav-logout:hover {
+  background: rgba(217, 48, 37, 0.08);
+  color: #d93025;
+}
+
 /* Right content area */
 .account-content {
   padding: 2rem;

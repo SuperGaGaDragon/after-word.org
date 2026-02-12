@@ -1,10 +1,14 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthSession } from '../auth/session/AuthSessionContext';
 import { changePassword, changeUsername, getCurrentUser, UserInfo } from './api/accountApi';
 import './AccountPage.css';
 
 type TabType = 'account' | 'password';
 
 export function AccountPage() {
+  const navigate = useNavigate();
+  const { logout } = useAuthSession();
   const [activeTab, setActiveTab] = useState<TabType>('account');
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -142,6 +146,17 @@ export function AccountPage() {
               }}
             >
               Change Password
+            </button>
+            <div className="nav-divider" />
+            <button
+              type="button"
+              className="nav-item nav-logout"
+              onClick={() => {
+                logout();
+                navigate('/auth/login');
+              }}
+            >
+              Sign Out
             </button>
           </nav>
 
