@@ -123,10 +123,14 @@ class VersionListItem(BaseModel):
 
 
 class VersionListResponse(BaseModel):
-    """Response containing version history."""
+    """Response containing version history with optional pagination."""
 
     current_version: int = Field(..., description="Current version number of the work")
     versions: List[VersionListItem] = Field(..., description="List of versions")
+    next_cursor: Optional[str] = Field(
+        None,
+        description="Cursor for next page (created_at timestamp). Null if no more results.",
+    )
 
 
 class VersionDetailResponse(BaseModel):

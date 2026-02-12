@@ -43,8 +43,21 @@ def get_versions_by_work(
     work_id: str,
     is_submitted: Optional[bool] = None,
     parent_submission_version: Optional[int] = None,
+    limit: Optional[int] = None,
+    cursor: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Get version list for a work, optionally filtered by type."""
+    """
+    Get version list for a work, optionally filtered by type.
+
+    Supports cursor-based pagination using created_at timestamp.
+
+    Args:
+        work_id: Work UUID
+        is_submitted: Filter by submission status (None = all)
+        parent_submission_version: Filter by parent version
+        limit: Max number of results (for pagination)
+        cursor: ISO timestamp cursor for pagination (created_at)
+    """
     conditions = ["work_id = %(work_id)s"]
     params: Dict[str, Any] = {"work_id": work_id}
 
@@ -56,6 +69,11 @@ def get_versions_by_work(
         conditions.append("parent_submission_version = %(parent_submission_version)s")
         params["parent_submission_version"] = parent_submission_version
 
+    # Cursor-based pagination: fetch versions older than cursor
+    if cursor is not None:
+        conditions.append("created_at < %(cursor)s")
+        params["cursor"] = cursor
+
     where_clause = " AND ".join(conditions)
 
     sql = (
@@ -64,8 +82,13 @@ def get_versions_by_work(
         f"parent_submission_version, change_type, created_at "
         f"FROM work_versions "
         f"WHERE {where_clause} "
-        f"ORDER BY version_number DESC"
+        f"ORDER BY created_at DESC"  # Changed from version_number to created_at for cursor
     )
+
+    # Add LIMIT if specified
+    if limit is not None:
+        sql += f" LIMIT {int(limit)}"
+
     return _build_query(sql, params)
 
 

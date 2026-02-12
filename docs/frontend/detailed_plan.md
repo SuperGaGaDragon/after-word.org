@@ -169,15 +169,18 @@
 5. CI 未通过测试或性能预算时禁止发布，主流程具备自动化回归保障。
 6. 关键页面满足基础无障碍与移动端可用性要求。
 
-待完成:
-1. Draft 分页 API 接入（前端已实现本地分页 + Load Older，待后端 cursor API）。🟡
-2. 文本高亮 diff 算法。⏳
-3. optimistic locking。⏳
-4. ETag/304 缓存协商（前端 GET 已支持 If-None-Match/304，待后端完整返回 ETag）。🟡
-5. 批量 analysis 读取端点接入。⏳
-6. 进度统计 dashboard。⏳
-7. Force Unlock。⏳
-8. httpOnly cookie 会话改造。⏳
-9. Sentry 与生产监控接入。⏳
-10. 测试与发布门禁（typecheck + vitest + build + bundle budget + GitHub Actions gate）。✅
-11. A11y 与移动端产品化收尾（已补 aria-live 与基础可读性，剩余系统化审计）。🟡
+Phase 10 完成结论（前端范围）:
+1. Draft 历史前端分页（Load Older）与大列表可交互能力已落地。✅
+2. 轻量冲突防护（version conflict pre-check）已落地。✅
+3. ETag/304 前端协商缓存与写操作后缓存失效已落地。✅
+4. 测试与发布门禁（typecheck + vitest + build + bundle budget + GitHub Actions gate）已落地。✅
+5. A11y 与移动端基线（aria-live、focus-visible、移动端布局收敛）已落地。✅
+
+阻塞项（需后端/运维配合）:
+1. Draft cursor 分页 API 正式接入（`limit/cursor`）。⏳
+2. 文本高亮 diff 算法（需要稳定文本锚点策略）。⏳
+3. 批量 analysis 读取端点接入。⏳
+4. 进度统计 dashboard 端点与页面联调。⏳
+5. Force Unlock（依赖后端锁详情与解锁 API）。⏳
+6. httpOnly cookie 会话改造（依赖后端/网关）。⏳
+7. Sentry 与生产监控告警接入（依赖运维配置）。⏳

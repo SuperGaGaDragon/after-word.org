@@ -6,10 +6,39 @@
 
 ## Authentication
 
-All endpoints except signup/login require JWT authentication:
+### 🔐 httpOnly Cookie Authentication (Recommended)
+
+All endpoints except signup/login/logout require authentication via httpOnly cookie.
+
+**How it works:**
+1. **Signup/Login**: Server sets `session_token` httpOnly cookie in response
+2. **Subsequent requests**: Browser automatically sends cookie
+3. **Logout**: Server clears the cookie
+
+**Cookie details:**
+- Name: `session_token`
+- Max-Age: 30 days
+- HttpOnly: `true` (prevents XSS access)
+- Secure: `true` (HTTPS only in production)
+- SameSite: `lax` (CSRF protection)
+
+**Frontend setup:**
+```javascript
+// Axios example
+axios.defaults.withCredentials = true;
+
+// Fetch example
+fetch(url, { credentials: 'include' });
+```
+
+### Legacy: Bearer Token (Backward Compatible)
+
+For backward compatibility, Bearer token authentication is still supported:
 ```
 Authorization: Bearer <token>
 ```
+
+**⚠️ Deprecated**: This method will be removed in a future version. Please migrate to cookie-based auth.
 
 ---
 
@@ -18,7 +47,7 @@ Authorization: Bearer <token>
 ### Auth
 
 #### POST /api/auth/signup
-Create new user account.
+Create new user account and set session cookie.
 
 **Request:**
 ```json
@@ -32,7 +61,6 @@ Create new user account.
 **Response:**
 ```json
 {
-  "token": "jwt_token",
   "user": {
     "id": "uuid",
     "email": "user@example.com",
@@ -41,10 +69,15 @@ Create new user account.
 }
 ```
 
+**Cookie Set:**
+```
+Set-Cookie: session_token=<jwt>; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax
+```
+
 ---
 
 #### POST /api/auth/login
-Login with email or username.
+Login with email or username and set session cookie.
 
 **Request:**
 ```json
@@ -57,13 +90,36 @@ Login with email or username.
 **Response:**
 ```json
 {
-  "token": "jwt_token",
   "user": {
     "id": "uuid",
     "email": "user@example.com",
     "username": "username"
   }
 }
+```
+
+**Cookie Set:**
+```
+Set-Cookie: session_token=<jwt>; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax
+```
+
+---
+
+#### POST /api/auth/logout
+Logout by clearing session cookie (requires auth).
+
+**Request:** (no body)
+
+**Response:**
+```json
+{
+  "ok": true
+}
+```
+
+**Cookie Cleared:**
+```
+Set-Cookie: session_token=; Max-Age=0; HttpOnly; Secure; SameSite=Lax
 ```
 
 ---
@@ -232,11 +288,20 @@ Delete work.
 ### Versions
 
 #### GET /api/work/{work_id}/versions
-Get version history.
+Get version history with optional cursor-based pagination.
 
 **Query params:**
 - `type`: `all` (default), `submitted`, `draft`
 - `parent`: If type=draft, specify parent submission version
+- `limit`: Max results per page (e.g., 50) - optional
+- `cursor`: Pagination cursor from previous response - optional
+
+**Pagination:**
+- Results are ordered by `created_at DESC` (newest first)
+- Use `limit` to enable pagination (e.g., `limit=50`)
+- If more results exist, `next_cursor` will be provided
+- Pass `next_cursor` as `cursor` param to fetch next page
+- Without `limit`, all results are returned (backward compatible)
 
 **Response:**
 ```json
@@ -256,8 +321,24 @@ Get version history.
       "change_type": "draft_edit",
       "created_at": "2026-02-11T09:58:00Z"
     }
-  ]
+  ],
+  "next_cursor": "2026-02-11T09:58:00Z"
 }
+```
+
+**Pagination example:**
+```javascript
+// First page
+GET /api/work/{id}/versions?type=draft&limit=50
+// Response includes next_cursor: "2026-02-11T09:58:00Z"
+
+// Second page
+GET /api/work/{id}/versions?type=draft&limit=50&cursor=2026-02-11T09:58:00Z
+// Response includes next_cursor: "2026-02-10T15:30:00Z" or null if no more
+
+// Third page
+GET /api/work/{id}/versions?type=draft&limit=50&cursor=2026-02-10T15:30:00Z
+// next_cursor: null (no more results)
 ```
 
 ---
