@@ -94,10 +94,10 @@
 4. 加入严厉招生官persona
 
 **验收：**
-- [ ] 第一次prompt包含：分析要求
-- [ ] 迭代prompt包含：历史对比要求
-- [ ] Prompt是英文
-- [ ] Persona正确
+- [x] 第一次prompt包含：分析要求
+- [x] 迭代prompt包含：历史对比要求
+- [x] Prompt是英文
+- [x] Persona正确
 
 ---
 
