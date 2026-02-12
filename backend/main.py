@@ -37,33 +37,21 @@ from backend.storage.db import execute_query
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
 
-def _run_integration_tests_on_startup():
+def _run_integration_tests_background():
     """
-    🚨 TEMPORARY: Auto-run integration tests on Railway deployment startup.
+    🚨 TEMPORARY: Background task to run integration tests after server starts.
 
     ⚠️  WARNING: This function MUST be deleted after acceptance testing! ⚠️
 
-    This function automatically runs the full integration test suite when the
-    backend service starts on Railway. Test results will appear in Railway logs.
-
-    Set environment variable: RUN_INTEGRATION_TESTS=true to enable.
-
-    Tests validate:
-    - Phase 1-4: Auth, Work CRUD, Version system
-    - Phase 5-7: AI evaluation (first-time + iterative)
-    - Phase 8: Suggestion tracking and validation
-    - Phase 9: Version history and revert
-
-    TODO: Remove this function AND test files after deployment verification
+    Runs in background thread after FastAPI server is fully listening.
     """
-    # Only run if explicitly enabled
-    if os.environ.get("RUN_INTEGRATION_TESTS") != "true":
-        print("ℹ️  Integration tests available (set RUN_INTEGRATION_TESTS=true to auto-run)")
-        return
-
     import sys
     import time
     from pathlib import Path
+
+    # Wait for server to be fully ready and listening
+    print("⏳ Waiting 8 seconds for server to fully start listening...")
+    time.sleep(8)
 
     test_file = Path(__file__).parent / "test_integration.py"
 
@@ -85,10 +73,6 @@ def _run_integration_tests_on_startup():
         if str(backend_path) not in sys.path:
             sys.path.insert(0, str(backend_path))
 
-        # Give server a moment to fully start
-        print("⏳ Waiting 3 seconds for server to fully initialize...")
-        time.sleep(3)
-
         # Import test module
         from backend.test_integration import run_tests
 
@@ -106,7 +90,7 @@ def _run_integration_tests_on_startup():
             print("")
             print("🎯 Next steps:")
             print("1. Remove RUN_INTEGRATION_TESTS environment variable from Railway")
-            print("2. Delete test code from backend/main.py (lines 18-110)")
+            print("2. Delete test code from backend/main.py (lines 18-135)")
             print("3. Delete backend/test_integration.py")
             print("4. Delete backend/TEST_PHASE10.md")
             print("5. Commit: 'Phase 10 completed - Remove integration test code'")
@@ -128,8 +112,31 @@ def _run_integration_tests_on_startup():
         print("")
 
 
-# Auto-run tests on startup if enabled
-_run_integration_tests_on_startup()
+def _schedule_integration_tests_on_startup():
+    """
+    🚨 TEMPORARY: Schedule integration tests to run after server startup.
+
+    ⚠️  WARNING: This function MUST be deleted after acceptance testing! ⚠️
+
+    Uses FastAPI lifespan event to run tests after server is listening.
+    Set environment variable: RUN_INTEGRATION_TESTS=true to enable.
+
+    TODO: Remove this function AND test files after deployment verification
+    """
+    # Only run if explicitly enabled
+    if os.environ.get("RUN_INTEGRATION_TESTS") != "true":
+        print("ℹ️  Integration tests available (set RUN_INTEGRATION_TESTS=true to auto-run)")
+        return
+
+    # Schedule tests to run in background after server starts
+    import threading
+    test_thread = threading.Thread(target=_run_integration_tests_background, daemon=True)
+    test_thread.start()
+    print("🧪 Integration tests scheduled to run after server startup...")
+
+
+# Schedule tests on module load (before server starts)
+_schedule_integration_tests_on_startup()
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║                    END OF TEMPORARY TEST CODE                              ║
