@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { TestRouteSwitches } from '../navigation/TestRouteSwitches';
+import { Phase2ContractPanel } from './components/Phase2ContractPanel';
 
 export function WorkDetailPage() {
   const { workId } = useParams<{ workId: string }>();
@@ -11,6 +12,8 @@ export function WorkDetailPage() {
         {/* TEST ONLY: detail content is intentionally minimal for route plumbing validation. */}
         <p>work_id: {workId ?? ''}</p>
       </header>
+
+      <Phase2ContractPanel workId={workId} />
 
       <TestRouteSwitches className="route-switches" />
     </main>

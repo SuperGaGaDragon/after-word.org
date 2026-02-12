@@ -21,6 +21,12 @@
 3. 每次 submit 成功后必定发起 `GET /api/work/{work_id}/versions/{version}` 获取 analysis。
 4. Network 面板中不出现 `userAction`、`userNote` 等前端字段名。
 
+当前状态:
+1. `update` 请求体固定为 `{content, device_id, auto_save: true|false}`。✅
+2. `submit` 请求体包含 `content`、`device_id`、`fao_reflection` 和 `suggestion_actions[action,user_note]`。✅
+3. 每次 submit 成功后必定发起 `GET /api/work/{work_id}/versions/{version}` 获取 analysis。✅
+4. Network 面板中不出现 `userAction`、`userNote` 等前端字段名。✅
+
 ## Phase 3: Works 列表与详情
 3.1 在 `/works` 页面接入 list/create/delete 三个 work 接口。
 3.2 works 列表无 title 时统一显示 `Untitled Work`。

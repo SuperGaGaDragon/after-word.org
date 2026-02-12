@@ -142,3 +142,65 @@ body {
   margin: 16px 0 0;
   color: #4b5563;
 }
+
+.contract-panel {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  display: grid;
+  gap: 10px;
+}
+
+.contract-panel h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.contract-panel p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.contract-panel textarea,
+.contract-panel input,
+.contract-panel select {
+  width: 100%;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.contract-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.contract-actions button,
+.contract-panel > button {
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: #ffffff;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.contract-grid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.contract-info {
+  font-size: 14px;
+}
+
+.contract-error {
+  color: #d93025;
+  font-weight: 600;
+}

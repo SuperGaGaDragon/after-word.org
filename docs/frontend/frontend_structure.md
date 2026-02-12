@@ -7,6 +7,8 @@
 - `src/modules/why`
 - `src/modules/about`
 - `src/modules/auth`
+
+modules下面，再分清楚，逻辑和UI严格分离。buttons和页面主逻辑严格分离。建议比如about/pages/components放按钮, pages/about.tsx放集成，然后about/utils，about/hooks这种等等分割在这个下面。
 4. Shared UI for temporary route testing is in `src/modules/navigation/TestRouteSwitches.tsx`.
 5. Router entry is `src/router.tsx`; app entry is `src/main.tsx`.
 6. All comments tagged `TEST ONLY` are temporary and must be removed when real features land.
