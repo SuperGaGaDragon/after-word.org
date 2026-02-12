@@ -1,9 +1,28 @@
+/* Cold Theme Design Tokens - extracted from design.md */
 :root {
+  /* Typography */
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #111827;
-  background: #f9fafb;
+
+  /* Colors - Cold Theme */
+  --bg: #f4f6fb;
+  --bg-grad-a: rgba(90, 143, 255, 0.2);
+  --bg-grad-b: rgba(49, 200, 170, 0.16);
+  --bg-grad-c: rgba(255, 177, 106, 0.15);
+  --text: #142343;
+  --muted: #5f6f93;
+  --accent: #1769ff;
+  --accent-2: #00b894;
+  --button-text: #f9fcff;
+  --panel-border: rgba(58, 92, 160, 0.15);
+
+  /* Structure */
+  --radius-ui: 8px;
+  --radius-card: 8px;
+
+  color: var(--text);
+  background: var(--bg);
 }
 
 * {
@@ -12,6 +31,12 @@
 
 body {
   margin: 0;
+  background:
+    radial-gradient(circle at 15% 10%, var(--bg-grad-a), transparent 35%),
+    radial-gradient(circle at 85% 20%, var(--bg-grad-b), transparent 30%),
+    radial-gradient(circle at 50% 80%, var(--bg-grad-c), transparent 35%),
+    var(--bg);
+  min-height: 100vh;
 }
 
 .page {
@@ -49,9 +74,10 @@ body {
 .work-form button {
   height: 36px;
   border: none;
-  border-radius: 6px;
-  background: #111827;
-  color: #ffffff;
+  border-radius: var(--radius-ui);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -78,9 +104,10 @@ body {
 .works-panel-header button {
   height: 36px;
   border: none;
-  border-radius: 8px;
-  background: #1a73e8;
-  color: #ffffff;
+  border-radius: var(--radius-ui);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  font-weight: 700;
   padding: 0 12px;
   cursor: pointer;
 }
@@ -117,10 +144,11 @@ body {
 .work-detail-panel button {
   height: 34px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-ui);
   padding: 0 12px;
-  background: #1a73e8;
-  color: #ffffff;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -294,10 +322,10 @@ body {
   margin-top: 8px;
   height: 40px;
   border: none;
-  border-radius: 8px;
-  background: #1a73e8;
-  color: #ffffff;
-  font-weight: 600;
+  border-radius: var(--radius-ui);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -345,9 +373,10 @@ body {
 .contract-panel > button {
   height: 36px;
   border: none;
-  border-radius: 8px;
-  background: #1a73e8;
-  color: #ffffff;
+  border-radius: var(--radius-ui);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  font-weight: 700;
   padding: 0 12px;
   cursor: pointer;
 }
