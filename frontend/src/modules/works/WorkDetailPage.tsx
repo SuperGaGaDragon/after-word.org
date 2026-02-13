@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { WorkDetailPanel } from './components/WorkDetailPanel';
 import { useWorkDetail } from './hooks/useWorkDetail';
 import { renameWork } from './api/workApi';
 import { EditableTitle } from '../../components/modal/EditableTitle';
+import { ReviewWorkPanel } from './components/review/ReviewWorkPanel';
 import './WorkDetailPage.css';
 
 export function WorkDetailPage() {
@@ -14,14 +14,10 @@ export function WorkDetailPage() {
     setFaoReflectionDraft,
     save,
     submit,
-    openVersion,
-    revert,
     loadAll,
     markSuggestionAction,
     setSuggestionNote,
-    unprocessedCommentCount,
-    canLoadMoreVersions,
-    loadMoreVersions
+    unprocessedCommentCount
   } = useWorkDetail(workId);
 
   const handleRename = async (newTitle: string) => {
@@ -31,8 +27,18 @@ export function WorkDetailPage() {
     }
   };
 
+  if (state.loading) {
+    return (
+      <main className="page">
+        <div className="loading-container">
+          <p>Loading work detail...</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="page">
+    <main className="page work-detail-page-main">
       <header className="page-header">
         <h1 className="work-detail-title">
           <EditableTitle
@@ -41,28 +47,21 @@ export function WorkDetailPage() {
             onRename={handleRename}
           />
         </h1>
-        <p>Read, save, submit, inspect versions, and revert.</p>
+        <p>Write, revise, and receive AI-powered feedback on your work.</p>
       </header>
 
-      <WorkDetailPanel
+      <ReviewWorkPanel
         workId={workId}
         content={state.content}
         essayPrompt={state.essayPrompt}
         faoReflectionDraft={state.faoReflectionDraft}
         currentVersionNumber={state.work?.currentVersion}
-        versions={state.versions}
-        hiddenVersionCount={state.hiddenVersionCount}
-        canLoadMoreVersions={canLoadMoreVersions}
-        selectedVersion={state.selectedVersion}
         baselineSubmittedVersion={state.baselineSubmittedVersion}
         suggestionMarkings={state.suggestionMarkings}
         unprocessedCommentCount={unprocessedCommentCount}
-        loading={state.loading}
+        locked={state.locked}
         saving={state.saving}
         submitting={state.submitting}
-        reverting={state.reverting}
-        locked={state.locked}
-        lockRetryInSec={state.lockRetryInSec}
         error={state.error}
         info={state.info}
         onContentChange={setContent}
@@ -71,9 +70,6 @@ export function WorkDetailPage() {
         onSaveAuto={() => void save(true)}
         onSaveDraft={() => save(false)}
         onSubmit={() => void submit()}
-        onOpenVersion={(versionNumber) => void openVersion(versionNumber)}
-        onLoadMoreVersions={loadMoreVersions}
-        onRevert={(versionNumber) => revert(versionNumber)}
         onMarkSuggestionAction={markSuggestionAction}
         onSuggestionNoteChange={setSuggestionNote}
       />

@@ -8,3 +8,23 @@
   font-weight: inherit;
   line-height: inherit;
 }
+
+.work-detail-page-main {
+  max-width: 100%;
+  padding: 0;
+}
+
+.work-detail-page-main .page-header {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  color: var(--muted);
+  font-size: 1.1rem;
+}
