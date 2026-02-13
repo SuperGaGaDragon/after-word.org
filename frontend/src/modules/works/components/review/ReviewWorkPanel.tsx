@@ -53,6 +53,7 @@ export function ReviewWorkPanel({
   onSuggestionNoteChange
 }: ReviewWorkPanelProps) {
   const [activeCommentId, setActiveCommentId] = useState<string | undefined>();
+  const [showPromptEditor, setShowPromptEditor] = useState(false);
 
   const essayPromptWordCount = useMemo(() => countWords(essayPrompt), [essayPrompt]);
   const contentWordCount = useMemo(() => countWords(content), [content]);
@@ -104,10 +105,9 @@ export function ReviewWorkPanel({
           <button
             type="button"
             className="btn-secondary"
-            onClick={onSaveAuto}
-            disabled={!workId || saving || locked}
+            onClick={() => setShowPromptEditor(!showPromptEditor)}
           >
-            {saving ? 'Saving...' : 'Quick Save'}
+            {showPromptEditor ? 'Hide Prompt' : 'Edit Prompt'}
           </button>
           <button
             type="button"
@@ -120,22 +120,24 @@ export function ReviewWorkPanel({
         </div>
       </div>
 
-      {/* Essay Prompt */}
-      <div className="prompt-section">
-        <label htmlFor="essay-prompt" className="section-label">
-          Essay Prompt / Requirements
-          <span className="word-count-badge">{essayPromptWordCount} words</span>
-        </label>
-        <textarea
-          id="essay-prompt"
-          className="prompt-textarea"
-          rows={3}
-          value={essayPrompt}
-          readOnly={locked}
-          onChange={(e) => onEssayPromptChange(e.target.value)}
-          placeholder="Enter your essay prompt or requirements (optional)"
-        />
-      </div>
+      {/* Essay Prompt - collapsible */}
+      {showPromptEditor && (
+        <div className="prompt-section">
+          <label htmlFor="essay-prompt" className="section-label">
+            Essay Prompt / Requirements
+            <span className="word-count-badge">{essayPromptWordCount} words</span>
+          </label>
+          <textarea
+            id="essay-prompt"
+            className="prompt-textarea"
+            rows={3}
+            value={essayPrompt}
+            readOnly={locked}
+            onChange={(e) => onEssayPromptChange(e.target.value)}
+            placeholder="Enter your essay prompt or requirements (optional)"
+          />
+        </div>
+      )}
 
       {/* Main Review Area */}
       <div className="review-area">
