@@ -7,7 +7,7 @@
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-card);
   background: var(--bg);
-  padding: 1.5rem;
+  padding: 1.25rem;
   font-family: 'Georgia', serif;
   font-size: 1.1rem;
   line-height: 1.8;
@@ -46,9 +46,9 @@
 
 .text-overlay {
   position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
+  top: 1.25rem;
+  left: 1.25rem;
+  right: 1.25rem;
   pointer-events: none;
   white-space: pre-wrap;
   word-wrap: break-word;

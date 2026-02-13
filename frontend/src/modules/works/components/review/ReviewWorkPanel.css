@@ -2,9 +2,9 @@
 
 .review-work-panel {
   width: 100%;
-  max-width: 1800px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem 2rem;
 }
 
 /* Status Bar */
@@ -168,8 +168,8 @@
 
 .review-area {
   display: grid;
-  grid-template-columns: 1fr 480px;
-  gap: 2rem;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
@@ -267,8 +267,8 @@
 
 @media (max-width: 1200px) {
   .review-area {
-    grid-template-columns: 1fr 400px;
-    gap: 1.5rem;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1.25rem;
   }
 
   .sidebar-section {
@@ -279,7 +279,7 @@
 @media (max-width: 1024px) {
   .review-area {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .sidebar-section {
