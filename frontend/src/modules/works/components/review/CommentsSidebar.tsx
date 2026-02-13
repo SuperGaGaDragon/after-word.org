@@ -37,7 +37,7 @@ export function CommentsSidebar({
     );
   }
 
-  const { faoComment, reflectionComment, sentenceComments } = baselineVersion.analysis;
+  const { reflectionComment, sentenceComments } = baselineVersion.analysis;
 
   return (
     <div className="comments-sidebar">
@@ -49,9 +49,6 @@ export function CommentsSidebar({
       </div>
 
       <div className="sidebar-content">
-        {/* FAO Comment */}
-        {faoComment && <FAOCommentCard comment={faoComment} />}
-
         {/* Reflection Comment - only if exists */}
         {reflectionComment && <ReflectionCommentCard comment={reflectionComment} />}
 

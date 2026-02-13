@@ -186,6 +186,73 @@
   box-shadow: 0 4px 16px rgba(58, 92, 160, 0.12);
 }
 
+/* Overall Assessment Section */
+
+.overall-assessment-section {
+  margin-bottom: 1.5rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 2px 8px rgba(58, 92, 160, 0.08);
+}
+
+.assessment-title {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.assessment-title::before {
+  content: '📋';
+  font-size: 1.5rem;
+}
+
+.assessment-content {
+  padding: 1.25rem;
+  background: rgba(23, 105, 255, 0.05);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-ui);
+  margin-bottom: 1.25rem;
+}
+
+.assessment-content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.btn-write-reflection {
+  padding: 0.75rem 1.5rem;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius-ui);
+  background: white;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-write-reflection::before {
+  content: '✍️';
+}
+
+.btn-write-reflection:hover {
+  background: rgba(23, 105, 255, 0.05);
+  border-color: var(--accent-2);
+  transform: translateY(-1px);
+}
+
 /* Submit Section */
 
 .submit-section {
@@ -193,6 +260,35 @@
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-card);
+}
+
+.reflection-section {
+  margin-bottom: 1.5rem;
+  animation: slideDown 200ms ease-out;
+}
+
+.reflection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.btn-close-reflection {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 180ms ease;
+  line-height: 1;
+}
+
+.btn-close-reflection:hover {
+  background: rgba(217, 48, 37, 0.1);
+  color: #d93025;
 }
 
 .reflection-textarea {
@@ -318,6 +414,18 @@
     height: 400px;
   }
 
+  .overall-assessment-section {
+    padding: 1.5rem;
+  }
+
+  .assessment-title {
+    font-size: 1.1rem;
+  }
+
+  .assessment-content {
+    padding: 1rem;
+  }
+
   .submit-section {
     padding: 1.5rem;
   }
@@ -329,5 +437,10 @@
 
   .btn-primary-submit {
     width: 100%;
+  }
+
+  .btn-write-reflection {
+    width: 100%;
+    justify-content: center;
   }
 }

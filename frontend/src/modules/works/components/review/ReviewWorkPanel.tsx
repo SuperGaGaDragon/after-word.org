@@ -54,6 +54,7 @@ export function ReviewWorkPanel({
 }: ReviewWorkPanelProps) {
   const [activeCommentId, setActiveCommentId] = useState<string | undefined>();
   const [showPromptEditor, setShowPromptEditor] = useState(false);
+  const [showReflectionEditor, setShowReflectionEditor] = useState(false);
 
   const essayPromptWordCount = useMemo(() => countWords(essayPrompt), [essayPrompt]);
   const contentWordCount = useMemo(() => countWords(content), [content]);
@@ -171,22 +172,55 @@ export function ReviewWorkPanel({
         </div>
       </div>
 
+      {/* Overall Assessment Section */}
+      {baselineSubmittedVersion?.analysis?.faoComment && (
+        <div className="overall-assessment-section">
+          <h3 className="assessment-title">Overall Assessment</h3>
+          <div className="assessment-content">
+            <p>{baselineSubmittedVersion.analysis.faoComment}</p>
+          </div>
+          {!showReflectionEditor && (
+            <button
+              type="button"
+              className="btn-write-reflection"
+              onClick={() => setShowReflectionEditor(true)}
+            >
+              Write My Reflection
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Submit Section */}
       <div className="submit-section">
         <form onSubmit={handleSubmit}>
-          <label htmlFor="fao-reflection" className="section-label">
-            FAO Reflection (Optional)
-            <span className="word-count-badge">{reflectionWordCount} words</span>
-          </label>
-          <textarea
-            id="fao-reflection"
-            className="reflection-textarea"
-            rows={3}
-            value={faoReflectionDraft}
-            readOnly={locked}
-            onChange={(e) => onFaoReflectionChange(e.target.value)}
-            placeholder="Reflect on your revision process and what you learned..."
-          />
+          {showReflectionEditor && (
+            <div className="reflection-section">
+              <div className="reflection-header">
+                <label htmlFor="fao-reflection" className="section-label">
+                  FAO Reflection (Optional)
+                  <span className="word-count-badge">{reflectionWordCount} words</span>
+                </label>
+                <button
+                  type="button"
+                  className="btn-close-reflection"
+                  onClick={() => setShowReflectionEditor(false)}
+                  aria-label="Hide reflection"
+                >
+                  ✕
+                </button>
+              </div>
+              <textarea
+                id="fao-reflection"
+                className="reflection-textarea"
+                rows={3}
+                value={faoReflectionDraft}
+                readOnly={locked}
+                onChange={(e) => onFaoReflectionChange(e.target.value)}
+                placeholder="Reflect on your revision process and what you learned..."
+              />
+            </div>
+          )}
           <div className="submit-actions">
             <div className="submit-info">
               {unprocessedCommentCount > 0 && (
