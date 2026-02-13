@@ -3,14 +3,15 @@
 .highlighted-text-editor {
   position: relative;
   width: 100%;
-  min-height: 400px;
+  height: 600px;
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-card);
   background: var(--bg);
   padding: 1.5rem;
   font-family: 'Georgia', serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.8;
+  overflow-y: auto;
 }
 
 .highlighted-text-editor.readonly {
@@ -31,15 +32,16 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 400px;
+  height: 100%;
   border: none;
   background: transparent;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
   color: var(--text);
-  resize: vertical;
+  resize: none;
   outline: none;
+  overflow-y: auto;
 }
 
 .text-overlay {
@@ -91,16 +93,35 @@
   border-bottom-width: 3px;
 }
 
+/* Scrollbar styling */
+.highlighted-text-editor::-webkit-scrollbar,
+.editor-textarea::-webkit-scrollbar {
+  width: 10px;
+}
+
+.highlighted-text-editor::-webkit-scrollbar-track,
+.editor-textarea::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+}
+
+.highlighted-text-editor::-webkit-scrollbar-thumb,
+.editor-textarea::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.highlighted-text-editor::-webkit-scrollbar-thumb:hover,
+.editor-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .highlighted-text-editor {
     padding: 1rem;
-    min-height: 300px;
-    font-size: 0.95rem;
-  }
-
-  .editor-textarea {
-    min-height: 300px;
+    height: 400px;
+    font-size: 1rem;
   }
 
   .text-overlay {

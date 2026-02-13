@@ -171,16 +171,16 @@
   grid-template-columns: 1fr 480px;
   gap: 2rem;
   margin-bottom: 2rem;
-  min-height: 500px;
 }
 
 .content-section {
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
 }
 
 .sidebar-section {
-  height: 600px;
+  height: 650px;
   overflow: hidden;
   border-radius: var(--radius-card);
   box-shadow: 0 4px 16px rgba(58, 92, 160, 0.12);
@@ -272,7 +272,7 @@
   }
 
   .sidebar-section {
-    height: 550px;
+    height: 600px;
   }
 }
 
@@ -283,7 +283,7 @@
   }
 
   .sidebar-section {
-    height: 500px;
+    height: 550px;
   }
 }
 
