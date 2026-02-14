@@ -97,6 +97,14 @@ export function ReviewWorkPanel({
 
   const handleCommentClick = (commentId: string) => {
     setActiveCommentId(commentId === activeCommentId ? undefined : commentId);
+
+    // Scroll to the comment in the sidebar
+    setTimeout(() => {
+      const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+      if (commentElement) {
+        commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -283,7 +291,7 @@ export function ReviewWorkPanel({
             )}
             <HighlightedTextEditor
               content={content}
-              comments={showHighlights ? sentenceComments : []}
+              comments={!isEditMode && showHighlights ? sentenceComments : []}
               readOnly={locked || !isEditMode}
               onChange={handleContentChange}
               onCommentClick={handleCommentClick}

@@ -73,6 +73,7 @@ export function SentenceCommentCard({
   return (
     <div
       className={`comment-card sentence-comment-card ${isActive ? 'active' : ''}`}
+      data-comment-id={comment.id}
       onClick={onHighlight}
     >
       <div className="comment-card-header">
