@@ -272,6 +272,8 @@ export async function getVersionDetail(
       sentence_comments: Array<{
         id: string;
         original_text: string;
+        start_index: number;
+        end_index: number;
         issue_type: string;
         severity: string;
         title: string;

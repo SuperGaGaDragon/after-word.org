@@ -24,9 +24,7 @@ export function HomePage() {
         setWordCount(words);
 
         // Get most recently updated work (list is already sorted by updated_at DESC)
-        if (works.length > 0) {
-          setRecentWork(works[0]);
-        }
+        setRecentWork(works[0] ?? null);
       } catch (error) {
         console.error('Failed to load statistics:', error);
       } finally {
@@ -77,10 +75,10 @@ export function HomePage() {
                     title={recentWork.title || 'Untitled Work'}
                     createdAt={recentWork.updatedAt}
                     updatedAt={recentWork.updatedAt}
-                    onDelete={async (workId) => {
+                    onDelete={async () => {
                       // Refresh after delete
                       const works = await listWorks();
-                      setRecentWork(works.length > 0 ? works[0] : null);
+                      setRecentWork(works[0] ?? null);
                       // Update project count
                       const count = await getTotalProjectCount();
                       setProjectCount(count);
@@ -88,7 +86,7 @@ export function HomePage() {
                     onRename={async () => {
                       // Refresh after rename
                       const works = await listWorks();
-                      setRecentWork(works.length > 0 ? works[0] : null);
+                      setRecentWork(works[0] ?? null);
                     }}
                   />
                 </div>

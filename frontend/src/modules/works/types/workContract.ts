@@ -47,6 +47,8 @@ export type WorkSubmitResponse = {
 export type AnalysisComment = {
   id: string;
   originalText: string;
+  startIndex: number;
+  endIndex: number;
   issueType: string;
   severity: string;
   title: string;

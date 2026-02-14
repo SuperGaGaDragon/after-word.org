@@ -36,6 +36,8 @@ type ApiWorkDetail = {
 type ApiAnalysisComment = {
   id: string;
   original_text: string;
+  start_index: number;
+  end_index: number;
   issue_type: string;
   severity: string;
   title: string;
@@ -150,6 +152,8 @@ export function fromApiVersionDetail(payload: ApiVersionDetail): WorkVersionDeta
           sentenceComments: payload.analysis.sentence_comments.map((item) => ({
             id: item.id,
             originalText: item.original_text,
+            startIndex: item.start_index,
+            endIndex: item.end_index,
             issueType: item.issue_type,
             severity: item.severity,
             title: item.title,
