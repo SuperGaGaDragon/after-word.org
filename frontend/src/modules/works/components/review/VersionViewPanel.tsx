@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { WorkVersionDetail } from '../../types/workContract';
 import { HighlightedTextEditor } from './HighlightedTextEditor';
 import { CommentsSidebar } from './CommentsSidebar';
@@ -19,8 +20,15 @@ export function VersionViewPanel({
   versionDetail,
   onRename
 }: VersionViewPanelProps) {
+  const navigate = useNavigate();
   const [activeCommentId, setActiveCommentId] = useState<string | undefined>();
   const [showPromptEditor, setShowPromptEditor] = useState(false);
+
+  const handleBackToCurrent = () => {
+    if (workId) {
+      navigate(`/works/${workId}`);
+    }
+  };
 
   const essayPromptWordCount = useMemo(() => countWords(''), []);
   const contentWordCount = useMemo(() => countWords(versionDetail.content), [versionDetail.content]);
@@ -89,7 +97,14 @@ export function VersionViewPanel({
       {/* Info Message */}
       <div className="status-bar">
         <div className="status-message info-message" role="status">
-          This is a read-only view of a previous version
+          <span>This is a read-only view of a previous version</span>
+          <button
+            type="button"
+            className="btn-back-to-current"
+            onClick={handleBackToCurrent}
+          >
+            Back to current version
+          </button>
         </div>
       </div>
 

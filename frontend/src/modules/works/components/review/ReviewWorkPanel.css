@@ -36,6 +36,28 @@
   background: rgba(66, 133, 244, 0.1);
   border: 1px solid rgba(66, 133, 244, 0.3);
   color: #1967d2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-back-to-current {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(66, 133, 244, 0.4);
+  border-radius: var(--radius-ui);
+  background: white;
+  color: #1967d2;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+  white-space: nowrap;
+}
+
+.btn-back-to-current:hover {
+  background: rgba(66, 133, 244, 0.1);
+  border-color: #1967d2;
 }
 
 /* Top Controls */
