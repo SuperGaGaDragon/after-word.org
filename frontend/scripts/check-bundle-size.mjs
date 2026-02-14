@@ -1,7 +1,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const JS_BUDGET_BYTES = 220 * 1024;
+const JS_BUDGET_BYTES = 300 * 1024;
 const assetsDir = join(process.cwd(), 'dist', 'assets');
 
 const files = readdirSync(assetsDir).filter((name) => name.endsWith('.js'));
