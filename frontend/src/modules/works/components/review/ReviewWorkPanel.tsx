@@ -290,7 +290,7 @@ export function ReviewWorkPanel({
               </div>
             )}
             <HighlightedTextEditor
-              content={content}
+              content={!isEditMode ? (baselineSubmittedVersion?.content || content) : content}
               comments={!isEditMode && showHighlights ? sentenceComments : []}
               readOnly={locked || !isEditMode}
               onChange={handleContentChange}
