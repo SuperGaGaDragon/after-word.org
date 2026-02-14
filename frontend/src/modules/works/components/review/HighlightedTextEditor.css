@@ -26,12 +26,7 @@
 /* Editable mode with textarea */
 .highlighted-text-editor.editable {
   position: relative;
-  overflow-y: hidden;
-  padding: 0; /* Remove padding to prevent double scrollbar */
-}
-
-.highlighted-text-editor.editable .editor-textarea {
-  padding: 1.25rem; /* Move padding to textarea */
+  overflow: hidden; /* Remove scrollbar from container in edit mode */
 }
 
 .editor-textarea {
@@ -48,7 +43,6 @@
   resize: none;
   outline: none;
   overflow-y: auto;
-  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .text-overlay {
