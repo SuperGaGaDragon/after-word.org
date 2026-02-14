@@ -103,7 +103,7 @@ export function ReviewWorkPanel({
 
   const handleVersionClick = (versionNumber: number) => {
     if (workId) {
-      window.open(`/work/${workId}?version=${versionNumber}`, '_blank');
+      window.open(`/works/${workId}?version=${versionNumber}`, '_blank');
     }
   };
 
