@@ -73,6 +73,34 @@ export function ReviewWorkPanel({
 
   const sentenceComments = baselineSubmittedVersion?.analysis?.sentenceComments || [];
 
+  // Debug: Check if highlights match original text
+  useEffect(() => {
+    if (baselineSubmittedVersion?.content && sentenceComments.length > 0) {
+      console.log('=== HIGHLIGHT DEBUG ===');
+      console.log('Baseline content length:', baselineSubmittedVersion.content.length);
+
+      sentenceComments.forEach((comment, index) => {
+        const actualText = baselineSubmittedVersion.content.substring(
+          comment.startIndex,
+          comment.endIndex
+        );
+        const matches = actualText === comment.originalText;
+
+        console.log(`\nComment ${index + 1}:`);
+        console.log('  Original text:', comment.originalText);
+        console.log('  Start:', comment.startIndex, 'End:', comment.endIndex);
+        console.log('  Actual slice:', actualText);
+        console.log('  ✓ MATCH:', matches);
+
+        if (!matches) {
+          console.error('  ❌ MISMATCH!');
+          console.error('  Expected length:', comment.originalText.length);
+          console.error('  Actual length:', actualText.length);
+        }
+      });
+    }
+  }, [baselineSubmittedVersion, sentenceComments]);
+
   useEffect(() => {
     if (workId && showVersionDropdown && submittedVersions.length === 0) {
       void loadSubmittedVersions();
