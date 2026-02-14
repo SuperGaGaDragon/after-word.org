@@ -49,7 +49,14 @@ export function VersionViewPanel({
         </div>
         <div className="version-actions">
           <span className="version-date">
-            {new Date(versionDetail.createdAt).toLocaleDateString()}
+            Submitted at {new Date(versionDetail.createdAt).toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              timeZoneName: 'short'
+            })}
           </span>
           <button
             type="button"
