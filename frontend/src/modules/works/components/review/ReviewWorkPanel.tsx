@@ -222,22 +222,6 @@ export function ReviewWorkPanel({
           )}
         </div>
         <div className="action-buttons">
-          <div className="mode-toggle-buttons">
-            <button
-              type="button"
-              className={`btn-mode ${!isEditMode ? 'active' : ''}`}
-              onClick={() => handleModeChange(false)}
-            >
-              Read-only
-            </button>
-            <button
-              type="button"
-              className={`btn-mode ${isEditMode ? 'active' : ''}`}
-              onClick={() => handleModeChange(true)}
-            >
-              Edit Mode
-            </button>
-          </div>
           <button
             type="button"
             className="btn-secondary"
@@ -280,7 +264,25 @@ export function ReviewWorkPanel({
         {/* Left: Content Editor */}
         <div className="content-section">
           <div className="section-label">
-            Content
+            <div className="content-label-left">
+              <div className="mode-toggle-buttons-simple">
+                <button
+                  type="button"
+                  className={`btn-mode-simple ${!isEditMode ? 'active' : ''}`}
+                  onClick={() => handleModeChange(false)}
+                >
+                  Read-only
+                </button>
+                <button
+                  type="button"
+                  className={`btn-mode-simple ${isEditMode ? 'active' : ''}`}
+                  onClick={() => handleModeChange(true)}
+                >
+                  Edit Mode
+                </button>
+              </div>
+              <span className="content-label-text">Content</span>
+            </div>
             <span className="word-count-badge">{contentWordCount} words</span>
           </div>
           <div className="content-editor-wrapper" onClick={handleContentAreaClick}>

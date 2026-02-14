@@ -48,6 +48,7 @@
   resize: none;
   outline: none;
   overflow-y: auto;
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .text-overlay {

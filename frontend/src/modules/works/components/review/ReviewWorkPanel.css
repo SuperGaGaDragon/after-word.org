@@ -284,6 +284,50 @@
   letter-spacing: 0.5px;
 }
 
+.content-label-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.content-label-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mode-toggle-buttons-simple {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-mode-simple {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  background: white;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 180ms ease;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.btn-mode-simple:hover:not(.active) {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--text);
+}
+
+.btn-mode-simple.active {
+  background: var(--text);
+  color: white;
+  border-color: var(--text);
+}
+
 .word-count-badge {
   padding: 0.25rem 0.625rem;
   background: rgba(0, 0, 0, 0.05);
