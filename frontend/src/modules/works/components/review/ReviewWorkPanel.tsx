@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { WorkVersionDetail } from '../../types/workContract';
 import { HighlightedTextEditor } from './HighlightedTextEditor';
 import { CommentsSidebar } from './CommentsSidebar';
 import { EditableTitle } from '../../../../components/modal/EditableTitle';
+import { getVersionList } from '../../api/workApi';
 import { countWords } from '../../../../utils/wordCount';
 import './ReviewWorkPanel.css';
 
@@ -60,12 +61,36 @@ export function ReviewWorkPanel({
   const [activeCommentId, setActiveCommentId] = useState<string | undefined>();
   const [showPromptEditor, setShowPromptEditor] = useState(false);
   const [showReflectionEditor, setShowReflectionEditor] = useState(false);
+  const [showVersionDropdown, setShowVersionDropdown] = useState(false);
+  const [submittedVersions, setSubmittedVersions] = useState<Array<{ versionNumber: number; createdAt: string }>>([]);
 
   const essayPromptWordCount = useMemo(() => countWords(essayPrompt), [essayPrompt]);
   const contentWordCount = useMemo(() => countWords(content), [content]);
   const reflectionWordCount = useMemo(() => countWords(faoReflectionDraft), [faoReflectionDraft]);
 
   const sentenceComments = baselineSubmittedVersion?.analysis?.sentenceComments || [];
+
+  useEffect(() => {
+    if (workId && showVersionDropdown && submittedVersions.length === 0) {
+      void loadSubmittedVersions();
+    }
+  }, [showVersionDropdown, workId]);
+
+  const loadSubmittedVersions = async () => {
+    if (!workId) return;
+    try {
+      const versionList = await getVersionList(workId, 'submitted');
+      const submitted = versionList.versions.filter((v) => v.isSubmitted);
+      setSubmittedVersions(
+        submitted.map((v) => ({
+          versionNumber: v.versionNumber,
+          createdAt: v.createdAt
+        }))
+      );
+    } catch (error) {
+      console.error('Failed to load submitted versions:', error);
+    }
+  };
 
   const handleCommentClick = (commentId: string) => {
     setActiveCommentId(commentId === activeCommentId ? undefined : commentId);
@@ -74,6 +99,12 @@ export function ReviewWorkPanel({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
+  };
+
+  const handleVersionClick = (versionNumber: number) => {
+    if (workId) {
+      window.open(`/work/${workId}?version=${versionNumber}`, '_blank');
+    }
   };
 
   return (
@@ -110,7 +141,39 @@ export function ReviewWorkPanel({
             />
           </h1>
           {currentVersionNumber && (
-            <span className="version-badge">v{currentVersionNumber}</span>
+            <div className="version-dropdown-container">
+              <button
+                type="button"
+                className="version-badge clickable"
+                onClick={() => setShowVersionDropdown(!showVersionDropdown)}
+              >
+                v{currentVersionNumber} ▾
+              </button>
+              {showVersionDropdown && (
+                <div className="version-dropdown">
+                  {submittedVersions.length === 0 ? (
+                    <div className="version-dropdown-item disabled">No submitted versions</div>
+                  ) : (
+                    submittedVersions.map((version) => (
+                      <button
+                        key={version.versionNumber}
+                        type="button"
+                        className="version-dropdown-item"
+                        onClick={() => {
+                          handleVersionClick(version.versionNumber);
+                          setShowVersionDropdown(false);
+                        }}
+                      >
+                        <span className="version-number">v{version.versionNumber}</span>
+                        <span className="version-date">
+                          {new Date(version.createdAt).toLocaleDateString()}
+                        </span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div className="action-buttons">
