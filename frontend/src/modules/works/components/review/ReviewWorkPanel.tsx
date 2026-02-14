@@ -2,11 +2,14 @@ import { useState, useMemo } from 'react';
 import { WorkVersionDetail } from '../../types/workContract';
 import { HighlightedTextEditor } from './HighlightedTextEditor';
 import { CommentsSidebar } from './CommentsSidebar';
+import { EditableTitle } from '../../../../components/modal/EditableTitle';
 import { countWords } from '../../../../utils/wordCount';
 import './ReviewWorkPanel.css';
 
 type ReviewWorkPanelProps = {
   workId?: string;
+  title: string;
+  onRename: (newTitle: string) => Promise<void>;
   content: string;
   essayPrompt: string;
   faoReflectionDraft: string;
@@ -31,6 +34,8 @@ type ReviewWorkPanelProps = {
 
 export function ReviewWorkPanel({
   workId,
+  title,
+  onRename,
   content,
   essayPrompt,
   faoReflectionDraft,
@@ -97,7 +102,13 @@ export function ReviewWorkPanel({
       {/* Top Controls */}
       <div className="top-controls">
         <div className="work-info">
-          <span className="work-id">Work ID: {workId || 'N/A'}</span>
+          <h1 className="work-title">
+            <EditableTitle
+              title={title}
+              placeholder="Untitled Work"
+              onRename={onRename}
+            />
+          </h1>
           {currentVersionNumber && (
             <span className="version-badge">v{currentVersionNumber}</span>
           )}

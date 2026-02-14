@@ -55,9 +55,11 @@
   gap: 0.75rem;
 }
 
-.work-id {
-  font-size: 0.9rem;
-  color: var(--muted);
+.work-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .version-badge {

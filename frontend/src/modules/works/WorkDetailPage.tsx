@@ -1,7 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useWorkDetail } from './hooks/useWorkDetail';
 import { renameWork } from './api/workApi';
-import { EditableTitle } from '../../components/modal/EditableTitle';
 import { ReviewWorkPanel } from './components/review/ReviewWorkPanel';
 import './WorkDetailPage.css';
 
@@ -39,19 +38,10 @@ export function WorkDetailPage() {
 
   return (
     <main className="page work-detail-page-main">
-      <header className="page-header">
-        <h1 className="work-detail-title">
-          <EditableTitle
-            title={state.work?.title || ''}
-            placeholder="Untitled Work"
-            onRename={handleRename}
-          />
-        </h1>
-        <p>Write, revise, and receive AI-powered feedback on your work.</p>
-      </header>
-
       <ReviewWorkPanel
         workId={workId}
+        title={state.work?.title || ''}
+        onRename={handleRename}
         content={state.content}
         essayPrompt={state.essayPrompt}
         faoReflectionDraft={state.faoReflectionDraft}
