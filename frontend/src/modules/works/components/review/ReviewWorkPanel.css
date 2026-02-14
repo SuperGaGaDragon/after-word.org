@@ -178,6 +178,40 @@
 .action-buttons {
   display: flex;
   gap: 0.75rem;
+  align-items: center;
+}
+
+.mode-toggle-buttons {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-ui);
+  overflow: hidden;
+}
+
+.btn-mode {
+  padding: 0.625rem 1rem;
+  border: none;
+  background: white;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+  border-right: 1px solid var(--panel-border);
+}
+
+.btn-mode:last-child {
+  border-right: none;
+}
+
+.btn-mode:hover:not(.active) {
+  background: rgba(23, 105, 255, 0.05);
+}
+
+.btn-mode.active {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
 }
 
 .btn-secondary {
@@ -299,6 +333,33 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.content-editor-wrapper {
+  position: relative;
+}
+
+.edit-mode-tooltip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: var(--radius-ui);
+  font-size: 0.95rem;
+  font-weight: 500;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fadeInOut 2s ease;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .sidebar-section {

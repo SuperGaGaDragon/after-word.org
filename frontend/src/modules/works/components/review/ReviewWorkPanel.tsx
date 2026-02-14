@@ -63,6 +63,9 @@ export function ReviewWorkPanel({
   const [showReflectionEditor, setShowReflectionEditor] = useState(false);
   const [showVersionDropdown, setShowVersionDropdown] = useState(false);
   const [submittedVersions, setSubmittedVersions] = useState<Array<{ versionNumber: number; createdAt: string }>>([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [showHighlights, setShowHighlights] = useState(true);
+  const [showEditModeTooltip, setShowEditModeTooltip] = useState(false);
 
   const essayPromptWordCount = useMemo(() => countWords(essayPrompt), [essayPrompt]);
   const contentWordCount = useMemo(() => countWords(content), [content]);
@@ -104,6 +107,40 @@ export function ReviewWorkPanel({
   const handleVersionClick = (versionNumber: number) => {
     if (workId) {
       window.open(`/works/${workId}?version=${versionNumber}`, '_blank');
+    }
+  };
+
+  const handleContentChange = (newContent: string) => {
+    // In edit mode, if content changes and highlights exist, check if highlight areas were modified
+    if (isEditMode && showHighlights && sentenceComments.length > 0) {
+      // Simple check: if content length changed significantly, hide highlights
+      // More sophisticated: check if any highlight range was modified
+      const originalLength = content.length;
+      const newLength = newContent.length;
+
+      if (Math.abs(newLength - originalLength) > 0) {
+        // Content was modified, hide highlights
+        setShowHighlights(false);
+      }
+    }
+    onContentChange(newContent);
+  };
+
+  const handleContentAreaClick = () => {
+    if (!isEditMode) {
+      setShowEditModeTooltip(true);
+      setTimeout(() => setShowEditModeTooltip(false), 2000);
+    }
+  };
+
+  const handleModeChange = (editMode: boolean) => {
+    setIsEditMode(editMode);
+    if (editMode) {
+      // Switching to edit mode, show highlights initially
+      setShowHighlights(true);
+    } else {
+      // Switching to read-only, always show highlights
+      setShowHighlights(true);
     }
   };
 
@@ -177,6 +214,22 @@ export function ReviewWorkPanel({
           )}
         </div>
         <div className="action-buttons">
+          <div className="mode-toggle-buttons">
+            <button
+              type="button"
+              className={`btn-mode ${!isEditMode ? 'active' : ''}`}
+              onClick={() => handleModeChange(false)}
+            >
+              Read-only
+            </button>
+            <button
+              type="button"
+              className={`btn-mode ${isEditMode ? 'active' : ''}`}
+              onClick={() => handleModeChange(true)}
+            >
+              Edit Mode
+            </button>
+          </div>
           <button
             type="button"
             className="btn-secondary"
@@ -222,13 +275,20 @@ export function ReviewWorkPanel({
             Content
             <span className="word-count-badge">{contentWordCount} words</span>
           </div>
-          <HighlightedTextEditor
-            content={content}
-            comments={sentenceComments}
-            readOnly={locked}
-            onChange={onContentChange}
-            onCommentClick={handleCommentClick}
-          />
+          <div className="content-editor-wrapper" onClick={handleContentAreaClick}>
+            {showEditModeTooltip && (
+              <div className="edit-mode-tooltip">
+                Please edit in Edit Mode
+              </div>
+            )}
+            <HighlightedTextEditor
+              content={content}
+              comments={showHighlights ? sentenceComments : []}
+              readOnly={locked || !isEditMode}
+              onChange={handleContentChange}
+              onCommentClick={handleCommentClick}
+            />
+          </div>
         </div>
 
         {/* Right: Comments Sidebar */}
