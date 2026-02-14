@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useWorkDetail } from './hooks/useWorkDetail';
 import { renameWork, getVersionDetail } from './api/workApi';
 import { ReviewWorkPanel } from './components/review/ReviewWorkPanel';
+import { VersionViewPanel } from './components/review/VersionViewPanel';
 import { WorkVersionDetail } from './types/workContract';
 import './WorkDetailPage.css';
 
@@ -68,37 +69,11 @@ export function WorkDetailPage() {
   if (versionView) {
     return (
       <main className="page work-detail-page-main">
-        <div className="version-view-header">
-          <h2>Version {versionView.versionNumber} (Read-only)</h2>
-          <p className="version-info">
-            Created: {new Date(versionView.createdAt).toLocaleString()}
-            {versionView.isSubmitted && ' • Submitted'}
-          </p>
-        </div>
-        <ReviewWorkPanel
+        <VersionViewPanel
           workId={workId}
           title={state.work?.title || ''}
+          versionDetail={versionView}
           onRename={handleRename}
-          content={versionView.content}
-          essayPrompt=""
-          faoReflectionDraft={versionView.userReflection || ''}
-          currentVersionNumber={versionView.versionNumber}
-          baselineSubmittedVersion={versionView}
-          suggestionMarkings={{}}
-          unprocessedCommentCount={0}
-          locked={true}
-          saving={false}
-          submitting={false}
-          error={null}
-          info="This is a read-only view of a previous version"
-          onContentChange={() => {}}
-          onEssayPromptChange={() => {}}
-          onFaoReflectionChange={() => {}}
-          onSaveAuto={() => {}}
-          onSaveDraft={async () => {}}
-          onSubmit={() => {}}
-          onMarkSuggestionAction={() => {}}
-          onSuggestionNoteChange={() => {}}
         />
       </main>
     );

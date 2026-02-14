@@ -137,6 +137,22 @@
   color: var(--muted);
 }
 
+/* Version View Header Inline */
+
+.version-view-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+}
+
+.version-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .action-buttons {
   display: flex;
   gap: 0.75rem;
