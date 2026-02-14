@@ -98,9 +98,9 @@ export function ReviewWorkPanel({
   const handleCommentClick = (commentId: string) => {
     setActiveCommentId(commentId === activeCommentId ? undefined : commentId);
 
-    // Scroll to the comment in the sidebar
+    // Scroll to the comment in the sidebar only
     setTimeout(() => {
-      const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+      const commentElement = document.querySelector(`.comment-card[data-comment-id="${commentId}"]`);
       if (commentElement) {
         commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
