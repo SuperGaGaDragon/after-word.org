@@ -60,7 +60,7 @@ export function VersionViewPanel({
           </span>
           <button
             type="button"
-            className="btn-secondary"
+            className="btn-plain"
             onClick={() => setShowPromptEditor(!showPromptEditor)}
           >
             {showPromptEditor ? 'Hide Prompt' : 'See Prompt'}
