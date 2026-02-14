@@ -57,7 +57,7 @@ export function WorkDetailPage() {
 
   if (state.loading || loadingVersion) {
     return (
-      <main className="page">
+      <main className="work-detail-page-main">
         <div className="loading-container">
           <p>{loadingVersion ? 'Loading version...' : 'Loading work detail...'}</p>
         </div>
@@ -68,7 +68,7 @@ export function WorkDetailPage() {
   // If viewing a specific version
   if (versionView) {
     return (
-      <main className="page work-detail-page-main">
+      <main className="work-detail-page-main">
         <VersionViewPanel
           workId={workId}
           title={state.work?.title || ''}
@@ -80,7 +80,7 @@ export function WorkDetailPage() {
   }
 
   return (
-    <main className="page work-detail-page-main">
+    <main className="work-detail-page-main">
       <ReviewWorkPanel
         workId={workId}
         title={state.work?.title || ''}
