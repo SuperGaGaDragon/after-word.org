@@ -183,9 +183,9 @@
 
 .btn-plain {
   padding: 0.625rem 1.25rem;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: none;
   border-radius: var(--radius-ui);
-  background: rgba(0, 0, 0, 0.03);
+  background: transparent;
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 500;
@@ -195,7 +195,6 @@
 
 .btn-plain:hover {
   background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.25);
   color: var(--text);
 }
 
