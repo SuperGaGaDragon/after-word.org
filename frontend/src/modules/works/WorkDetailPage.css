@@ -29,96 +29,176 @@
   font-size: 1.1rem;
 }
 
-/* Login Prompt Modal */
+/* Login Prompt Modal - Dark Theme */
 .login-prompt-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(20, 35, 67, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
+  animation: fadeIn 200ms ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .login-prompt-modal {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius-card);
-  padding: 2.5rem 2rem;
-  max-width: 480px;
+  background: linear-gradient(135deg, #1a2332 0%, #0f1620 100%);
+  border: 1px solid rgba(90, 143, 255, 0.2);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  max-width: 500px;
   width: 100%;
-  box-shadow: 0 14px 45px rgba(20, 35, 67, 0.15);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 300ms ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.login-prompt-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(90, 143, 255, 0.5) 50%,
+    transparent 100%);
 }
 
 .prompt-title {
   margin: 0 0 1rem;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.01em;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .prompt-message {
-  margin: 0 0 2rem;
-  font-size: 1rem;
-  color: var(--muted);
-  line-height: 1.6;
+  margin: 0 0 2.5rem;
+  font-size: 1.05rem;
+  color: #cbd5e1;
+  line-height: 1.7;
 }
 
 .prompt-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .btn-modal-primary {
-  padding: 0.875rem 1.5rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: var(--radius-ui);
-  background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  color: var(--button-text);
-  font-size: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #1769ff, #00b894);
+  color: #ffffff;
+  font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease;
-  box-shadow: 0 4px 16px rgba(23, 105, 255, 0.2);
+  transition: all 200ms ease;
+  box-shadow:
+    0 4px 20px rgba(23, 105, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-modal-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent);
+  transition: left 500ms ease;
+}
+
+.btn-modal-primary:hover::before {
+  left: 100%;
 }
 
 .btn-modal-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(23, 105, 255, 0.3);
+  box-shadow:
+    0 8px 30px rgba(23, 105, 255, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
 
 .btn-modal-secondary {
-  padding: 0.875rem 1.5rem;
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius-ui);
-  background: rgba(255, 255, 255, 0.85);
-  color: var(--text);
+  padding: 1rem 2rem;
+  border: 1px solid rgba(203, 213, 225, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 180ms ease, transform 180ms ease;
+  transition: all 200ms ease;
+  backdrop-filter: blur(10px);
 }
 
 .btn-modal-secondary:hover {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(203, 213, 225, 0.3);
+  color: #f8fafc;
   transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
   .login-prompt-modal {
+    padding: 2.5rem 2rem;
+  }
+
+  .prompt-title {
+    font-size: 1.6rem;
+  }
+
+  .prompt-message {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-prompt-modal {
     padding: 2rem 1.5rem;
   }
 
   .prompt-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 }

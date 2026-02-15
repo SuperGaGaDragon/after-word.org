@@ -153,9 +153,9 @@ export function WorkDetailPage() {
       {showLoginPrompt && (
         <div className="login-prompt-overlay" onClick={() => setShowLoginPrompt(false)}>
           <div className="login-prompt-modal" onClick={(e) => e.stopPropagation()}>
-            <h2 className="prompt-title">Please Login or Signup</h2>
+            <h2 className="prompt-title">Please Login/Signup to Receive Full Features</h2>
             <p className="prompt-message">
-              To enjoy full features including AI review and feedback, please login or create an account.
+              Get AI-powered feedback and analysis for your college essay.
             </p>
             <div className="prompt-actions">
               <button
@@ -163,14 +163,14 @@ export function WorkDetailPage() {
                 className="btn-modal-primary"
                 onClick={() => navigate('/auth/login')}
               >
-                Login / Signup
+                Continue to Login
               </button>
               <button
                 type="button"
                 className="btn-modal-secondary"
                 onClick={() => setShowLoginPrompt(false)}
               >
-                Continue Editing
+                Keep Editing
               </button>
             </div>
           </div>
