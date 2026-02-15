@@ -53,6 +53,22 @@ export function getLocalWork(workId: string): LocalWork | null {
   return works.find(w => w.workId === workId) ?? null;
 }
 
+export function listLocalWorks(): LocalWork[] {
+  return getWorks();
+}
+
+export function deleteLocalWork(workId: string): boolean {
+  const works = getWorks();
+  const filtered = works.filter(w => w.workId !== workId);
+
+  if (filtered.length === works.length) {
+    return false; // Work not found
+  }
+
+  saveWorks(filtered);
+  return true;
+}
+
 export function updateLocalWork(workId: string, updates: Partial<Pick<LocalWork, 'title' | 'content'>>): void {
   const works = getWorks();
   const index = works.findIndex(w => w.workId === workId);

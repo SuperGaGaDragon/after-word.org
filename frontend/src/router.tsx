@@ -21,11 +21,11 @@ export function AppRouter() {
         </Route>
         {/* Public routes */}
         <Route path="/home" element={<HomePage />} />
+        <Route path="/workspace" element={<WorkspacePage />} />
         <Route path="/works/:workId" element={<WorkDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/account" element={<AccountPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/home" replace />} />

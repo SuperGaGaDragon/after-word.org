@@ -14,29 +14,22 @@ export function Header() {
         </Link>
 
         <nav className="header-nav">
+          <Link to="/workspace" className="nav-link">
+            Workspace
+          </Link>
+          <Link to="/about" className="nav-link">
+            About
+          </Link>
           {isAuthenticated ? (
-            <>
-              <Link to="/workspace" className="nav-link">
-                Workspace
+            <div className="header-user">
+              <Link to="/account" className="user-link">
+                {user?.username || user?.email}
               </Link>
-              <Link to="/about" className="nav-link">
-                About
-              </Link>
-              <div className="header-user">
-                <Link to="/account" className="user-link">
-                  {user?.username || user?.email}
-                </Link>
-              </div>
-            </>
+            </div>
           ) : (
-            <>
-              <Link to="/about" className="nav-link">
-                About
-              </Link>
-              <Link to="/auth/login" className="btn-primary">
-                Login / Signup
-              </Link>
-            </>
+            <Link to="/auth/login" className="btn-primary">
+              Login / Signup
+            </Link>
           )}
         </nav>
       </div>
