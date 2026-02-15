@@ -300,8 +300,17 @@ def _generate_and_save_analysis(
             previous_analysis = {
                 "fao_comment": prev_analysis_result.get("fao_comment"),
                 "sentence_comments": prev_analysis_result.get("sentence_comments"),
-                "rubric": prev_analysis_result.get("rubric"),  # Include rubric from previous
             }
+
+            # Get rubric from work table (not from text_analyses)
+            work_data = get_work(work_id, user_email)
+            if work_data.get("rubric"):
+                try:
+                    previous_analysis["rubric"] = json.loads(work_data.get("rubric"))
+                    print(f"[WORK MANAGER] Loaded rubric from work for iterative analysis")
+                except (json.JSONDecodeError, TypeError) as e:
+                    print(f"[WORK MANAGER] Failed to parse rubric from work: {e}")
+                    previous_analysis["rubric"] = None
 
     # Generate analysis using AI
     analysis = analyzer.generate_analysis(
