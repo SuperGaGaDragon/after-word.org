@@ -34,7 +34,7 @@ export function Header() {
                 About
               </Link>
               <Link to="/auth/login" className="btn-primary">
-                Sign In
+                Login / Signup
               </Link>
             </>
           )}

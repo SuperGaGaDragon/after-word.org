@@ -1,18 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { WorkCard } from '../../components/modal/WorkCard';
+import { useAuthSession } from '../auth/session/AuthSessionContext';
 import { getTotalProjectCount, getTotalWordCount, listWorks } from '../works/api/workApi';
+import { createLocalWork } from '../works/localWorkStorage';
 import { WorkSummary } from '../works/types/workContract';
 import './HomePage.css';
 
 export function HomePage() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthSession();
   const [projectCount, setProjectCount] = useState<number | null>(null);
   const [wordCount, setWordCount] = useState<number | null>(null);
   const [recentWork, setRecentWork] = useState<WorkSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
+
     async function loadStats() {
       try {
         const [projects, words, works] = await Promise.all([
@@ -33,7 +41,12 @@ export function HomePage() {
     }
 
     void loadStats();
-  }, []);
+  }, [isAuthenticated]);
+
+  function handleCreateLocalWork() {
+    const work = createLocalWork();
+    navigate(`/works/${work.workId}`);
+  }
 
   return (
     <main className="home-page">
@@ -43,7 +56,20 @@ export function HomePage() {
             With after-word, you are one step closer to your dream school!
           </h1>
 
-          <div className="dashboard-grid">
+          {!isAuthenticated && (
+            <div className="quick-start-container" style={{ maxWidth: '400px', margin: '3rem auto 0' }}>
+              <button
+                type="button"
+                className="btn-primary-large"
+                onClick={handleCreateLocalWork}
+                style={{ width: '100%' }}
+              >
+                Create a Work
+              </button>
+            </div>
+          )}
+
+          {isAuthenticated && <div className="dashboard-grid">
             <div className="stats-container">
               {loading ? (
                 <p className="stats-loading">Loading your progress...</p>
@@ -94,13 +120,13 @@ export function HomePage() {
                 <p className="quick-start-empty">No works yet. Create your first one!</p>
               )}
             </div>
-          </div>
+          </div>}
 
-          <div className="hero-actions">
+          {isAuthenticated && <div className="hero-actions">
             <Link to="/workspace" className="btn-primary-large">
               Go to Workspace
             </Link>
-          </div>
+          </div>}
         </div>
       </section>
     </main>

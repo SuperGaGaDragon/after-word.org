@@ -28,3 +28,97 @@
   color: var(--muted);
   font-size: 1.1rem;
 }
+
+/* Login Prompt Modal */
+.login-prompt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(20, 35, 67, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.login-prompt-modal {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-card);
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 14px 45px rgba(20, 35, 67, 0.15);
+  text-align: center;
+}
+
+.prompt-title {
+  margin: 0 0 1rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.prompt-message {
+  margin: 0 0 2rem;
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.prompt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-modal-primary {
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-ui);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  box-shadow: 0 4px 16px rgba(23, 105, 255, 0.2);
+}
+
+.btn-modal-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(23, 105, 255, 0.3);
+}
+
+.btn-modal-secondary {
+  padding: 0.875rem 1.5rem;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-ui);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.btn-modal-secondary:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .login-prompt-modal {
+    padding: 2rem 1.5rem;
+  }
+
+  .prompt-title {
+    font-size: 1.5rem;
+  }
+}

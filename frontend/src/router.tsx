@@ -19,14 +19,16 @@ export function AppRouter() {
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/signup" element={<SignupPage />} />
         </Route>
+        {/* Public routes */}
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/works/:workId" element={<WorkDetailPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<HomePage />} />
           <Route path="/workspace" element={<WorkspacePage />} />
-          <Route path="/works/:workId" element={<WorkDetailPage />} />
           <Route path="/account" element={<AccountPage />} />
         </Route>
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="*" element={<Navigate to="/auth/login" replace />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );
