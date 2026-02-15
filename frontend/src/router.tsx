@@ -6,7 +6,6 @@ import { ProtectedRoute, PublicOnlyRoute } from './modules/auth/components/AuthG
 import { LoginPage } from './modules/auth/LoginPage';
 import { SignupPage } from './modules/auth/SignupPage';
 import { HomePage } from './modules/home/HomePage';
-import { WhyPage } from './modules/why/WhyPage';
 import { WorkDetailPage } from './modules/works/WorkDetailPage';
 import { WorkspacePage } from './modules/works/WorkspacePage';
 
@@ -26,7 +25,6 @@ export function AppRouter() {
           <Route path="/works/:workId" element={<WorkDetailPage />} />
           <Route path="/account" element={<AccountPage />} />
         </Route>
-        <Route path="/why" element={<WhyPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<Navigate to="/auth/login" replace />} />
       </Routes>

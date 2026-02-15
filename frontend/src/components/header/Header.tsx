@@ -19,9 +19,6 @@ export function Header() {
               <Link to="/workspace" className="nav-link">
                 Workspace
               </Link>
-              <Link to="/why" className="nav-link">
-                Why
-              </Link>
               <Link to="/about" className="nav-link">
                 About
               </Link>
@@ -33,9 +30,6 @@ export function Header() {
             </>
           ) : (
             <>
-              <Link to="/why" className="nav-link">
-                Why
-              </Link>
               <Link to="/about" className="nav-link">
                 About
               </Link>
