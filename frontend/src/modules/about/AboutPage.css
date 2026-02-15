@@ -14,7 +14,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 80px 24px;
+  padding: 80px 24px 40px;
   text-align: center;
 }
 
@@ -40,7 +40,7 @@
 
 /* Problem Section */
 .about-problem {
-  padding: 80px 24px;
+  padding: 40px 24px 80px;
   text-align: center;
 }
 
@@ -209,7 +209,7 @@
 @media (max-width: 768px) {
   .about-hero {
     min-height: 50vh;
-    padding: 60px 20px;
+    padding: 60px 20px 30px;
   }
 
   .hero-title {
@@ -221,7 +221,7 @@
   }
 
   .about-problem {
-    padding: 60px 20px;
+    padding: 30px 20px 60px;
   }
 
   .problem-question {
