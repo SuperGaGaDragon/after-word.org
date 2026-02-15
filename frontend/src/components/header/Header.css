@@ -98,12 +98,12 @@
 
 /* Buttons */
 .btn-primary {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border: none;
   border-radius: var(--radius-ui);
   background: linear-gradient(120deg, var(--accent), var(--accent-2));
   color: var(--button-text);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
