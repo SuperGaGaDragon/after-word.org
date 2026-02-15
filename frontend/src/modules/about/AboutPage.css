@@ -13,8 +13,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 120px 24px;
-  text-align: left;
+  align-items: center;
+  padding: 80px 24px;
+  text-align: center;
 }
 
 .hero-title {
@@ -24,7 +25,7 @@
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: #1E293B;
-  margin: 0;
+  margin: 0 auto;
   max-width: 900px;
 }
 
@@ -32,14 +33,14 @@
   font-size: 18px;
   font-weight: 400;
   max-width: 640px;
-  margin: 24px 0 0;
+  margin: 24px auto 0;
   color: #475569;
   line-height: 1.6;
 }
 
 /* Problem Section */
 .about-problem {
-  padding: 120px 24px;
+  padding: 80px 24px;
   text-align: center;
 }
 
@@ -58,7 +59,7 @@
 
 /* What We Do Section */
 .about-what {
-  padding: 120px 24px;
+  padding: 80px 24px;
 }
 
 .section-title {
@@ -107,7 +108,7 @@
 
 /* How It Works Section */
 .about-how {
-  padding: 120px 24px;
+  padding: 80px 24px;
 }
 
 .timeline {
@@ -175,7 +176,7 @@
 
 /* Philosophy Section */
 .about-philosophy {
-  padding: 120px 24px;
+  padding: 80px 24px;
   text-align: center;
 }
 
@@ -208,7 +209,7 @@
 @media (max-width: 768px) {
   .about-hero {
     min-height: 50vh;
-    padding: 80px 20px;
+    padding: 60px 20px;
   }
 
   .hero-title {
@@ -220,7 +221,7 @@
   }
 
   .about-problem {
-    padding: 80px 20px;
+    padding: 60px 20px;
   }
 
   .problem-question {
@@ -231,7 +232,7 @@
   .about-what,
   .about-how,
   .about-philosophy {
-    padding: 80px 20px;
+    padding: 60px 20px;
   }
 
   .section-title {
