@@ -55,6 +55,20 @@ def generate_analysis(
         try:
             rubric_prompt = prompts.build_rubric_generation_prompt(current_text, essay_prompt)
             rubric_json = client.generate_rubric(rubric_prompt)
+
+            # Clean potential markdown wrapper from Claude response
+            rubric_json = rubric_json.strip()
+            if rubric_json.startswith("```"):
+                # Extract JSON from markdown code block
+                lines = rubric_json.split('\n')
+                # Remove first line (```json or ```)
+                lines = lines[1:]
+                # Remove last line (```)
+                if lines and lines[-1].strip() == "```":
+                    lines = lines[:-1]
+                rubric_json = '\n'.join(lines).strip()
+                print(f"[ANALYZER] Extracted JSON from markdown wrapper")
+
             rubric = json.loads(rubric_json)
             print(f"[ANALYZER] Rubric generated successfully with {len(rubric.get('dimensions', []))} dimensions")
         except BusinessError as e:
@@ -64,7 +78,9 @@ def generate_analysis(
                 print(f"[ANALYZER] Claude failed: {e} - falling back to analysis without rubric")
             rubric = None
         except json.JSONDecodeError as e:
-            print(f"[ANALYZER] Failed to parse rubric JSON: {e} - falling back to analysis without rubric")
+            print(f"[ANALYZER] Failed to parse rubric JSON: {e}")
+            print(f"[ANALYZER] Raw response (first 500 chars): {rubric_json[:500]}")
+            print(f"[ANALYZER] Falling back to analysis without rubric")
             rubric = None
         except Exception as e:
             print(f"[ANALYZER] Unexpected error generating rubric: {e} - falling back to analysis without rubric")
