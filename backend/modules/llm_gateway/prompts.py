@@ -144,8 +144,6 @@ Your task is to evaluate the following essay with brutal honesty and precision.
 EVALUATION REQUIREMENTS:
 
 {rubric_instruction}{"2" if rubric else "1"}. SENTENCE-LEVEL COMMENTS (Maximum 10 most critical issues):
-
-1. SENTENCE-LEVEL COMMENTS (Maximum 10 most critical issues):
    - Identify specific problems in the text (grammar, clarity, style, tone, logic, conciseness)
    - For each issue, provide:
      * Exact text location (start_index and end_index - character positions in the original text)
