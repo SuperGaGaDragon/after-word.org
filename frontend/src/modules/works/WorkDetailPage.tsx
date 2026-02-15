@@ -124,7 +124,7 @@ export function WorkDetailPage() {
   return (
     <main className="work-detail-page-main">
       <ReviewWorkPanel
-        workId={isLocalWork ? undefined : workId}
+        workId={workId}
         title={isLocalWork ? localTitle : (state.work?.title || '')}
         onRename={handleRename}
         content={isLocalWork ? localContent : state.content}
