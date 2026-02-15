@@ -185,9 +185,22 @@ export async function getWork(workId: string): Promise<WorkDetail> {
     current_version: number;
     essay_prompt?: string;
     title?: string;
+    rubric?: {
+      dimensions: Array<{
+        name: string;
+        description: string;
+        weight: number;
+      }>;
+    };
   }>(
     `/api/work/${workId}`
   );
+
+  // Console log rubric for debugging (Claude-generated evaluation criteria)
+  if (payload.rubric) {
+    console.log('📊 Rubric (Claude-generated evaluation criteria):', payload.rubric);
+  }
+
   return fromApiWorkDetail(payload);
 }
 
@@ -282,8 +295,18 @@ export async function getVersionDetail(
         improvement_feedback?: string;
       }>;
       reflection_comment?: string;
+      rubric_evaluation?: Record<string, {
+        level: string;
+        reasoning: string;
+        change?: string;
+      }>;
     };
   }>(`/api/work/${workId}/versions/${versionNumber}`);
+
+  // Console log rubric evaluation (GPT scores based on Claude rubric)
+  if (payload.analysis?.rubric_evaluation) {
+    console.log(`📈 Rubric Evaluation (Version ${versionNumber}):`, payload.analysis.rubric_evaluation);
+  }
 
   return fromApiVersionDetail(payload);
 }
