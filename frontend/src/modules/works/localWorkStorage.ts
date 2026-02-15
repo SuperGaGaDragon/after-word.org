@@ -53,16 +53,21 @@ export function getLocalWork(workId: string): LocalWork | null {
   return works.find(w => w.workId === workId) ?? null;
 }
 
-export function updateLocalWork(workId: string, updates: Partial<Omit<LocalWork, 'workId' | 'createdAt'>>): void {
+export function updateLocalWork(workId: string, updates: Partial<Pick<LocalWork, 'title' | 'content'>>): void {
   const works = getWorks();
   const index = works.findIndex(w => w.workId === workId);
 
   if (index !== -1) {
-    works[index] = {
-      ...works[index],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-    saveWorks(works);
+    const work = works[index];
+    if (work) {
+      if (updates.title !== undefined) {
+        work.title = updates.title;
+      }
+      if (updates.content !== undefined) {
+        work.content = updates.content;
+      }
+      work.updatedAt = new Date().toISOString();
+      saveWorks(works);
+    }
   }
 }
