@@ -57,6 +57,19 @@ def update_title(work_id: str, user_email: str, title: str) -> Dict[str, Any]:
     return _build_query(sql, params)
 
 
+def update_rubric(work_id: str, rubric_json: str) -> Dict[str, Any]:
+    """Update rubric for a work (generated on first submission)."""
+    sql = (
+        "UPDATE works SET rubric = %(rubric)s, updated_at = NOW() "
+        "WHERE id = %(work_id)s"
+    )
+    params = {
+        "rubric": rubric_json,
+        "work_id": work_id,
+    }
+    return _build_query(sql, params)
+
+
 def delete_work(work_id: str, user_email: str) -> Dict[str, Any]:
     """Delete a work (cascade deletes related records)."""
     sql = "DELETE FROM works WHERE id = %(work_id)s AND user_email = %(user_email)s"

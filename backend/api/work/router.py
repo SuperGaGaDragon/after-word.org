@@ -98,6 +98,16 @@ def get_total_project_count_route(user: dict = Depends(require_user)) -> TotalPr
 @router.get("/{work_id}", response_model=WorkGetResponse)
 def get_work_route(work_id: str, user: dict = Depends(require_user)) -> WorkGetResponse:
     work = get_work(work_id, user["email"])
+
+    # Parse rubric from JSON string if present
+    rubric = None
+    if work.get("rubric"):
+        try:
+            import json
+            rubric = json.loads(work.get("rubric"))
+        except (json.JSONDecodeError, TypeError):
+            rubric = None
+
     return WorkGetResponse(
         work_id=work.get("id", ""),
         title=work.get("title", ""),
@@ -107,6 +117,7 @@ def get_work_route(work_id: str, user: dict = Depends(require_user)) -> WorkGetR
         updated_at=_format_updated_at(work.get("updated_at")),
         word_count=work.get("word_count", 0),
         essay_prompt=work.get("essay_prompt"),
+        rubric=rubric,
     )
 
 
@@ -217,6 +228,7 @@ def get_version_detail_route(
                 "fao_comment": analysis_result.get("fao_comment"),
                 "sentence_comments": analysis_result.get("sentence_comments"),
                 "reflection_comment": analysis_result.get("reflection_comment"),
+                "rubric_evaluation": analysis_result.get("rubric_evaluation"),
             }
 
     return VersionDetailResponse(

@@ -45,10 +45,33 @@ def generate_analysis(
     """
     is_first_submission = previous_text is None
 
-    # Build appropriate prompt
+    # Get or generate rubric
+    rubric = None
+
     if is_first_submission:
         print(f"[ANALYZER] Generating first-time analysis for work {work_id}")
-        prompt = prompts.build_first_time_prompt(current_text, essay_prompt)
+
+        # STEP 1: Generate rubric using Claude (with fallback)
+        try:
+            rubric_prompt = prompts.build_rubric_generation_prompt(current_text, essay_prompt)
+            rubric_json = client.generate_rubric(rubric_prompt)
+            rubric = json.loads(rubric_json)
+            print(f"[ANALYZER] Rubric generated successfully with {len(rubric.get('dimensions', []))} dimensions")
+        except BusinessError as e:
+            if "claude_timeout" in str(e):
+                print(f"[ANALYZER] Claude timeout - falling back to analysis without rubric")
+            else:
+                print(f"[ANALYZER] Claude failed: {e} - falling back to analysis without rubric")
+            rubric = None
+        except json.JSONDecodeError as e:
+            print(f"[ANALYZER] Failed to parse rubric JSON: {e} - falling back to analysis without rubric")
+            rubric = None
+        except Exception as e:
+            print(f"[ANALYZER] Unexpected error generating rubric: {e} - falling back to analysis without rubric")
+            rubric = None
+
+        # STEP 2: Build prompt for OpenAI (with or without rubric)
+        prompt = prompts.build_first_time_prompt(current_text, essay_prompt, rubric)
     else:
         print(f"[ANALYZER] Generating iterative analysis for work {work_id}, version {current_version}")
 
@@ -61,6 +84,12 @@ def generate_analysis(
         previous_fao = previous_analysis.get("fao_comment", "")
         previous_sentence_comments = previous_analysis.get("sentence_comments", [])
 
+        # STEP 1: Load rubric from previous analysis (if exists)
+        rubric = previous_analysis.get("rubric")
+        if rubric:
+            print(f"[ANALYZER] Using rubric from first submission")
+
+        # STEP 2: Build iterative prompt with rubric
         prompt = prompts.build_iterative_prompt(
             current_text=current_text,
             previous_text=previous_text,
@@ -69,6 +98,7 @@ def generate_analysis(
             user_actions=user_actions or {},
             user_reflection=user_reflection,
             essay_prompt=essay_prompt,
+            rubric=rubric,
         )
 
     # Call LLM API with JSON mode
@@ -80,11 +110,16 @@ def generate_analysis(
 
     # Parse and validate response
     try:
-        analysis = _parse_and_validate_response(llm_response, is_first_submission, user_reflection)
+        analysis = _parse_and_validate_response(llm_response, is_first_submission, user_reflection, bool(rubric))
     except Exception as e:
         print(f"[ANALYZER ERROR] Response parsing failed: {e}")
         print(f"[ANALYZER ERROR] Raw response: {llm_response[:500]}")
         raise BusinessError("llm_failed", f"Invalid LLM response format: {str(e)}") from e
+
+    # Attach rubric to analysis (for first submission or from previous)
+    if rubric:
+        analysis["rubric"] = rubric
+        print(f"[ANALYZER] Analysis includes rubric with {len(rubric.get('dimensions', []))} dimensions")
 
     print(f"[ANALYZER] Analysis generated successfully: {len(analysis.get('sentence_comments', []))} comments")
     return analysis
@@ -94,6 +129,7 @@ def _parse_and_validate_response(
     response: str,
     is_first_submission: bool,
     user_reflection_provided: bool,
+    has_rubric: bool = False,
 ) -> Dict[str, Any]:
     """
     Parse LLM response and validate structure.
@@ -129,11 +165,28 @@ def _parse_and_validate_response(
     for idx, comment in enumerate(data["sentence_comments"]):
         _validate_sentence_comment(comment, idx, is_first_submission)
 
+    # Validate rubric_evaluation if present
+    if has_rubric and "rubric_evaluation" in data:
+        if not isinstance(data["rubric_evaluation"], dict):
+            raise ValueError("rubric_evaluation must be a dict")
+        # Validate each dimension evaluation
+        for dim_name, evaluation in data["rubric_evaluation"].items():
+            if not isinstance(evaluation, dict):
+                raise ValueError(f"Rubric dimension '{dim_name}' evaluation must be a dict")
+            if "level" not in evaluation:
+                raise ValueError(f"Rubric dimension '{dim_name}' missing 'level'")
+            if "reasoning" not in evaluation:
+                raise ValueError(f"Rubric dimension '{dim_name}' missing 'reasoning'")
+
     # Build result
     result = {
         "fao_comment": data["fao_comment"],
         "sentence_comments": data["sentence_comments"],
     }
+
+    # Add rubric_evaluation if present
+    if has_rubric and "rubric_evaluation" in data:
+        result["rubric_evaluation"] = data["rubric_evaluation"]
 
     # Add reflection_comment if present (only for iterative + reflection provided)
     if not is_first_submission and user_reflection_provided:

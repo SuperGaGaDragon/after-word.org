@@ -50,3 +50,59 @@ app.add_middleware(
 register_routers(app)
 register_error_handlers(app)
 register_storage_executors()
+
+
+# ============================================================================
+# ⚠️⚠️⚠️ TEMPORARY DATABASE MIGRATION - DELETE AFTER DEPLOYMENT ⚠️⚠️⚠️
+# ============================================================================
+# This code will be REMOVED immediately after Railway deployment and verification
+# Purpose: Run migrations 002 and 003 to add rubric support
+# TODO: DELETE THIS ENTIRE SECTION after confirming deployment works
+# ============================================================================
+
+@app.on_event("startup")
+async def run_temporary_migrations():
+    """
+    ⚠️⚠️⚠️ TEMPORARY - DELETE AFTER DEPLOYMENT ⚠️⚠️⚠️
+    Run database migrations for rubric feature.
+    This will execute ONCE on startup, then this code will be removed.
+    """
+    print("\n" + "="*80)
+    print("⚠️  RUNNING TEMPORARY MIGRATIONS - THIS CODE WILL BE DELETED SOON")
+    print("="*80 + "\n")
+
+    try:
+        # Migration 002: Add rubric column to works table
+        migration_002 = """
+        ALTER TABLE works ADD COLUMN IF NOT EXISTS rubric TEXT;
+        COMMENT ON COLUMN works.rubric IS 'Claude-generated evaluation rubric (JSON). Generated on first submission, used for all subsequent evaluations.';
+        """
+
+        # Migration 003: Add rubric_evaluation column to text_analyses table
+        migration_003 = """
+        ALTER TABLE text_analyses ADD COLUMN IF NOT EXISTS rubric_evaluation JSONB;
+        COMMENT ON COLUMN text_analyses.rubric_evaluation IS 'GPT evaluation scores for each rubric dimension (JSON). Populated when rubric exists.';
+        """
+
+        print("[MIGRATION 002] Adding rubric column to works table...")
+        execute_query({"sql": migration_002, "params": {}})
+        print("✓ Migration 002 completed")
+
+        print("[MIGRATION 003] Adding rubric_evaluation column to text_analyses table...")
+        execute_query({"sql": migration_003, "params": {}})
+        print("✓ Migration 003 completed")
+
+        print("\n" + "="*80)
+        print("✓ ALL TEMPORARY MIGRATIONS COMPLETED SUCCESSFULLY")
+        print("⚠️  REMEMBER TO DELETE THIS STARTUP FUNCTION AFTER VERIFICATION")
+        print("="*80 + "\n")
+
+    except Exception as e:
+        print(f"\n✗ MIGRATION FAILED: {e}")
+        print("Check database logs for details\n")
+        # Don't crash the app, just log the error
+        pass
+
+# ============================================================================
+# ⚠️⚠️⚠️ END OF TEMPORARY MIGRATION CODE ⚠️⚠️⚠️
+# ============================================================================

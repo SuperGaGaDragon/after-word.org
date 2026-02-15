@@ -300,6 +300,7 @@ def _generate_and_save_analysis(
             previous_analysis = {
                 "fao_comment": prev_analysis_result.get("fao_comment"),
                 "sentence_comments": prev_analysis_result.get("sentence_comments"),
+                "rubric": prev_analysis_result.get("rubric"),  # Include rubric from previous
             }
 
     # Generate analysis using AI
@@ -325,6 +326,7 @@ def _generate_and_save_analysis(
         fao_comment=analysis["fao_comment"],
         sentence_comments=sentence_comments_json,
         reflection_comment=analysis.get("reflection_comment"),
+        rubric_evaluation=json.dumps(analysis["rubric_evaluation"]) if "rubric_evaluation" in analysis else None,
     )
 
     result = _run(save_query)
@@ -333,6 +335,13 @@ def _generate_and_save_analysis(
 
     analysis_id = result["id"]
     print(f"[WORK MANAGER] Analysis saved: {analysis_id}")
+
+    # Save rubric to works table (first submission only)
+    if not previous_submission and "rubric" in analysis:
+        rubric_json = json.dumps(analysis["rubric"])
+        rubric_query = work_repo.update_rubric(work_id, rubric_json)
+        _run(rubric_query)
+        print(f"[WORK MANAGER] Rubric saved to work {work_id}")
 
     # Save suggestion resolutions (if this is 2nd+ submission)
     if previous_submission and suggestion_actions:

@@ -2,7 +2,16 @@ from typing import Any, Dict
 
 import httpx
 
-from backend.config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, LLM_TIMEOUT_SECONDS
+from backend.config import (
+    CLAUDE_API_KEY,
+    CLAUDE_BASE_URL,
+    CLAUDE_MODEL,
+    CLAUDE_TIMEOUT_SECONDS,
+    LLM_API_KEY,
+    LLM_BASE_URL,
+    LLM_MODEL,
+    LLM_TIMEOUT_SECONDS,
+)
 from backend.errors import BusinessError
 
 
@@ -68,6 +77,73 @@ def generate_comment(text_snapshot: str) -> str:
     if isinstance(comment, str) and comment:
         return comment
     raise BusinessError("llm_failed", "invalid llm response")
+
+
+def generate_rubric(prompt: str) -> str:
+    """
+    Generate evaluation rubric using Claude API.
+
+    Args:
+        prompt: The prompt requesting rubric generation
+
+    Returns:
+        JSON string containing rubric structure
+
+    Raises:
+        BusinessError: If API call fails or times out
+    """
+    payload: Dict[str, Any] = {
+        "model": CLAUDE_MODEL,
+        "max_tokens": 4096,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    headers = {
+        "x-api-key": CLAUDE_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "Content-Type": "application/json",
+    }
+
+    endpoint = f"{CLAUDE_BASE_URL.rstrip('/')}/v1/messages"
+    print(f"[CLAUDE] Calling endpoint: {endpoint}")
+    print(f"[CLAUDE] Model: {CLAUDE_MODEL}")
+    print(f"[CLAUDE] Prompt length: {len(prompt)} chars")
+
+    try:
+        response = httpx.post(
+            endpoint,
+            json=payload,
+            headers=headers,
+            timeout=CLAUDE_TIMEOUT_SECONDS
+        )
+        print(f"[CLAUDE] Response status: {response.status_code}")
+
+        response.raise_for_status()
+        data = response.json()
+
+        # Extract content from Claude response
+        content_blocks = data.get("content") or []
+        if not content_blocks:
+            raise BusinessError("claude_failed", "No content in Claude response")
+
+        # Get text from first content block
+        first_block = content_blocks[0]
+        content = first_block.get("text")
+
+        if not isinstance(content, str) or not content:
+            raise BusinessError("claude_failed", "Empty or invalid content in Claude response")
+
+        print(f"[CLAUDE] Rubric generated, length: {len(content)} chars")
+        return content
+
+    except httpx.TimeoutException as exc:
+        print(f"[CLAUDE TIMEOUT] Request timed out after {CLAUDE_TIMEOUT_SECONDS}s")
+        raise BusinessError("claude_timeout", f"Claude API timeout: {CLAUDE_TIMEOUT_SECONDS}s") from exc
+    except httpx.HTTPStatusError as exc:
+        print(f"[CLAUDE ERROR] HTTP {exc.response.status_code}: {exc.response.text}")
+        raise BusinessError("claude_failed", f"Claude API error: {exc.response.status_code}") from exc
+    except Exception as exc:
+        print(f"[CLAUDE ERROR] Exception: {type(exc).__name__}: {str(exc)}")
+        raise BusinessError("claude_failed", f"Claude request failed: {str(exc)}") from exc
 
 
 def generate_structured_response(prompt: str) -> str:
