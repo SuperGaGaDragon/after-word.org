@@ -136,7 +136,7 @@ export function AboutPage() {
               <span className="dev-tag">Developer</span>
             </div>
           </div>
-          <div className="dev-card dev-card--center">
+          <div className="dev-card">
             <div className="dev-photo-wrap">
               <img src="/images/developer2.jpg" alt="Jorlanda Chen" className="dev-photo" />
               <div className="dev-photo-overlay" />

@@ -326,16 +326,6 @@
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(23, 105, 255, 0.2);
 }
 
-.dev-card--center {
-  flex: 0 0 290px;
-  margin-bottom: 16px;
-  border-color: rgba(23, 105, 255, 0.25);
-  background: rgba(23, 105, 255, 0.07);
-}
-
-.dev-card--center:hover {
-  transform: translateY(-12px);
-}
 
 .dev-photo-wrap {
   position: relative;
@@ -468,10 +458,8 @@
     gap: 16px;
   }
 
-  .dev-card,
-  .dev-card--center {
+  .dev-card {
     flex: 0 0 calc(50% - 8px);
-    margin-bottom: 0;
   }
 }
 
@@ -508,8 +496,7 @@
     font-size: 15px;
   }
 
-  .dev-card,
-  .dev-card--center {
+  .dev-card {
     flex: 0 0 100%;
   }
 }
