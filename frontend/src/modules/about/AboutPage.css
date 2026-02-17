@@ -304,7 +304,7 @@
   display: flex;
   gap: 28px;
   justify-content: center;
-  align-items: flex-end;
+  align-items: flex-start;
   position: relative;
   z-index: 1;
   flex-wrap: wrap;
