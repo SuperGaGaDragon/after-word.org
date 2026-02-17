@@ -3,6 +3,7 @@ import './AboutPage.css';
 
 export function AboutPage() {
   const [rotation, setRotation] = useState(0);
+  const [devLogoRotation, setDevLogoRotation] = useState(0);
 
   const handleImageClick = () => {
     setRotation(r => r + 180);
@@ -119,7 +120,13 @@ export function AboutPage() {
       {/* Developer Section */}
       <section className="about-developers">
         <div className="dev-header">
-          <img src="/images/logo.png" alt="Afterword Logo" className="dev-logo" />
+          <img
+            src="/images/logo.png"
+            alt="Afterword Logo"
+            className="dev-logo"
+            style={{ transform: `rotate(${devLogoRotation}deg)` }}
+            onClick={() => setDevLogoRotation(r => r + 180)}
+          />
           <h2 className="dev-title">Meet the Team</h2>
           <p className="dev-subtitle">
             Built by students, for students — because we know what it feels like.
